@@ -4,6 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <title>Польза</title>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<meta name="build" content="v9">
 <meta name="theme-color" content="#0a0b0d">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -1638,7 +1642,8 @@ nav button.on .ic{
   padding:calc(env(safe-area-inset-top) + 20px) 22px
           calc(env(safe-area-inset-bottom) + 18px)}
 
-.wel-dots{display:flex;gap:6px;justify-content:center;margin-bottom:26px;flex:none}
+.wel-dots{display:flex;gap:6px;justify-content:center;margin-bottom:8px;flex:none}
+.wel-step{text-align:center;font-size:11px;color:var(--tx2,#8b90a0);margin-bottom:18px;letter-spacing:.02em}
 .wel-dots i{height:4px;width:16px;border-radius:100px;
   background:rgba(255,255,255,.14);transition:.35s}
 .wel-dots i.past{background:rgba(197,248,42,.5)}
@@ -2906,9 +2911,183 @@ html,body{overflow-x:hidden;width:100%;max-width:100%}
   font-size:16px !important;border-radius:14px !important}
 
 /* V7-END */
+
+/* V8-START */
+/* ============================================================
+   ПОЛЬЗА v8 — подписка, друзья, установка, память
+   ============================================================ */
+
+/* ---------------- ПОЛОСКА ПОДПИСКИ ---------------- */
+.plusbar{width:100%;display:flex;align-items:center;gap:10px;
+  padding:12px 14px;border-radius:15px;margin:0 0 12px;
+  font-family:inherit;font-size:13.5px;font-weight:650;text-align:left;
+  color:#0d1204;background:linear-gradient(135deg,#d8ff5e,#a8dd12);
+  border:none;box-shadow:0 6px 20px rgba(168,221,18,.22)}
+.plusbar span:first-child{flex:1}
+.plusbar-a{flex:none;font-size:12px;font-weight:800;opacity:.72;
+  text-transform:uppercase;letter-spacing:.04em}
+.plusbar:active{transform:scale(.99)}
+.plusbar.off{color:var(--tx);
+  background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.03));
+  border:1px dashed rgba(255,255,255,.22);box-shadow:none}
+.plusbar.off .plusbar-a{color:#c5f82a;opacity:1}
+
+/* ---------------- БЫСТРЫЕ КНОПКИ В ПРОФИЛЕ ---------------- */
+.profquick{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:0 0 14px}
+.pq{display:flex;flex-direction:column;align-items:center;gap:6px;
+  padding:12px 4px;border-radius:15px;font-family:inherit;
+  background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.02));
+  border:1px solid rgba(255,255,255,.1);color:var(--tx2)}
+.pq i{font-style:normal;font-size:20px;line-height:1}
+.pq span{font-size:11px;font-weight:600;letter-spacing:.01em}
+.pq:active{transform:scale(.96);border-color:rgba(197,248,42,.4)}
+
+/* ---------------- ШАГИ ИНСТРУКЦИИ ---------------- */
+.instep{display:flex;gap:11px;align-items:flex-start;margin:0 0 10px;
+  font-size:13.5px;line-height:1.55;color:var(--tx2)}
+.instep i{flex:none;width:23px;height:23px;border-radius:8px;font-style:normal;
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:800;color:#0a0f04;
+  background:linear-gradient(180deg,#e2ff6b,#a4dd15);margin-top:1px}
+.instep b{color:var(--tx)}
+
+/* ---------------- ВЫБОР ПЛАТФОРМЫ В ОБУЧЕНИИ ---------------- */
+.wel-pick{display:flex;flex-direction:column;gap:9px;margin:14px 0 2px}
+.wel-opt{display:flex;flex-direction:column;align-items:flex-start;gap:3px;
+  padding:13px 15px;border-radius:15px;font-family:inherit;text-align:left;
+  background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.02));
+  border:1px solid rgba(255,255,255,.12);color:var(--tx);width:100%}
+.wel-opt b{font-size:14.5px;font-weight:700}
+.wel-opt span{font-size:12px;color:var(--tx2)}
+.wel-opt.on{border-color:rgba(197,248,42,.65);
+  background:linear-gradient(180deg,rgba(197,248,42,.16),rgba(197,248,42,.04))}
+.wel-opt.on b{color:#c5f82a}
+.wel-opt:active{transform:scale(.985)}
+
+/* ---------------- ДОСТУПЫ ---------------- */
+.permcard{padding:14px;border-radius:16px;margin:0 0 10px;
+  background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));
+  border:1px solid rgba(255,255,255,.1)}
+.permcard.ok{border-color:rgba(61,220,151,.4);
+  background:linear-gradient(180deg,rgba(61,220,151,.12),rgba(61,220,151,.03))}
+.permtop{display:flex;align-items:center;gap:11px}
+.permic{font-size:22px;line-height:1;flex:none}
+.permtx{display:flex;flex-direction:column;gap:2px;flex:1;min-width:0}
+.permtx b{font-size:14.5px;font-weight:700}
+.permtx span{font-size:11.5px;font-weight:650;text-transform:uppercase;letter-spacing:.04em}
+.permdesc{font-size:12.5px;line-height:1.5;color:var(--tx2);margin:9px 0 0}
+.btn.permbtn{margin:11px 0 0}
+
+/* галочки доступов в обучении */
+.wel-perms{display:flex;flex-direction:column;gap:7px;margin:14px 0 12px}
+.wp{display:flex;align-items:center;gap:9px;font-size:13.5px;color:var(--tx2)}
+.pd{flex:none;width:21px;height:21px;border-radius:7px;font-style:normal;
+  display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;
+  background:rgba(255,255,255,.1);color:var(--tx2)}
+.pd.ok{background:linear-gradient(180deg,#3ddc97,#20b877);color:#04140c}
+.pd.no{background:rgba(255,107,107,.25);color:#ff6b6b}
+.pd.off{background:rgba(255,255,255,.07);color:#8b90a0}
+
+/* ---------------- «что делать, если не открылось» ---------------- */
+.synchelp{margin:10px 0 0;padding:0;border-radius:14px;
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08)}
+.synchelp summary{padding:12px 14px;font-size:13px;font-weight:650;color:var(--tx2);
+  cursor:pointer;list-style:none;user-select:none}
+.synchelp summary::-webkit-details-marker{display:none}
+.synchelp summary:before{content:'▸ ';color:#c5f82a;font-weight:800}
+.synchelp[open] summary:before{content:'▾ '}
+.synchelp[open] summary{color:var(--tx);border-bottom:1px solid rgba(255,255,255,.07)}
+.synchelp > *:not(summary){margin-left:14px;margin-right:14px}
+.synchelp > *:last-child{margin-bottom:14px}
+
+/* ---------------- слайд про бесплатные дни ---------------- */
+.wel-trial{margin:14px 0 4px;border-radius:16px;overflow:hidden;
+  border:1px solid rgba(197,248,42,.22);background:rgba(197,248,42,.06)}
+.wel-trial .wt-row{display:flex;align-items:center;justify-content:space-between;
+  gap:12px;padding:11px 14px;font-size:14px;
+  border-bottom:1px solid rgba(255,255,255,.06)}
+.wel-trial .wt-row:last-child{border-bottom:0}
+.wel-trial .wt-row b{color:#c5f82a;font-weight:750;white-space:nowrap}
+.wel-trial .wt-row span{color:var(--tx2);text-align:right;line-height:1.3}
+
+/* ---------------- запрос доступа к календарю ---------------- */
+.calask{position:fixed;inset:0;z-index:9600;display:flex;align-items:center;
+  justify-content:center;padding:22px;opacity:0;pointer-events:none;
+  transition:opacity .22s ease}
+.calask.on{opacity:1;pointer-events:auto}
+.calask-back{position:absolute;inset:0;background:rgba(0,0,0,.62);
+  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.calask-card{position:relative;width:100%;max-width:340px;
+  background:#1c1d22;border:1px solid rgba(255,255,255,.1);
+  border-radius:26px;padding:24px 20px 18px;text-align:center;
+  box-shadow:0 30px 70px rgba(0,0,0,.6);
+  transform:scale(.9);transition:transform .26s cubic-bezier(.2,1.2,.4,1)}
+.calask.on .calask-card{transform:scale(1)}
+
+.calask-card .ca-ic{font-size:44px;line-height:1;margin-bottom:12px;
+  filter:drop-shadow(0 6px 14px rgba(0,0,0,.45))}
+.calask-card .ca-title{font-size:13px;font-weight:700;letter-spacing:.4px;
+  text-transform:uppercase;color:#c5f82a;margin-bottom:8px}
+.calask-card .ca-q{font-size:18px;font-weight:750;line-height:1.32;
+  color:var(--tx);margin-bottom:12px}
+.calask-card .ca-body{font-size:14px;line-height:1.5;color:var(--tx2);
+  margin-bottom:16px}
+
+.calask-card .ca-facts{text-align:left;border-radius:14px;overflow:hidden;
+  background:rgba(255,255,255,.05);margin-bottom:18px}
+.calask-card .ca-f{display:flex;align-items:center;gap:10px;padding:9px 13px;
+  font-size:13px;color:var(--tx2);
+  border-bottom:1px solid rgba(255,255,255,.06)}
+.calask-card .ca-f:last-child{border-bottom:0}
+.calask-card .ca-f i{font-style:normal;font-size:15px;width:18px;text-align:center}
+
+.calask-card .ca-btns{display:flex;flex-direction:column;gap:9px}
+.calask-card .ca-allow{width:100%;padding:15px;border:0;border-radius:15px;
+  background:#c5f82a;color:#10110f;font-size:16px;font-weight:800;
+  font-family:inherit;cursor:pointer;
+  box-shadow:0 6px 22px rgba(197,248,42,.3);transition:transform .12s}
+.calask-card .ca-allow:active{transform:scale(.97)}
+.calask-card .ca-allow:disabled{opacity:.65;box-shadow:none}
+.calask-card .ca-later{width:100%;padding:14px;border-radius:15px;
+  border:1px solid rgba(255,255,255,.13);background:rgba(255,255,255,.05);
+  color:var(--tx2);font-size:15px;font-weight:650;
+  font-family:inherit;cursor:pointer}
+.calask-card .ca-later:active{background:rgba(255,255,255,.09)}
+.calask-card .ca-note{margin-top:13px;font-size:12px;line-height:1.45;
+  color:var(--tx2);opacity:.75}
+
+/* пусто — нечего синхронизировать */
+.calask-empty{text-align:center;padding:20px 14px 6px}
+.calask-empty .ce-ic{font-size:42px;margin-bottom:10px}
+.calask-empty .ce-t{font-size:17px;font-weight:750;margin-bottom:7px}
+.calask-empty .ce-d{font-size:14px;line-height:1.5;color:var(--tx2)}
+
+/* V8-END */
+
+/* ---------------- заставка на время старта ---------------- */
+#bootload{position:fixed;inset:0;z-index:99999;background:#07080a;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;
+  transition:opacity .35s ease;}
+#bootload.gone{opacity:0;pointer-events:none;}
+.bl-logo{font-size:44px;filter:drop-shadow(0 0 18px rgba(197,248,42,.5));
+  animation:blPulse 1.4s ease-in-out infinite;}
+@keyframes blPulse{0%,100%{transform:scale(1);}50%{transform:scale(1.12);}}
+.bl-txt{font-weight:800;font-size:20px;letter-spacing:.06em;color:#fff;}
+.bl-sub{font-size:13px;color:var(--tx2,#8b90a0);}
+.bl-bar{width:120px;height:3px;border-radius:3px;background:rgba(255,255,255,.08);overflow:hidden;margin-top:6px;}
+.bl-bar i{display:block;height:100%;width:40%;background:#c5f82a;border-radius:3px;
+  animation:blSlide 1.1s ease-in-out infinite;}
+@keyframes blSlide{0%{transform:translateX(-100%);}100%{transform:translateX(340%);}}
+
 </style>
 </head>
 <body>
+<div id="bootload">
+  <div class="bl-logo">💚</div>
+  <div class="bl-txt">ПОЛЬЗА</div>
+  <div class="bl-sub">Секунду, готовим твои задачи…</div>
+  <div class="bl-bar"><i></i></div>
+</div>
 <div id="aurora"><i></i><i></i><i></i><i></i><b></b></div>
 <div class="wrap" id="app"></div>
 <button class="fab" onclick="openAdd()">＋</button>
@@ -3259,7 +3438,7 @@ function onbLocked() {
 /* ---------- жёсткий перехват: пока идёт обучение, живут только #wel и #tour ----------
    CSS уже гасит pointer-events, но этого мало: остаются клавиатура, фокус,
    аппаратная «назад» и инерционный скролл. Перехватываем на фазе capture. */
-const ONB_ALLOW = '#wel, #tour, .toast, .sheet, #sheet, .ov';
+const ONB_ALLOW = '#wel, #tour, .toast, .sheet, #sheet, .ov, #calask, .calask';
 
 function onbAllowed(node) {
   if (!node || !node.closest) return false;
@@ -3320,7 +3499,7 @@ function onbPop() {
    ПОЛЬЗА — приветствие и интерактивное обучение
    ============================================================ */
 
-const WELCOME_VER = 5;
+const WELCOME_VER = 8;
 let welStep = 0;
 
 const WEL = [
@@ -3335,6 +3514,16 @@ const WEL = [
       Это <b>пряник</b>. Приложение замечает то, что ты уже сделал —
       и показывает это цифрой, которую видно.`,
     note: 'Полторы минуты на знакомство — и больше вопросов не будет.'
+  },
+  {
+    icon: '📱',
+    choose: 'platform',
+    title: 'Какой у тебя телефон',
+    lead: 'Один вопрос',
+    body: `От этого зависят подсказки: как вынести ПОЛЬЗУ на экран
+      и как связать задачи с календарём.<br><br>
+      Ответ можно поменять в любой момент в профиле.`,
+    note: 'Приложение работает одинаково на обеих системах.'
   },
   {
     icon: '⚖️',
@@ -3385,10 +3574,62 @@ const WEL = [
     perm: 'cal',
     title: 'Календарь телефона',
     lead: 'Если нужно',
-    body: `Задачи с датой можно отправить в <b>Apple Календарь</b> или
-      <b>Google Календарь</b> — они встанут туда обычными событиями.<br><br>
-      Это не обязательно. Приложение полностью самостоятельное.`,
-    note: 'Копию всех данных можно выгрузить файлом.'
+    body: `Задачи с датой можно перенести в <b>стандартный календарь телефона</b> —
+      они встанут туда обычными событиями, рядом со встречами и напоминаниями.<br><br>
+      Работает на iPhone, iPad, Mac и Android. <b>Аккаунт и пароль не нужны.</b><br><br>
+      Это не обязательно — приложение полностью самостоятельное.`,
+    note: 'Настроить или отключить можно в любой момент: Профиль → ⚙️ → Календарь телефона.'
+  },
+  {
+    icon: '📲',
+    install: true,
+    title: 'Под рукой',
+    lead: 'Чтобы не искать',
+    body: `ПОЛЬЗУ можно вынести на экран телефона — она будет открываться
+      как обычное приложение, в один тап и без интернета.<br><br>
+      На iPhone это ещё и включает уведомления: там они работают
+      только у приложений с домашнего экрана.`,
+    note: 'Кнопка «Добавить на экран» всегда есть в профиле.'
+  },
+  {
+    icon: '☁️',
+    title: 'Ничего не потеряется',
+    lead: 'Память',
+    body: `Задачи, цели и достижения хранятся в облаке Telegram.<br><br>
+      Сменил телефон, почистил браузер, зашёл с планшета или компьютера —
+      всё на месте. Данные видны только тебе.`,
+    note: 'Резервную копию можно скачать файлом в настройках.'
+  },
+  {
+    icon: '🎁',
+    trial: true,
+    title: 'Три дня бесплатно',
+    lead: 'Прямо сейчас, без карты',
+    body: `<b>Ближайшие три дня открыто вообще всё.</b>
+      Ничего платить не надо, карту вводить не надо,
+      деньги сами не спишутся — их просто негде взять.<br><br>
+
+      <b>Что будет на четвёртый день</b><br>
+      Приложение никуда не денется. Все задачи останутся,
+      их можно отмечать и получать баллы, повторяющиеся
+      будут приходить как обычно.<br>
+      Платной станет только одна вещь — <b>создание новых задач</b>.<br><br>
+
+      Захочешь продолжить — оформишь подписку. Не захочешь —
+      никто не напомнит дважды и ничего не отберёт.`,
+    note: 'Приведёшь друга, он оформит подписку — получишь месяц бесплатно.'
+  },
+  {
+    icon: '🔐',
+    perms: true,
+    title: 'Три доступа',
+    lead: 'Чтобы работало само',
+    body: `Осталось разрешить приложению помогать:<br><br>
+      <b>🔔 Напоминания</b> — утром план, вечером итоги, подсказка перед задачей.<br>
+      <b>🎤 Микрофон</b> — добавление задач голосом.<br>
+      <b>📅 Календарь</b> — задачи в календаре телефона.<br><br>
+      Каждый доступ можно выдать сейчас или позже — приложение работает и без них.`,
+    note: 'Всё это меняется в любой момент: Профиль → ⚙️ → Доступы.'
   },
   {
     icon: '✍️',
@@ -3428,25 +3669,75 @@ function renderWel() {
   let action = '';
 
   if (s.perm === 'notif') {
+    const ios = (S.platform || plzPlatform()) === 'ios';
     action = !CAP.notif
-      ? `<div class="wel-info">Этот браузер не умеет уведомления — шаг можно пропустить.</div>`
+      ? `<div class="wel-info">
+           <b>Сейчас напоминания недоступны.</b><br>
+           Ты открыл ПОЛЬЗУ внутри ${PLAT.tg ? 'Telegram' : 'браузера'} — здесь телефон
+           не разрешает приложениям слать уведомления.<br><br>
+           Чтобы они заработали, вынеси ПОЛЬЗУ на экран «Домой»
+           ${ios ? 'через Safari' : 'через Chrome'} — это одна минута,
+           и приложение станет обычной иконкой рядом с остальными.
+         </div>
+         <button class="btn ghost wel-perm" id="wel-inst2">Показать, как вынести на экран</button>`
       : st === 'granted'
-      ? `<div class="wel-ok">✓ Напоминания разрешены</div>`
+      ? `<div class="wel-ok">✓ Напоминания включены</div>`
       : st === 'denied'
-      ? `<div class="wel-info">Доступ закрыт. Включить можно в настройках браузера — приложение работает и без него.</div>`
-      : `<button class="btn wel-perm" id="wel-perm">Разрешить напоминания</button>`;
+      ? `<div class="wel-info">Ты отказал в напоминаниях. Если передумаешь —
+           включить можно в настройках телефона. Приложение работает и без них.</div>`
+      : `<button class="btn wel-perm" id="wel-perm">Включить напоминания</button>`;
   }
   if (s.perm === 'mic') {
     action = !CAP.mic
-      ? `<div class="wel-info">Голосовой ввод недоступен в этом браузере. Работает в Chrome и Safari.</div>`
+      ? `<div class="wel-info">
+           <b>Голосовой ввод здесь не работает.</b><br>
+           Он доступен, когда ПОЛЬЗА открыта в Safari или Chrome —
+           либо вынесена на экран «Домой». Печатать задачи можно всегда.
+         </div>`
       : st === 'granted'
       ? `<div class="wel-ok">✓ Микрофон разрешён</div>`
       : `<button class="btn wel-perm" id="wel-perm">Разрешить микрофон</button>`;
   }
   if (s.perm === 'cal') {
-    action = st === 'seen'
-      ? `<div class="wel-ok">✓ Понятно</div>`
-      : `<button class="btn ghost wel-perm" id="wel-cal">Как это выглядит</button>`;
+    action = (st === 'seen' || st === 'on')
+      ? `<div class="wel-ok">✓ Календарь подключён</div>`
+      : `<button class="btn wel-perm" id="wel-calsync">📅 Синхронизировать с календарём</button>
+         <button class="btn ghost wel-perm" id="wel-cal" style="margin-top:8px">Сначала показать, как это выглядит</button>`;
+  }
+  if (s.choose === 'platform') {
+    const cur = S.platform || '';
+    action = `<div class="wel-pick">
+      <button class="wel-opt ${cur === 'ios' ? 'on' : ''}" id="wel-ios">
+        <b>🍎 iPhone, iPad или Mac</b><span>Apple Календарь, Safari</span></button>
+      <button class="wel-opt ${cur === 'android' ? 'on' : ''}" id="wel-and">
+        <b>🤖 Android или компьютер</b><span>Google Календарь, Chrome</span></button>
+    </div>`;
+  }
+  if (s.perms) {
+    const n = permNotifState(), m = permMicState(), c = permCalState();
+    const dot = st => (st === 'on' || st === 'granted') ? '<i class="pd ok">✓</i>'
+                    : st === 'denied' ? '<i class="pd no">✕</i>'
+                    : st === 'unsupported' ? '<i class="pd off">—</i>'
+                    : st === 'seen' ? '<i class="pd ok">✓</i>' : '<i class="pd">•</i>';
+    action = `<div class="wel-perms">
+        <div class="wp">${dot(n)}<span>Напоминания</span></div>
+        <div class="wp">${dot(m)}<span>Микрофон</span></div>
+        <div class="wp">${dot(c)}<span>Календарь</span></div>
+      </div>
+      <button class="btn wel-perm" id="wel-perms">${permsAllAsked() ? 'Проверить доступы' : 'Выдать доступы'}</button>`;
+  }
+  if (s.install) {
+    action = S.instSeen
+      ? `<div class="wel-ok">✓ Инструкция показана</div>`
+      : `<button class="btn ghost wel-perm" id="wel-inst">Показать, как добавить</button>`;
+  }
+  if (s.trial) {
+    const d = PAY.trialDays;
+    action = `<div class="wel-trial">
+        <div class="wt-row"><b>Сегодня</b><span>Открыто всё · 0 ₽</span></div>
+        <div class="wt-row"><b>Через ${d} дня</b><span>Задачи и баллы остаются</span></div>
+        <div class="wt-row"><b>Карта</b><span>Не нужна и не спросим</span></div>
+      </div>`;
   }
   if (s.first) {
     action = `<input type="text" id="wel-task" class="wel-input"
@@ -3462,6 +3753,7 @@ function renderWel() {
       <div class="wel-dots">
         ${WEL.map((_, i) => `<i class="${i === welStep ? 'on' : i < welStep ? 'past' : ''}"></i>`).join('')}
       </div>
+      <div class="wel-step">Шаг ${welStep + 1} из ${WEL.length}</div>
 
       <div class="wel-body">
         ${s.logo
@@ -3487,7 +3779,7 @@ function renderWel() {
   const G = i => document.getElementById(i);
 
   if (G('wel-perm')) G('wel-perm').onclick = async () => {
-    if (s.perm === 'notif') { try { await askNotif(); } catch (e) {} renderWel(); }
+    if (s.perm === 'notif') { try { await pushAsk(); } catch (e) {} renderWel(); }
     if (s.perm === 'mic') {
       try {
         if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
@@ -3499,10 +3791,39 @@ function renderWel() {
       DB.save(); renderWel();
     }
   };
+  if (G('wel-ios')) G('wel-ios').onclick = () => { setPlatform('ios'); buzz('soft'); renderWel(); };
+  if (G('wel-and')) G('wel-and').onclick = () => { setPlatform('android'); buzz('soft'); renderWel(); };
+  if (G('wel-perms')) G('wel-perms').onclick = () => {
+    try { openPermsSheet(false); } catch (e) {}
+    /* лист закроется — обновим галочки */
+    const t = setInterval(() => {
+      if (!document.querySelector('.sheet.on')) { clearInterval(t); renderWel(); }
+    }, 400);
+    setTimeout(() => clearInterval(t), 60000);
+  };
+  if (G('wel-inst')) G('wel-inst').onclick = () => {
+    S.instSeen = true; DB.save();
+    try { openInstallGuide(); } catch (e) {}
+    renderWel();
+  };
+  /* та же инструкция, но со слайда про напоминания */
+  if (G('wel-inst2')) G('wel-inst2').onclick = () => {
+    S.instSeen = true; DB.save();
+    try { openInstallGuide(); } catch (e) {}
+  };
   if (G('wel-cal')) G('wel-cal').onclick = () => {
     S.perm.cal = 'seen'; DB.save();
-    try { openCalendarHelp(); } catch (e) {}
+    try { openCalendarForPlatform(); } catch (e) {}
     renderWel();
+  };
+  /* сразу перенести задачи в календарь прямо из знакомства */
+  if (G('wel-calsync')) G('wel-calsync').onclick = () => {
+    try { askCalendarAccess({ then: renderWel }); }
+    catch (e) {
+      S.perm.cal = 'seen'; DB.save();
+      try { openCalSync(); } catch (e2) {}
+      renderWel();
+    }
   };
   if (G('wel-back')) G('wel-back').onclick = () => { welStep--; renderWel(); };
   if (G('wel-skip')) G('wel-skip').onclick = () => finishWelcome(false);
@@ -3536,20 +3857,53 @@ function renderWel() {
   if (inp) inp.onkeydown = e => { if (e.key === 'Enter') G('wel-next').click(); };
 }
 
+/* ============================================================
+   Пока шло знакомство, могли прийти более свежие данные из облака
+   (например, человек уже пользовался ПОЛЬЗОЙ на другом телефоне).
+   Мы их не применяли на лету, чтобы не подменить экран прямо под
+   рукой — применяем аккуратно сейчас, когда знакомство уже позади.
+   ============================================================ */
+function applyPendingCloudPull() {
+  const remote = window._cloudPendingPull;
+  window._cloudPendingPull = null;
+  if (!remote) return;
+  try {
+    const wasOnb = { o: S.onboarded, w: S.welVer, t: S.tourDone };
+    const localTs = Number(S._ts || 0);
+    const remoteTs = Number(remote._ts || 0);
+    if (remoteTs <= localTs) return; /* наши свежее — ничего не трогаем */
+    S = remote;
+    S.onboarded = true; S.welVer = Math.max(S.welVer || 0, wasOnb.w || 0);
+    S.tourDone = true;
+    try { if (typeof purgeDemo === 'function') purgeDemo(); } catch (e) {}
+    try { migrateAfterCloud(); } catch (e) {}
+    DB.save();
+    render();
+  } catch (e) {}
+}
+
 function finishWelcome(withTour) {
   S.onboarded = true;
   S.welVer = WELCOME_VER;
   if (!withTour) S.tourDone = true;
+  /* демо могло приехать из облака, пока человек листал знакомство */
+  try { if (typeof purgeDemo === 'function') purgeDemo(); } catch (e) {}
   DB.save();
   const ov = document.getElementById('wel');
   if (ov) {
     ov.classList.add('out');
     setTimeout(() => { ov.classList.remove('on', 'out'); ov.innerHTML = ''; }, 320);
   }
-  if (!withTour) onbLock(false);
+  if (!withTour) { onbLock(false); applyPendingCloudPull(); }
   render();
   if (withTour) setTimeout(startTour, 420);
-  else toast('Готово. Напиши первую задачу — или продиктуй.');
+  else {
+    toast('Готово. Напиши первую задачу — или продиктуй.');
+    try {
+      if (typeof permsAllAsked === 'function' && !permsAllAsked())
+        setTimeout(function(){ openPermsSheet(true); }, 900);
+    } catch (e) {}
+  }
 }
 
 /* ============================================================
@@ -3709,9 +4063,18 @@ function endTour() {
   if (el) { el.classList.remove('on'); el.innerHTML = ''; }
   S.tourDone = true;
   S.onboarded = true;
+  try { if (typeof purgeDemo === 'function') purgeDemo(); } catch (e) {}
   DB.save();
   try { if (PLAT.tg && PLAT.tg.BackButton) PLAT.tg.BackButton.show(); } catch(e) {}
+  applyPendingCloudPull();
   render();
+  /* если какой-то доступ так и не спросили — предложим сразу после тура */
+  try {
+    if (typeof permsAllAsked === 'function' && !permsAllAsked()) {
+      setTimeout(function(){ openPermsSheet(true); }, 700);
+      return;
+    }
+  } catch (e) {}
   toast('💚 Готово. Приложение в твоём распоряжении.');
 }
 
@@ -4209,6 +4572,7 @@ function openDayCard(iso) {
   const add = () => {
     const el = G('dc-add'), v = el ? el.value.trim() : '';
     if (!v) return;
+    if (!canAddTask()) return;
     const p = parseSpoken(v);
     const t = mkTask({ title:p.title, cat:p.cat, mins:p.mins, val:p.val,
       pts:Math.max(tierFor(p.mins).pts, valueOf(p.val).floor),
@@ -6650,6 +7014,38 @@ if (!S.demoClean) {
   S.demoClean = true; DB.save();
 }
 
+/* ------------------------------------------------------------
+   ЧИСТКА v8 — повторная и более надёжная.
+   У части людей демо-данные остались с самых первых сборок:
+   флаг demoClean тогда выставлялся, а задачи не удалялись.
+   Здесь чистим по названиям ещё раз, уже под новым флагом.
+   Свои задачи человека при этом не трогаются.
+   ------------------------------------------------------------ */
+if (!S.cleanV8) {
+  const D_T = ['Помыть ванну','Зарядка','Позвонить клиенту','Съёмка для клиента',
+               'Записаться к стоматологу','Смонтировать ролик про ремонт','Разобрать почту',
+               'Купить продукты','Прогулка','Прочитать главу'];
+  const D_G = ['Вылечить зубы','Машина','Здоровье в приоритете','Ремонт','Английский'];
+
+  const demoTasks = (S.tasks||[]).filter(t => D_T.includes(t.title));
+  const demoGoals = (S.goals||[]).filter(g => D_G.includes(g.title));
+
+  if (demoTasks.length || demoGoals.length) {
+    S.tasks = (S.tasks||[]).filter(t => !D_T.includes(t.title));
+    S.goals = (S.goals||[]).filter(g => !D_G.includes(g.title));
+    S.tasks.forEach(t => { if (t.goalId && !S.goals.some(g => g.id === t.goalId)) t.goalId = null; });
+
+    /* демо-история тоже уходит: баллы и уровень были не настоящие */
+    S.days = {}; S.notes = {}; S.energy = {}; S.restDays = [];
+    S.hall = []; S.achieved = []; S.achDates = {};
+    S.stats = { voice:0, timerRuns:0, quick:0, earlyBird:0, nightOwl:0, aiHelp:0, planRuns:0 };
+
+    /* показать знакомство заново — человек его ещё не видел в новом виде */
+    S.onboarded = false; S.welVer = 0; S.tourDone = false;
+  }
+  S.cleanV8 = true; DB.save();
+}
+
 /* миграция */
 S.tasks.forEach(t => {
   if (t.desc===undefined) t.desc='';
@@ -7585,6 +7981,7 @@ function openImportSheet(list) {
     <button class="btn ghost" onclick="closeSheet()">Отмена</button>
   `);
   document.getElementById('imp-go').onclick = () => {
+    if (!canAddTask()) return;
     let n=0;
     document.querySelectorAll('[data-imp]').forEach(ch=>{
       if (!ch.checked) return;
@@ -7744,14 +8141,35 @@ function currentTask() {
 /* ==== sync.js ==== */
 /* ============================================================
    СИНХРОНИЗАЦИЯ С КАЛЕНДАРЁМ
-   1. Подписка по ссылке  — Apple Calendar, Google, Outlook. Без входа.
+   1. Календарь телефона  — Apple Calendar, Google, Outlook. Без входа.
    2. Google Calendar API — вход один раз, мгновенное обновление.
    ============================================================ */
+
+/* ============================================================
+   НАСТРОЙКА ВЛАДЕЛЬЦА — заполняешь один раз, дальше работает
+   у ВСЕХ пользователей без единого технического шага с их стороны.
+   Инструкция — в CALENDAR.md.
+   ============================================================ */
+const CAL_CFG = {
+  /* Адрес твоего Cloudflare Worker (файл worker.js), например:
+     'https://polza-cal.твой-логин.workers.dev'
+     Без этого поля способ 1 («Календарь телефона») недоступен. */
+  workerBase: '',
+
+  /* Client ID из Google Cloud Console (OAuth 2.0, тип Web application).
+     Без этого поля способ 2 («Google Calendar») недоступен. */
+  googleClientId: ''
+};
 
 /* ---------- состояние ---------- */
 if (!S.sync) S.sync = {};
 if (!S.sync.feed) S.sync.feed = { base:'', token:'', on:false, last:0, err:'' };
 if (!S.sync.gcal) S.sync.gcal = { clientId:'', calId:'', email:'', on:false, last:0, pushed:{}, err:'' };
+
+/* адрес сервера и Client ID — берём из настройки владельца,
+   если человек явно не ввёл свои (для тестов/разработчиков) */
+if (!S.sync.feed.base && CAL_CFG.workerBase) S.sync.feed.base = CAL_CFG.workerBase;
+if (!S.sync.gcal.clientId && CAL_CFG.googleClientId) S.sync.gcal.clientId = CAL_CFG.googleClientId;
 
 const GTOK_KEY = 'polza.gtok';
 let GTOK = null;
@@ -7791,7 +8209,7 @@ function feedUrl(scheme) {
 
 async function feedPush(silent) {
   const b = feedBase();
-  if (!b) { if (!silent) toast('Сначала укажи адрес сервера подписки'); return false; }
+  if (!b) { if (!silent) toast('Синхронизация ещё не настроена разработчиком'); return false; }
   const { text, count } = buildICS();
   try {
     const r = await fetch(b + '/c/' + feedToken() + '.ics', {
@@ -7818,7 +8236,7 @@ function feedOff() {
   S.sync.feed.on = false;
   S.sync.feed.last = 0;
   DB.save();
-  toast('Подписка отключена. Удали календарь в приложении календаря.');
+  toast('Отключено. Удали календарь ПОЛЬЗА в приложении Календарь.');
   openCalSync();
 }
 
@@ -7839,6 +8257,72 @@ function feedSubscribe() {
   if (!u) return;
   buzz('tap');
   try { openExternal(u); } catch (e) { location.href = u; }
+}
+
+/* ============================================================
+   ЗАПАСНОЙ ПУТЬ, КОГДА СЕРВЕР ЕЩЁ НЕ НАСТРОЕН.
+   Кнопка обязана работать у каждого человека сразу после
+   установки — без Worker, аккаунтов и настроек.
+   Отдаём телефону файл календаря: iOS и Android умеют
+   принимать его штатно и сами кладут события в календарь.
+   ============================================================ */
+async function calQuickSync() {
+  let count = 0;
+  try { count = buildICS().count; } catch (e) {}
+
+  if (!count) {
+    toast('Пока нечего переносить: ни у одной задачи нет даты или срока');
+    return;
+  }
+
+  buzz('tap');
+  toast('Готовлю ' + count + ' ' + plural(count, 'событие', 'события', 'событий') + '…');
+
+  try {
+    await shareICS();
+  } catch (e) {
+    try { exportICS(); } catch (e2) {}
+  }
+
+  try {
+    S.perm.cal = 'seen';
+    S.sync.feed.last = Date.now();
+    DB.save();
+  } catch (e) {}
+  setTimeout(function () { try { openCalSync(); } catch (e) {} }, 600);
+}
+
+/* ============================================================
+   ОДНА КНОПКА: выгрузить задачи и сразу открыть календарь.
+   Раньше нужно было сначала «Обновить», потом «Подписаться» —
+   человек не понимал, зачем два шага.
+   ============================================================ */
+async function feedSyncNow() {
+  const first = !S.sync.feed.on;
+  toast(first ? 'Готовлю задачи…' : 'Обновляю календарь…');
+
+  const ok = await feedPush(true);
+  if (!ok) {
+    toast('Не получилось: ' + (S.sync.feed.err || 'нет связи'));
+    try { openCalSync(); } catch (e) {}
+    return;
+  }
+
+  let count = 0;
+  try { count = buildICS().count; } catch (e) {}
+
+  if (!first) {
+    toast('\u2713 Календарь обновлён \u00b7 событий: ' + count);
+    try { openCalSync(); } catch (e) {}
+    return;
+  }
+
+  /* первое подключение — открываем календарь телефона */
+  toast('\u2713 Задач готово: ' + count + '. Открываю календарь…');
+  setTimeout(function () {
+    feedSubscribe();
+    setTimeout(function () { try { openCalSync(); } catch (e) {} }, 900);
+  }, 700);
 }
 
 /* ============================================================
@@ -8124,39 +8608,64 @@ function openCalSync() {
     <div class="tip">Задач с датой, сроком или повтором: <b>${n}</b>.
       Только они попадают в календарь.</div>
 
-    <div class="secline">Способ 1 · Подписка по ссылке</div>
-    <div class="tip">Работает в Apple Calendar, Google, Outlook. <b>Вход не нужен.</b>
-      Календарь сам обновляется в фоне.</div>
+    <div class="secline">Способ 1 · Календарь телефона</div>
+    <div class="tip">Задачи появятся в ${isIOS ? 'стандартном Календаре iPhone' : 'Google Календаре'} рядом
+      с обычными встречами. <b>Вход в аккаунт не нужен.</b> Изменил задачу в ПОЛЬЗЕ —
+      в календаре обновится само.</div>
 
     ${!hasFeed ? `
-      <div class="synccard off">
-        <div class="sync-t">Нужен адрес сервера подписки</div>
-        <div class="sync-d">Один раз разверни бесплатный Cloudflare Worker
-          (файл <b>worker.js</b> и инструкция лежат в архиве) и вставь его адрес сюда.</div>
-      </div>` : `
+      <div class="synccard">
+        <div class="sync-t">Готово к переносу</div>
+        <div class="sync-d">Задачи с датой отправятся в календарь телефона одним нажатием.
+          Живое обновление разработчик ещё настраивает — пока задачи переносятся
+          текущим списком, повторить можно в любой момент.</div>
+      </div>
+
+      <button class="btn" onclick="askCalendarAccess()">📅 Синхронизировать с календарём телефона</button>
+
+      <details class="synchelp">
+        <summary>Что именно произойдёт</summary>
+        <div class="tip">
+          Телефон получит файл с задачами и предложит добавить их в календарь.
+          <b>${isIOS ? 'iPhone покажет «Добавить все» — нажми, и события встанут в стандартный Календарь.'
+                     : 'Android предложит открыть Google Календарь — подтверди импорт.'}</b><br><br>
+          Добавил новые задачи — нажми кнопку ещё раз, свежие события допишутся.
+        </div>
+      </details>` : `
       <div class="synccard ${f.on ? 'on' : ''}">
-        <div class="sync-t">${f.on ? '✓ Подписка активна' : 'Подписка готова к запуску'}</div>
-        <div class="sync-d">${f.on ? 'Отправлено ' + syncAgo(f.last) : 'Нажми «Обновить», потом добавь ссылку в календарь.'}</div>
-        <div class="sync-url">${esc(feedUrl())}</div>
+        <div class="sync-t">${f.on ? '✓ Календарь подключён' : 'Готово к подключению'}</div>
+        <div class="sync-d">${f.on
+          ? 'Задачи уходят в календарь автоматически · обновлено ' + syncAgo(f.last)
+          : 'Одно нажатие — и задачи с датой окажутся в календаре телефона.'}</div>
         ${f.err ? `<div class="sync-err">${esc(f.err)}</div>` : ''}
       </div>
-      <div class="row2">
-        <button class="btn" style="flex:1;margin:0" onclick="feedPush(false)">↻ Обновить</button>
-        <button class="btn ghost" style="flex:1;margin:0" onclick="feedCopy()">📋 Копировать</button>
-      </div>
-      <button class="btn ghost" onclick="feedSubscribe()">
-        ${isIOS ? '📲 Подписаться в Apple Calendar' : '📲 Открыть ссылку подписки'}</button>
-      ${f.on ? `<button class="btn ghost" onclick="feedOff()">Отключить подписку</button>` : ''}
-      <div class="tip">
-        <b>iPhone:</b> Настройки → Календарь → Учётные записи → Другое →
-        Подписной календарь → вставь ссылку.<br>
-        <b>Google:</b> Другие календари → «+» → «Добавить по URL» → вставь ссылку.
-      </div>`}
 
-    <label>Адрес сервера подписки</label>
+      <button class="btn" onclick="askCalendarAccess()">
+        ${f.on ? '📅 Обновить календарь сейчас' : '📅 Синхронизировать с календарём телефона'}</button>
+
+      ${f.on ? `
+        <div class="row2">
+          <button class="btn ghost" style="flex:1;margin:0" onclick="feedSubscribe()">📲 Открыть в календаре</button>
+          <button class="btn ghost" style="flex:1;margin:0" onclick="feedOff()">Отключить</button>
+        </div>` : ''}
+
+      <details class="synchelp">
+        <summary>Календарь не открылся сам — что делать</summary>
+        <div class="sync-url">${esc(feedUrl())}</div>
+        <button class="btn ghost" onclick="feedCopy()">📋 Скопировать ссылку</button>
+        <div class="tip">
+          <b>iPhone:</b> Настройки → Календарь → Учётные записи → Другое →
+          Подписной календарь → вставь ссылку.<br>
+          <b>Android:</b> открой Google Календарь на компьютере →
+          Другие календари → «+» → «Добавить по URL» → вставь ссылку.
+        </div>
+      </details>`}
+
+    ${!CAL_CFG.workerBase ? `
+    <label>Адрес сервера подписки <span style="color:var(--tx2);font-weight:400">(для разработчика)</span></label>
     <input type="text" id="sy-base" value="${esc(f.base || '')}"
       placeholder="https://polza-cal.твой-логин.workers.dev" autocomplete="off" spellcheck="false">
-    <button class="btn ghost" onclick="saveFeedBase()">Сохранить адрес</button>
+    <button class="btn ghost" onclick="saveFeedBase()">Сохранить адрес</button>` : ``}
 
     <div class="secline">Способ 2 · Google Calendar напрямую</div>
     <div class="tip">Вход в Google <b>один раз</b>. Дальше события появляются сразу
@@ -8165,14 +8674,15 @@ function openCalSync() {
     <div class="synccard ${g.on && gtokAlive() ? 'on' : 'off'}">
       <div class="sync-t">${g.on && gtokAlive() ? '✓ Google подключён' : g.on ? 'Нужен повторный вход' : 'Google не подключён'}</div>
       <div class="sync-d">${g.on ? (g.email ? esc(g.email) + ' · ' : '') + 'отправлено ' + syncAgo(g.last)
-        : 'Подключи, чтобы задачи улетали в календарь автоматически.'}</div>
+        : (CAL_CFG.googleClientId ? 'Подключи, чтобы задачи улетали в календарь автоматически.' : 'Разработчик ещё настраивает эту функцию.')}</div>
       ${g.err ? `<div class="sync-err">${esc(g.err)}</div>` : ''}
     </div>
 
-    <label>Google Client ID</label>
+    ${!CAL_CFG.googleClientId ? `
+    <label>Google Client ID <span style="color:var(--tx2);font-weight:400">(для разработчика)</span></label>
     <input type="text" id="sy-cid" value="${esc(g.clientId || '')}"
       placeholder="xxxxx.apps.googleusercontent.com" autocomplete="off" spellcheck="false">
-    <button class="btn ghost" onclick="saveGcalId()">Сохранить Client ID</button>
+    <button class="btn ghost" onclick="saveGcalId()">Сохранить Client ID</button>` : ``}
 
     ${g.on && gtokAlive() ? `
       <div class="row2">
@@ -8360,6 +8870,7 @@ function quickAdd(fromVoice) {
   if (!inp) return;
   const raw = inp.value.trim();
   if (!raw) return;
+  if (!canAddTask()) return;
   const p = parseSpoken(raw);
   if (qaCat && S.cats[qaCat]) p.cat = qaCat;
   const t = mkTask({ title:p.title, cat:p.cat, mins:p.mins, val:p.val,
@@ -8456,6 +8967,7 @@ function finishVoice(text) {
     <button class="btn ghost" id="v-edit">${needForm?'Проверить детали':'Открыть форму'}</button>
     <button class="btn ghost" id="v-retry">🎤 Сказать заново</button>`);
   const add = () => {
+    if (!canAddTask()) return;
     const t = mkTask({ title:p.title, cat:p.cat, mins:p.mins, val:p.val, pts,
       repeat:p.repeat, wdays:p.wdays, date:p.date||null, time:p.time, due:p.due });
     S.tasks.push(t); S.stats.voice++; S.stats.quick++;
@@ -9622,6 +10134,7 @@ function renderForm() {
       due:form.due||'', goalId:form.goalId, pts:calcPts(),
       subs:form.subs.filter(s=>s.title.trim()), desc:form.desc, links:form.links };
     if (form.id) Object.assign(S.tasks.find(x=>x.id===form.id), data);
+    else if (!canAddTask()) return;
     else { S.tasks.push(mkTask(data)); if (form.fromVoice) { S.stats.voice++; S.stats.quick++; } }
     DB.save(); checkAchievements(); closeSheet();
     if (data.date) calSel=data.date;
@@ -9835,7 +10348,19 @@ function viewToday() {
   const done = S.tasks.filter(t=>t.done&&t.doneOn===d&&t.date!==d);
   const nowMin = new Date().getHours()*60+new Date().getMinutes();
 
+  const needOnb = !S.onboarded || (S.welVer||0) < WELCOME_VER;
+  const onbCard = needOnb ? `
+    <div class="onbnag" onclick="openWelcome()">
+      <div class="onbnag-ic">👋</div>
+      <div class="onbnag-t">
+        <b>Знакомство с ПОЛЬЗОЙ</b>
+        <span>2 минуты · разрешения и первая задача</span>
+      </div>
+      <div class="onbnag-a">Начать →</div>
+    </div>` : '';
+
   return `
+  ${onbCard}
   <div class="tophead">
     <div>
       <div class="headlogo">${logoLockup()}</div>
@@ -10529,12 +11054,1766 @@ function bootDevice() {
 
 </script>
 <script>
+/* ==== cloud.js ==== */
+/* ============================================================
+   ПОЛЬЗА — НАДЁЖНАЯ ПАМЯТЬ
+   1. localStorage      — мгновенно, основной кэш
+   2. резервная копия   — второй ключ, спасает от битого JSON
+   3. Telegram CloudStorage — облако Telegram, живёт вечно,
+      синхронизируется между iPhone / iPad / Mac / Android / Web
+   ============================================================ */
+
+const CLOUD_PREFIX = 'plz';           /* plz_meta, plz_0, plz_1, ... */
+const CLOUD_CHUNK  = 3500;            /* лимит значения ~4096 байт  */
+const CLOUD_MAXKEY = 900;             /* лимит ключей 1024          */
+const BACKUP_KEY   = 'polza10.bak';
+const CLOUD_META   = CLOUD_PREFIX + '_meta';
+
+let cloudReady = false;
+let cloudBusy = false;
+let cloudTimer = null;
+let cloudLastPush = 0;
+
+function tgCloud() {
+  try {
+    const c = window.Telegram && Telegram.WebApp && Telegram.WebApp.CloudStorage;
+    if (c && typeof c.setItem === 'function') return c;
+  } catch (e) {}
+  return null;
+}
+
+function cloudAvailable() { return !!tgCloud(); }
+
+/* ---------- промис-обёртки над колбэчным API ---------- */
+function cGet(key) {
+  return new Promise(res => {
+    const c = tgCloud(); if (!c) return res(null);
+    try { c.getItem(key, (err, val) => res(err ? null : val)); }
+    catch (e) { res(null); }
+  });
+}
+function cSet(key, val) {
+  return new Promise(res => {
+    const c = tgCloud(); if (!c) return res(false);
+    try { c.setItem(key, val, (err, ok) => res(!err && ok !== false)); }
+    catch (e) { res(false); }
+  });
+}
+function cDel(keys) {
+  return new Promise(res => {
+    const c = tgCloud(); if (!c || !keys.length) return res(false);
+    try { c.removeItems(keys, () => res(true)); }
+    catch (e) { res(false); }
+  });
+}
+
+/* ---------- отметка времени изменения ---------- */
+function stampState() {
+  S._ts = Date.now();
+  S._rev = (S._rev || 0) + 1;
+  S._dev = S._dev || (Math.random().toString(36).slice(2, 8));
+}
+
+/* ============================================================
+   ЗАПИСЬ В ОБЛАКО
+   ============================================================ */
+async function cloudPush(force) {
+  if (!cloudAvailable() || cloudBusy) return false;
+  if (!force && Date.now() - cloudLastPush < 4000) return false;
+  cloudBusy = true;
+  try {
+    const text = JSON.stringify(S);
+    const parts = [];
+    for (let i = 0; i < text.length; i += CLOUD_CHUNK) parts.push(text.slice(i, i + CLOUD_CHUNK));
+    if (parts.length > CLOUD_MAXKEY) { cloudBusy = false; return false; }
+
+    /* сначала куски, потом мета — если запись оборвётся, старая мета укажет на старые куски */
+    for (let i = 0; i < parts.length; i++) {
+      const ok = await cSet(CLOUD_PREFIX + '_' + i, parts[i]);
+      if (!ok) { cloudBusy = false; return false; }
+    }
+    const meta = JSON.stringify({ n: parts.length, ts: S._ts || Date.now(), rev: S._rev || 0, v: 1 });
+    const ok = await cSet(CLOUD_META, meta);
+
+    /* подчистить хвост от прошлой, более длинной версии */
+    const old = Number(S._cloudN || 0);
+    if (ok && old > parts.length) {
+      const junk = [];
+      for (let i = parts.length; i < old && junk.length < 50; i++) junk.push(CLOUD_PREFIX + '_' + i);
+      cDel(junk);
+    }
+    S._cloudN = parts.length;
+    cloudLastPush = Date.now();
+    cloudBusy = false;
+    return ok;
+  } catch (e) { cloudBusy = false; return false; }
+}
+
+/* ============================================================
+   ЧТЕНИЕ ИЗ ОБЛАКА
+   ============================================================ */
+async function cloudPull() {
+  if (!cloudAvailable()) return null;
+  const metaRaw = await cGet(CLOUD_META);
+  if (!metaRaw) return null;
+  let meta; try { meta = JSON.parse(metaRaw); } catch (e) { return null; }
+  if (!meta || !meta.n) return null;
+
+  let text = '';
+  for (let i = 0; i < meta.n; i++) {
+    const part = await cGet(CLOUD_PREFIX + '_' + i);
+    if (part == null) return null;         /* дырка в данных — не рискуем */
+    text += part;
+  }
+  try { return JSON.parse(text); } catch (e) { return null; }
+}
+
+/* ============================================================
+   СТАРТОВАЯ СИНХРОНИЗАЦИЯ
+   Возвращает промис: приложение ждёт ответа облака,
+   и только потом решает, показывать ли знакомство.
+   ============================================================ */
+async function cloudBoot() {
+  if (!cloudAvailable()) { cloudReady = true; return 'no-cloud'; }
+  try {
+    const remote = await cloudPull();
+    cloudReady = true;
+    if (!remote) { cloudPush(true); return 'empty'; }
+
+    const localTs  = Number(S._ts || 0);
+    const remoteTs = Number(remote._ts || 0);
+    const localFilled  = (S.tasks || []).length + (S.goals || []).length + Object.keys(S.days || {}).length;
+    const remoteFilled = (remote.tasks || []).length + (remote.goals || []).length + Object.keys(remote.days || {}).length;
+
+    /* знакомство идёт прямо сейчас — ничего не подменяем под рукой у человека.
+       Данные из облака никуда не денутся: применим их сразу после закрытия экрана. */
+    if (typeof onbLocked === 'function' && onbLocked()) {
+      window._cloudPendingPull = remote;
+      return 'onboarding-busy';
+    }
+
+    /* облако свежее — забираем. Пустое локальное состояние всегда уступает облаку */
+    if (remoteTs > localTs || (localFilled === 0 && remoteFilled > 0)) {
+      const wasOnb = { o: S.onboarded, w: S.welVer, t: S.tourDone };
+      S = remote;
+      /* если человек уже прошёл знакомство на этом телефоне —
+         старое состояние из облака не должно его возвращать */
+      if (wasOnb.o) { S.onboarded = true; S.welVer = Math.max(S.welVer||0, wasOnb.w||0); }
+      if (wasOnb.t) S.tourDone = true;
+      try { migrateAfterCloud(); } catch (e) {}
+      try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {}
+      try { localStorage.setItem(BACKUP_KEY, JSON.stringify(S)); } catch (e) {}
+      try { render(); } catch (e) {}
+      try { if ((S.tasks || []).length) toast('☁️ Данные восстановлены из облака'); } catch (e) {}
+      return 'pulled';
+    } else if (localTs > remoteTs) {
+      cloudPush(true);
+    }
+    return 'local-newer';
+  } catch (e) { cloudReady = true; return 'error'; }
+}
+
+/* ============================================================
+   ВОССТАНОВЛЕНИЕ ФОРМЫ СОСТОЯНИЯ
+   Данные из облака могли быть записаны более старой версией
+   приложения — в них нет новых служебных полей. Без этой
+   проверки первое же обращение к ним обрывает запуск.
+   ============================================================ */
+function ensureShape() {
+  if (!S || typeof S !== 'object') S = DB.load();
+
+  /* списки и словари */
+  if (!Array.isArray(S.tasks))    S.tasks = [];
+  if (!Array.isArray(S.goals))    S.goals = [];
+  if (!Array.isArray(S.hall))     S.hall = [];
+  if (!Array.isArray(S.achieved)) S.achieved = [];
+  if (!Array.isArray(S.restDays)) S.restDays = [];
+  if (!S.days)     S.days = {};
+  if (!S.notes)    S.notes = {};
+  if (!S.energy)   S.energy = {};
+  if (!S.achDates) S.achDates = {};
+
+  /* настройки */
+  if (typeof S.goal !== 'number') S.goal = 100;
+  if (!S.hours) S.hours = { from:9, to:19 };
+  if (!S.cats || !Object.keys(S.cats).length) {
+    S.cats = { dom:{name:'Дом',color:'#5b8cff'}, rab:{name:'Работа',color:'#a78bfa'},
+               zdo:{name:'Здоровье',color:'#3ddc97'}, lyu:{name:'Люди',color:'#ffb648'} };
+  }
+  if (!S.perm)  S.perm  = { notif:'default', mic:'default', cal:'default', morning:true, evening:true };
+  if (!S.stats) S.stats = {};
+  ['voice','timerRuns','quick','earlyBird','nightOwl','aiHelp','planRuns']
+    .forEach(k => { if (typeof S.stats[k] !== 'number') S.stats[k] = 0; });
+
+  /* напоминания */
+  if (!S.notify) S.notify = { on:false, morning:'09:00', evening:'21:00', lead:10, fired:{} };
+  if (!S.notify.fired) S.notify.fired = {};
+
+  /* помощник */
+  if (!S.ai) S.ai = { on:false, provider:'groq', key:'', model:'' };
+
+  /* синхронизация с календарём — из-за отсутствия этого блока падал запуск */
+  if (!S.sync) S.sync = {};
+  if (!S.sync.feed) S.sync.feed = { base:'', token:'', on:false, last:0, err:'' };
+  if (!S.sync.gcal) S.sync.gcal = { on:false, token:'', refresh:'', exp:0, calId:'', last:0, err:'', map:{} };
+  if (!S.sync.gcal.map) S.sync.gcal.map = {};
+
+  /* задачи: добить недостающие поля */
+  S.tasks.forEach(t => {
+    if (t.desc === undefined) t.desc = '';
+    if (!Array.isArray(t.links)) t.links = [];
+    if (!Array.isArray(t.subs))  t.subs = [];
+    if (!Array.isArray(t.chat))  t.chat = [];
+    if (!Array.isArray(t.wdays)) t.wdays = [];
+    if (!t.created) t.created = logicalDate();
+    if (t.snooze === undefined) t.snooze = null;
+    if (t.due === undefined) t.due = '';
+    if (t.goalId === undefined) t.goalId = null;
+    if (typeof t.spent !== 'number') t.spent = 0;
+    if (t.inbox === undefined) t.inbox = false;
+    if (t.planned === undefined) t.planned = '';
+    if (t.cat && !S.cats[t.cat]) t.cat = null;
+  });
+
+  /* подписка и рефералы */
+  if (typeof plusInitState === 'function') plusInitState();
+  if (typeof refInit === 'function') refInit();
+}
+
+/* ============================================================
+   ЕДИНАЯ ЧИСТКА ДЕМО-ДАННЫХ
+   Раньше чистка была в трёх местах с разными списками, и после
+   знакомства старые задачи возвращались из облака.
+   Теперь список один, чистка идёт при КАЖДОМ приходе данных,
+   а результат сразу уезжает обратно в облако — чтобы демо
+   не всплыло снова на другом устройстве.
+   ============================================================ */
+const DEMO_TITLES = [
+  'Помыть ванну','Зарядка','Позвонить клиенту','Съёмка для клиента',
+  'Записаться к стоматологу','Смонтировать ролик про ремонт','Разобрать почту',
+  'Купить продукты','Прогулка','Прочитать главу','Разобрать шкаф',
+  'Оплатить счета','Тренировка','Позвонить маме'
+];
+const DEMO_GOALS = [
+  'Вылечить зубы','Машина','Здоровье в приоритете','Ремонт','Английский'
+];
+
+function purgeDemo() {
+  let hit = false;
+  try {
+    const t0 = (S.tasks || []).length, g0 = (S.goals || []).length;
+    S.tasks = (S.tasks || []).filter(t => !DEMO_TITLES.includes(t.title));
+    S.goals = (S.goals || []).filter(g => !DEMO_GOALS.includes(g.title));
+    hit = (S.tasks.length !== t0) || (S.goals.length !== g0);
+
+    if (hit) {
+      /* осиротевшие ссылки на удалённые цели */
+      S.tasks.forEach(t => {
+        if (t.goalId && !S.goals.some(g => g.id === t.goalId)) t.goalId = null;
+      });
+      /* история демо-дней тоже лишняя */
+      S.days = {}; S.notes = {}; S.energy = {}; S.restDays = [];
+      S.hall = []; S.achieved = []; S.achDates = {};
+      S.stats = { voice:0, timerRuns:0, quick:0, earlyBird:0,
+                  nightOwl:0, aiHelp:0, planRuns:0, icsExports:0 };
+      S.demoClean = true; S.cleanV8 = true; S.cleanV9 = true;
+    }
+  } catch (e) {}
+  return hit;
+}
+
+/* после подмены S переинициализируем зависимые куски */
+function migrateAfterCloud() {
+  const hadDemo = purgeDemo();
+  ensureShape();
+  if (hadDemo) {
+    /* сохраняем локально и сразу возвращаем чистое состояние в облако,
+       иначе демо приедет обратно при следующей синхронизации */
+    try { S._ts = Date.now(); } catch (e) {}
+    try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {}
+    try { localStorage.setItem(BACKUP_KEY, JSON.stringify(S)); } catch (e) {}
+    try { setTimeout(function () { cloudPush(true); }, 300); } catch (e) {}
+  }
+}
+
+/* ============================================================
+   ПЕРЕХВАТ DB.save
+   ============================================================ */
+(function hookCloudSave() {
+  const orig = DB.save.bind(DB);
+  DB.save = function () {
+    stampState();
+    try { orig(); } catch (e) {}
+    /* резервная копия рядом — на случай битого основного ключа */
+    try { localStorage.setItem(BACKUP_KEY, JSON.stringify(S)); } catch (e) {}
+    /* облако с задержкой, чтобы не дёргать на каждый чих */
+    if (cloudAvailable()) {
+      clearTimeout(cloudTimer);
+      cloudTimer = setTimeout(() => cloudPush(false), 1500);
+    }
+  };
+})();
+
+/* ============================================================
+   ВОССТАНОВЛЕНИЕ ИЗ РЕЗЕРВНОЙ КОПИИ (если основной ключ побился)
+   ============================================================ */
+(function restoreIfEmpty() {
+  try {
+    const main = localStorage.getItem(KEY);
+    const bak  = localStorage.getItem(BACKUP_KEY);
+    if (!bak) return;
+    const emptyMain = !main || (S.tasks || []).length === 0 && (S.goals || []).length === 0;
+    if (!emptyMain) return;
+    const b = JSON.parse(bak);
+    if (b && ((b.tasks || []).length || (b.goals || []).length)) {
+      S = b;
+      localStorage.setItem(KEY, JSON.stringify(S));
+      try { migrateAfterCloud(); } catch (e) {}
+    }
+  } catch (e) {}
+})();
+
+/* сохранить перед закрытием */
+window.addEventListener('pagehide', () => { try { cloudPush(true); } catch (e) {} });
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'hidden') { try { cloudPush(true); } catch (e) {} }
+  else if (cloudReady) { /* вернулись — подтянем чужие правки */ setTimeout(cloudSoftPull, 400); }
+});
+
+/* мягкая подтяжка: только если облако реально свежее */
+async function cloudSoftPull() {
+  if (!cloudAvailable() || cloudBusy) return;
+  /* знакомство идёт прямо сейчас — не подменяем данные, отложим до конца */
+  if (typeof onbLocked === 'function' && onbLocked()) return;
+  const metaRaw = await cGet(CLOUD_META);
+  if (!metaRaw) return;
+  let meta; try { meta = JSON.parse(metaRaw); } catch (e) { return; }
+  if (!meta || Number(meta.ts || 0) <= Number(S._ts || 0)) return;
+  const remote = await cloudPull();
+  if (!remote) return;
+  /* пока ждали ответ, могло начаться знакомство — проверяем ещё раз */
+  if (typeof onbLocked === 'function' && onbLocked()) { window._cloudPendingPull = remote; return; }
+  const wasOnb = { o: S.onboarded, w: S.welVer, t: S.tourDone };
+  S = remote;
+  if (wasOnb.o) { S.onboarded = true; S.welVer = Math.max(S.welVer||0, wasOnb.w||0); }
+  if (wasOnb.t) S.tourDone = true;
+  try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {}
+  try { migrateAfterCloud(); } catch (e) {}
+  try { render(); } catch (e) {}
+}
+
+/* ---------- экран состояния памяти (в настройках) ---------- */
+function openStorageInfo() {
+  const bytes = (() => { try { return new Blob([JSON.stringify(S)]).size; } catch (e) { return 0; } })();
+  const kb = Math.max(1, Math.round(bytes / 1024));
+  const cloud = cloudAvailable();
+  sheet(`
+    <div class="sh-h"><b>💾 Память приложения</b></div>
+    <div class="synccard ${cloud ? 'on' : 'off'}">
+      <div class="sync-t">${cloud ? '✓ Облако Telegram подключено' : 'Облако недоступно'}</div>
+      <div class="sync-d">${cloud
+        ? 'Задачи, цели и достижения хранятся в облаке Telegram. Они не пропадут при очистке браузера и видны на всех твоих устройствах — телефоне, планшете и компьютере.'
+        : 'Приложение открыто вне Telegram, поэтому данные хранятся только на этом устройстве. Открой ПОЛЬЗУ через бота — и всё начнёт синхронизироваться.'}</div>
+    </div>
+    <div class="card">
+      <div class="row"><span>Задач</span><b>${(S.tasks || []).length}</b></div>
+      <div class="row"><span>Целей</span><b>${(S.goals || []).length}</b></div>
+      <div class="row"><span>Дней в истории</span><b>${Object.keys(S.days || {}).length}</b></div>
+      <div class="row"><span>Объём данных</span><b>${kb} КБ</b></div>
+      <div class="row"><span>Последнее сохранение</span><b>${S._ts ? new Date(S._ts).toLocaleString('ru-RU') : '—'}</b></div>
+    </div>
+    ${cloud ? `<button class="btn" id="cl-push">☁️ Сохранить в облако сейчас</button>
+               <button class="btn ghost" id="cl-pull">⬇️ Загрузить из облака</button>` : ''}
+    <button class="btn ghost" id="cl-export">📤 Скачать резервную копию</button>
+    <div class="tip">Резервная копия — обычный файл. Его можно отправить себе в «Избранное» и восстановить в любой момент.</div>
+  `);
+  const G = i => document.getElementById(i);
+  if (G('cl-push')) G('cl-push').onclick = async () => {
+    const ok = await cloudPush(true);
+    toast(ok ? '☁️ Сохранено в облако' : 'Не получилось — попробуй позже');
+  };
+  if (G('cl-pull')) G('cl-pull').onclick = async () => {
+    const r = await cloudPull();
+    if (!r) return toast('В облаке пока пусто');
+    S = r; localStorage.setItem(KEY, JSON.stringify(S));
+    migrateAfterCloud(); closeSheet(); render(); toast('☁️ Загружено из облака');
+  };
+  if (G('cl-export')) G('cl-export').onclick = () => {
+    try {
+      const blob = new Blob([JSON.stringify(S, null, 2)], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'polza-backup-' + new Date().toISOString().slice(0, 10) + '.json';
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+      toast('Файл сохранён');
+    } catch (e) { toast('Браузер не дал сохранить файл'); }
+  };
+}
+
+</script>
+<script>
+/* ==== billing.js ==== */
+/* ============================================================
+   ПОЛЬЗА — ПРОБНЫЙ ПЕРИОД, ПОДПИСКА, ОПЛАТА ЧЕРЕЗ ЮKASSA
+   ------------------------------------------------------------
+   ЧТО МЕНЯТЬ ВЛАДЕЛЬЦУ — только блок PAY ниже.
+   Сумма НИГДЕ в коде не зашита: цену ты ставишь в ЮKassa,
+   приложение просто открывает твою платёжную ссылку.
+   ============================================================ */
+
+const PAY = {
+  /* 1. Платёжная ссылка ЮKassa (Личный кабинет → Платёжные ссылки).
+        Сумму и название задаёшь там же — код трогать не нужно. */
+  link: '',
+
+  /* 2. Необязательно: адрес бэкенда на Vercel для автопроверки платежа.
+        Если пусто — работает режим «оплатил → активирую по коду». */
+  api: '',
+
+  /* 3. Секрет для кодов активации. ОБЯЗАТЕЛЬНО поменяй на свой набор букв. */
+  salt: 'polza-change-me-2026',
+
+  /* 4. Сколько дней даёт одна оплата и сколько длится знакомство. */
+  periodDays: 30,
+  trialDays: 3,
+
+  /* 5. Что писать на кнопке. Точную сумму пользователь увидит на странице ЮKassa. */
+  priceLabel: 'подписка на месяц'
+};
+
+/* ============================================================
+   СОСТОЯНИЕ
+   ============================================================ */
+function plusInitState() {
+  if (!S.plus) {
+    S.plus = {
+      firstRun: Date.now(),      /* начало знакомства */
+      paidUntil: 0,              /* оплаченная подписка до (мс) */
+      bonusUntil: 0,             /* бонусы за друзей до (мс) */
+      payments: [],              /* история активаций */
+      nagAt: 0,                  /* когда последний раз показывали баннер */
+      nagCount: 0,
+      uid: ''
+    };
+  }
+  if (!S.plus.uid) S.plus.uid = plusMakeUid();
+  if (!S.plus.firstRun) S.plus.firstRun = Date.now();
+  if (!Array.isArray(S.plus.payments)) S.plus.payments = [];
+}
+
+function plusMakeUid() {
+  /* стабильный ID: из Telegram, иначе случайный */
+  try {
+    const u = window.Telegram && Telegram.WebApp && Telegram.WebApp.initDataUnsafe
+            && Telegram.WebApp.initDataUnsafe.user;
+    if (u && u.id) return 'tg' + u.id;
+  } catch (e) {}
+  return 'w' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+}
+
+plusInitState();
+
+/* ============================================================
+   ДОСТУП
+   ============================================================ */
+const DAY_MS = 24 * 60 * 60 * 1000;
+
+function trialEndsAt() { return (S.plus.firstRun || Date.now()) + PAY.trialDays * DAY_MS; }
+function trialActive() { return Date.now() < trialEndsAt(); }
+function trialDaysLeft() { return Math.max(0, Math.ceil((trialEndsAt() - Date.now()) / DAY_MS)); }
+
+function premiumUntil() { return Math.max(S.plus.paidUntil || 0, S.plus.bonusUntil || 0); }
+function premiumActive() { return premiumUntil() > Date.now(); }
+function premiumDaysLeft() { return Math.max(0, Math.ceil((premiumUntil() - Date.now()) / DAY_MS)); }
+
+/* полный доступ = знакомство ИЛИ оплачено ИЛИ бонус за друзей */
+function hasFullAccess() { return trialActive() || premiumActive(); }
+
+/* что именно ограничено после знакомства:
+   — нельзя создавать НОВЫЕ задачи
+   Всё остальное живёт: старые задачи выполняются, повторяющиеся приходят,
+   цели, статистика, календарь, зал славы — без изменений. */
+function canAddTask(silent) {
+  if (hasFullAccess()) return true;
+  if (!silent) openPaywall();
+  return false;
+}
+
+/* ============================================================
+   ПРОДЛЕНИЕ
+   ============================================================ */
+function grantPeriod(days, reason, meta) {
+  const base = Math.max(Date.now(), S.plus.paidUntil || 0);
+  S.plus.paidUntil = base + (days || PAY.periodDays) * DAY_MS;
+  S.plus.payments.push({ at: Date.now(), days: days || PAY.periodDays, reason: reason || 'pay', meta: meta || '' });
+  DB.save();
+  try { cloudPush(true); } catch (e) {}
+  /* сообщаем реферальной системе: это первая оплата или нет */
+  try { refOnMyPayment(); } catch (e) {}
+}
+
+function grantBonusMonth(days) {
+  const base = Math.max(Date.now(), S.plus.bonusUntil || 0);
+  S.plus.bonusUntil = base + (days || PAY.periodDays) * DAY_MS;
+  DB.save();
+  try { cloudPush(true); } catch (e) {}
+}
+
+/* ============================================================
+   КОД АКТИВАЦИИ (работает без бэкенда)
+   Владелец видит ID покупателя, генерирует код в скрытом
+   генераторе и отправляет его человеку.
+   ============================================================ */
+function plusHash(str) {
+  let h1 = 0x811c9dc5, h2 = 0x01000193;
+  for (let i = 0; i < str.length; i++) {
+    const c = str.charCodeAt(i);
+    h1 = (h1 ^ c) * 16777619 >>> 0;
+    h2 = (h2 + c * (i + 7)) * 2654435761 >>> 0;
+  }
+  return (h1.toString(36) + h2.toString(36)).toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 8);
+}
+function codeFor(uid, months) {
+  const m = Math.max(1, Math.min(12, months || 1));
+  const raw = plusHash(String(uid) + '|' + PAY.salt + '|' + m);
+  return raw.slice(0, 4) + '-' + raw.slice(4, 8) + '-' + m;
+}
+function applyCode(input) {
+  const code = String(input || '').trim().toUpperCase().replace(/\s+/g, '');
+  for (let m = 1; m <= 12; m++) {
+    if (code === codeFor(S.plus.uid, m)) {
+      if ((S.plus.payments || []).some(p => p.meta === code)) { toast('Этот код уже активирован'); return false; }
+      grantPeriod(PAY.periodDays * m, 'code', code);
+      return true;
+    }
+  }
+  return false;
+}
+
+/* ============================================================
+   ОПЛАТА
+   ============================================================ */
+function openExternalLink(url) {
+  try {
+    if (window.Telegram && Telegram.WebApp && Telegram.WebApp.openLink) {
+      Telegram.WebApp.openLink(url, { try_instant_view: false });
+      return;
+    }
+  } catch (e) {}
+  window.open(url, '_blank');
+}
+
+async function payStart() {
+  /* Режим 1 — бэкенд: платёж создаётся с меткой пользователя, статус проверяем сами */
+  if (PAY.api) {
+    try {
+      toast('Открываю оплату…');
+      const r = await fetch(PAY.api.replace(/\/+$/, '') + '/api/create-payment', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ uid: S.plus.uid, ref: (S.ref && S.ref.invitedBy) || '' })
+      });
+      const d = await r.json();
+      if (!d.url) throw new Error('no url');
+      S.plus.pendingPayment = d.id || '';
+      DB.save();
+      openExternalLink(d.url);
+      payWatch(d.id);
+      return;
+    } catch (e) {
+      toast('Сервер оплаты не ответил, открываю ссылку');
+    }
+  }
+  /* Режим 2 — платёжная ссылка ЮKassa: сумма задана в личном кабинете */
+  if (PAY.link) {
+    openExternalLink(PAY.link);
+    setTimeout(openAfterPay, 1200);
+    return;
+  }
+  toast('Оплата ещё не подключена');
+}
+
+/* автопроверка статуса (только с бэкендом) */
+async function payWatch(id) {
+  if (!id || !PAY.api) return;
+  let tries = 0;
+  const t = setInterval(async () => {
+    tries++;
+    if (tries > 90) return clearInterval(t);
+    try {
+      const r = await fetch(PAY.api.replace(/\/+$/, '') + '/api/check-payment?id=' + encodeURIComponent(id));
+      const d = await r.json();
+      if (d.status === 'succeeded') {
+        clearInterval(t);
+        S.plus.pendingPayment = '';
+        grantPeriod(PAY.periodDays, 'yookassa', id);
+        try { closeSheet(); } catch (e) {}
+        render();
+        toast('🎉 Подписка активна! Спасибо');
+      }
+      if (d.status === 'canceled') clearInterval(t);
+    } catch (e) {}
+  }, 3000);
+}
+
+/* экран после возврата с оплаты — без бэкенда */
+function openAfterPay() {
+  sheet(`
+    <div class="sh-h"><b>Спасибо за поддержку</b></div>
+    <div class="tip">Как только платёж пройдёт, подписка включится. Обычно это занимает пару минут.</div>
+    <div class="card" style="margin-top:10px">
+      <div class="row"><span>Твой номер</span><b style="font-family:ui-monospace,monospace">${esc(S.plus.uid)}</b></div>
+    </div>
+    <button class="btn ghost" id="ap-copy">📋 Скопировать номер</button>
+    <div class="secline">Код активации</div>
+    <div class="tip">Если подписка не включилась сама — пришли номер выше в поддержку, тебе придёт короткий код.</div>
+    <input type="text" id="ap-code" placeholder="XXXX-XXXX-1" style="width:100%;text-transform:uppercase">
+    <button class="btn" id="ap-apply">Активировать</button>
+    ${PAY.api ? `<button class="btn ghost" id="ap-check">Проверить оплату ещё раз</button>` : ''}
+  `);
+  const G = i => document.getElementById(i);
+  G('ap-copy').onclick = () => {
+    try { navigator.clipboard.writeText(S.plus.uid); toast('Номер скопирован'); } catch (e) {}
+  };
+  G('ap-apply').onclick = () => {
+    const ok = applyCode(G('ap-code').value);
+    if (ok) { closeSheet(); render(); toast('🎉 Подписка активна! Спасибо'); }
+    else toast('Код не подошёл — проверь ещё раз');
+  };
+  if (G('ap-check')) G('ap-check').onclick = () => { payWatch(S.plus.pendingPayment); toast('Проверяю…'); };
+}
+
+/* ============================================================
+   ПАВЕР-ЭКРАН: почему просят денег
+   ============================================================ */
+function openPaywall(soft) {
+  const left = trialDaysLeft();
+  const active = premiumActive();
+  const total = (S.tasks || []).length;
+  const rep = (S.tasks || []).filter(t => t.repeat && t.repeat !== 'none').length;
+
+  sheet(`
+    <div class="sh-h"><b>${active ? '⭐ Подписка активна' : soft ? '⭐ Поддержать ПОЛЬЗУ' : 'Знакомство закончилось'}</b></div>
+
+    ${active ? `
+      <div class="synccard on">
+        <div class="sync-t">✓ Всё открыто</div>
+        <div class="sync-d">Осталось ${premiumDaysLeft()} дн. Действует до ${new Date(premiumUntil()).toLocaleDateString('ru-RU')}.</div>
+      </div>` : trialActive() ? `
+      <div class="synccard on">
+        <div class="sync-t">Идёт знакомство</div>
+        <div class="sync-d">Полный доступ ещё ${left} ${plural(left, 'день', 'дня', 'дней')}. Ничего платить прямо сейчас не нужно.</div>
+      </div>` : `
+      <div class="synccard off">
+        <div class="sync-t">Три дня знакомства прошли</div>
+        <div class="sync-d">Ты всё это время пользовался приложением бесплатно. Дальше — небольшое вознаграждение за работу над ним.</div>
+      </div>`}
+
+    <div class="secline">Что остаётся бесплатно навсегда</div>
+    <div class="card">
+      <div class="row"><span>Твои задачи (${total})</span><b style="color:#3ddc97">на месте</b></div>
+      <div class="row"><span>Выполнять и получать баллы</span><b style="color:#3ddc97">да</b></div>
+      <div class="row"><span>Повторяющиеся задачи (${rep})</span><b style="color:#3ddc97">приходят</b></div>
+      <div class="row"><span>Цели, статистика, зал славы</span><b style="color:#3ddc97">да</b></div>
+      <div class="row"><span>Календарь и напоминания</span><b style="color:#3ddc97">да</b></div>
+    </div>
+
+    <div class="secline">Что даёт подписка</div>
+    <div class="card">
+      <div class="row"><span>Создавать новые задачи</span><b style="color:#c5f82a">без ограничений</b></div>
+      <div class="row"><span>Планировщик недели</span><b style="color:#c5f82a">да</b></div>
+      <div class="row"><span>Голосовой ввод новых дел</span><b style="color:#c5f82a">да</b></div>
+      <div class="row"><span>Развитие приложения</span><b style="color:#c5f82a">твоими силами</b></div>
+    </div>
+
+    ${!active ? `<button class="btn" id="pw-buy">💳 Оформить ${esc(PAY.priceLabel)}</button>` : ''}
+    <button class="btn ghost" id="pw-ref">🎁 Получить месяц бесплатно за друга</button>
+    ${!active ? `<button class="btn ghost" id="pw-later">Может быть позже</button>` : ''}
+    <div class="tip">Сумму видно на странице оплаты. Оплата проходит через ЮKassa — приложение не видит данные карты.</div>
+  `);
+
+  const G = i => document.getElementById(i);
+  if (G('pw-buy'))   G('pw-buy').onclick = payStart;
+  if (G('pw-ref'))   G('pw-ref').onclick = () => { closeSheet(); setTimeout(openReferral, 260); };
+  if (G('pw-later')) G('pw-later').onclick = () => {
+    S.plus.nagAt = Date.now(); S.plus.nagCount = (S.plus.nagCount || 0) + 1; DB.save();
+    closeSheet();
+    toast('Хорошо. Старые задачи и повторы работают как обычно');
+  };
+}
+
+/* ============================================================
+   ЭКРАН ПОДПИСКИ (в профиле)
+   ============================================================ */
+function openPremium() {
+  const active = premiumActive();
+  const paidLeft = Math.max(0, Math.ceil(((S.plus.paidUntil || 0) - Date.now()) / DAY_MS));
+  const bonusLeft = Math.max(0, Math.ceil(((S.plus.bonusUntil || 0) - Date.now()) / DAY_MS));
+
+  sheet(`
+    <div class="sh-h"><b>⭐ Подписка</b></div>
+    <div class="synccard ${active ? 'on' : trialActive() ? 'on' : 'off'}">
+      <div class="sync-t">${active ? '✓ Активна' : trialActive() ? 'Знакомство' : 'Не активна'}</div>
+      <div class="sync-d">${active
+        ? 'Открыто до ' + new Date(premiumUntil()).toLocaleDateString('ru-RU') + ' (' + premiumDaysLeft() + ' дн.)'
+        : trialActive()
+        ? 'Полный доступ ещё ' + trialDaysLeft() + ' ' + plural(trialDaysLeft(), 'день', 'дня', 'дней')
+        : 'Новые задачи создавать нельзя. Всё остальное работает.'}</div>
+    </div>
+
+    <div class="card">
+      <div class="row"><span>Оплачено</span><b>${paidLeft ? paidLeft + ' дн.' : '—'}</b></div>
+      <div class="row"><span>Бонус за друзей</span><b>${bonusLeft ? bonusLeft + ' дн.' : '—'}</b></div>
+      <div class="row"><span>Твой номер</span><b style="font-family:ui-monospace,monospace;font-size:12px">${esc(S.plus.uid)}</b></div>
+    </div>
+
+    <button class="btn" id="pr-buy">💳 ${active ? 'Продлить' : 'Оформить'} — ${esc(PAY.priceLabel)}</button>
+    <button class="btn ghost" id="pr-ref">🎁 Пригласить друга — месяц бесплатно</button>
+    <button class="btn ghost" id="pr-code">🔑 У меня есть код активации</button>
+    <div class="tip" id="pr-ver">Стоимость установлена в ЮKassa. Приложение не хранит данные карты.</div>
+  `);
+
+  const G = i => document.getElementById(i);
+  G('pr-buy').onclick = payStart;
+  G('pr-ref').onclick = () => { closeSheet(); setTimeout(openReferral, 260); };
+  G('pr-code').onclick = openAfterPay;
+
+  /* скрытый генератор кодов для владельца: 7 нажатий по подписи */
+  let taps = 0;
+  G('pr-ver').onclick = () => { if (++taps >= 7) openCodeMaker(); };
+}
+
+/* генератор кодов — только для владельца приложения */
+function openCodeMaker() {
+  sheet(`
+    <div class="sh-h"><b>🔧 Генератор кодов</b></div>
+    <div class="tip">Служебный экран. Введи номер покупателя и число месяцев — получишь код активации.</div>
+    <input type="text" id="cm-uid" placeholder="Номер покупателя" style="width:100%">
+    <input type="number" id="cm-m" value="1" min="1" max="12" placeholder="Месяцев" style="width:100%;margin-top:8px">
+    <button class="btn" id="cm-go">Сгенерировать</button>
+    <div id="cm-out" class="sync-url" style="display:none"></div>
+  `);
+  const G = i => document.getElementById(i);
+  G('cm-go').onclick = () => {
+    const uid = G('cm-uid').value.trim();
+    const m = Math.max(1, Math.min(12, +G('cm-m').value || 1));
+    if (!uid) return toast('Введи номер');
+    const c = codeFor(uid, m);
+    const out = G('cm-out');
+    out.style.display = 'block';
+    out.textContent = c;
+    try { navigator.clipboard.writeText(c); toast('Код скопирован'); } catch (e) {}
+  };
+}
+
+/* ============================================================
+   БАННЕР ПОСЛЕ ЗНАКОМСТВА
+   Появляется мягко: не чаще раза в сутки, всегда закрывается.
+   ============================================================ */
+function plusMaybeNag() {
+  if (hasFullAccess()) return;
+  if (!S.onboarded) return;
+  const since = Date.now() - (S.plus.nagAt || 0);
+  if (since < DAY_MS) return;
+  if ((S.plus.nagCount || 0) > 12) return;   /* не давим бесконечно */
+  S.plus.nagAt = Date.now(); DB.save();
+  setTimeout(() => openPaywall(false), 900);
+}
+
+/* полоска в шапке, пока идёт знакомство */
+function plusRibbon() {
+  if (premiumActive()) return '';
+  if (trialActive()) {
+    const d = trialDaysLeft();
+    return `<button class="plusbar" onclick="openPremium()">
+      <span>🎁 Знакомство: полный доступ ещё ${d} ${plural(d, 'день', 'дня', 'дней')}</span>
+      <span class="plusbar-a">подробнее</span></button>`;
+  }
+  return `<button class="plusbar off" onclick="openPaywall(true)">
+    <span>⭐ Новые задачи — по подписке</span>
+    <span class="plusbar-a">открыть</span></button>`;
+}
+
+</script>
+<script>
+/* ==== referral.js ==== */
+/* ============================================================
+   ПОЛЬЗА — РЕФЕРАЛЬНАЯ СИСТЕМА
+   Пригласил друга → друг оплатил → тебе месяц бесплатно.
+
+   ГЛАВНОЕ ПРАВИЛО:
+   бонус даётся ТОЛЬКО ЗА ПЕРВУЮ ОПЛАТУ каждого друга.
+   Второй, третий и все последующие платежи того же друга
+   бонусов НЕ дают. Проверка двойная:
+     1) у друга стоит флаг firstPaid — благодарность выпускается один раз;
+     2) у пригласившего каждый друг записан в rewarded[] по своему
+        номеру — повторный код от того же друга отклоняется.
+   ============================================================ */
+
+function refInit() {
+  if (!S.ref) {
+    S.ref = {
+      invitedBy: '',      /* код того, кто меня пригласил */
+      firstPaid: false,   /* моя первая оплата уже засчитана другу */
+      thanksCode: '',     /* код благодарности, который я отдал другу */
+      rewarded: [],       /* [{ friend:'ab12cd', at: 1700000000000 }] — кому уже начислен бонус */
+      invited: 0          /* сколько раз копировал ссылку — для мотивации */
+    };
+  }
+  if (!Array.isArray(S.ref.rewarded)) S.ref.rewarded = [];
+}
+refInit();
+
+/* ---------- мой код ---------- */
+function refMyCode() {
+  return plusHash(S.plus.uid + '|ref').slice(0, 6).toLowerCase();
+}
+
+/* ---------- ссылка-приглашение ---------- */
+function refLink() {
+  const c = refMyCode();
+  const bot = 'https://t.me/polzayou_bot/polza';
+  try {
+    if (window.Telegram && Telegram.WebApp && Telegram.WebApp.initData) {
+      return bot + '?startapp=ref_' + c;
+    }
+  } catch (e) {}
+  return bot + '?startapp=ref_' + c;
+}
+
+/* ---------- поймать приглашение при первом запуске ---------- */
+function refCapture() {
+  let code = '';
+  try {
+    const sp = window.Telegram && Telegram.WebApp && Telegram.WebApp.initDataUnsafe
+             && Telegram.WebApp.initDataUnsafe.start_param;
+    if (sp && /^ref_/.test(sp)) code = sp.slice(4);
+  } catch (e) {}
+  if (!code) {
+    try {
+      const u = new URLSearchParams(location.search);
+      code = u.get('ref') || (u.get('tgWebAppStartParam') || '').replace(/^ref_/, '') || '';
+    } catch (e) {}
+  }
+  code = String(code || '').toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, 8);
+  if (!code) return;
+  if (code === refMyCode()) return;          /* сам себя не приглашает */
+  if (S.ref.invitedBy) return;               /* приглашение фиксируется один раз */
+  if (S.ref.firstPaid) return;               /* поздно, оплата уже была */
+  S.ref.invitedBy = code;
+  DB.save();
+}
+
+/* ============================================================
+   КОД БЛАГОДАРНОСТИ
+   Формат:  XXXXXX-YYYY
+     XXXXXX — короткий номер друга (кто оплатил)
+     YYYY   — подпись, завязанная на код пригласившего и секрет
+   ============================================================ */
+function refShortMe() { return plusHash(S.plus.uid + '|who').slice(0, 6).toUpperCase(); }
+
+function refMakeThanks(inviterCode, friendShort) {
+  const sign = plusHash(inviterCode + '|' + friendShort + '|' + PAY.salt + '|thanks').slice(0, 4);
+  return friendShort + '-' + sign;
+}
+
+/* вызывается из billing.js после успешной оплаты */
+function refOnMyPayment() {
+  if (!S.ref.invitedBy) return;      /* никто не приглашал */
+  if (S.ref.firstPaid) return;       /* ← ВТОРАЯ И ПОСЛЕДУЮЩИЕ ОПЛАТЫ БОНУС НЕ ДАЮТ */
+  S.ref.firstPaid = true;
+  S.ref.thanksCode = refMakeThanks(S.ref.invitedBy, refShortMe());
+  DB.save();
+  setTimeout(openThanksCode, 1200);
+}
+
+/* экран: отдай другу его награду */
+function openThanksCode() {
+  if (!S.ref.thanksCode) return;
+  sheet(`
+    <div class="sh-h"><b>🎁 Подарок для того, кто позвал</b></div>
+    <div class="tip">Тебя пригласил друг — и за твою первую оплату ему полагается месяц бесплатно.
+      Отправь ему этот код, он введёт его у себя.</div>
+    <div class="sync-url" style="font-size:18px;text-align:center;letter-spacing:2px;color:#c5f82a">${esc(S.ref.thanksCode)}</div>
+    <button class="btn" id="tc-copy">📋 Скопировать код</button>
+    <button class="btn ghost" id="tc-send">➦ Отправить другу</button>
+    <div class="tip">Код одноразовый и работает только у того, кто тебя пригласил.</div>
+  `);
+  const G = i => document.getElementById(i);
+  G('tc-copy').onclick = () => { try { navigator.clipboard.writeText(S.ref.thanksCode); toast('Скопировано'); } catch (e) {} };
+  G('tc-send').onclick = () => {
+    const text = 'Спасибо, что позвал в ПОЛЬЗУ! Вот код на бесплатный месяц: ' + S.ref.thanksCode;
+    try {
+      if (window.Telegram && Telegram.WebApp && Telegram.WebApp.openTelegramLink) {
+        Telegram.WebApp.openTelegramLink('https://t.me/share/url?url=' + encodeURIComponent(text));
+        return;
+      }
+    } catch (e) {}
+    if (navigator.share) navigator.share({ text }); else { navigator.clipboard.writeText(text); toast('Скопировано'); }
+  };
+}
+
+/* ============================================================
+   ПРИМЕНИТЬ КОД БЛАГОДАРНОСТИ (у пригласившего)
+   ============================================================ */
+function refApplyThanks(input) {
+  const code = String(input || '').trim().toUpperCase().replace(/\s+/g, '');
+  const m = code.match(/^([A-Z0-9]{4,8})-([A-Z0-9]{4})$/);
+  if (!m) return { ok: false, why: 'Код набран неверно' };
+
+  const friend = m[1];
+  const valid = refMakeThanks(refMyCode(), friend) === code;
+  if (!valid) return { ok: false, why: 'Код не подходит — он выдан не тебе' };
+
+  /* ← ПРОВЕРКА ГЛАВНОГО ПРАВИЛА: один друг — один бонус, только за первую оплату */
+  if ((S.ref.rewarded || []).some(r => r.friend === friend)) {
+    return { ok: false, why: 'За этого друга бонус уже начислен. Месяц даётся только за его первую оплату' };
+  }
+
+  S.ref.rewarded.push({ friend, at: Date.now() });
+  grantBonusMonth(PAY.periodDays);
+  DB.save();
+  return { ok: true };
+}
+
+/* ============================================================
+   ЭКРАН «ПРИГЛАСИ ДРУГА»
+   ============================================================ */
+function openReferral() {
+  const link = refLink();
+  const rewarded = (S.ref.rewarded || []).length;
+  const bonusLeft = Math.max(0, Math.ceil(((S.plus.bonusUntil || 0) - Date.now()) / DAY_MS));
+
+  sheet(`
+    <div class="sh-h"><b>🎁 Пригласи друга</b></div>
+    <div class="tip">Друг переходит по твоей ссылке, пользуется приложением и оформляет подписку —
+      ты получаешь <b>месяц бесплатно</b>. Бонус даётся за <b>первую оплату</b> каждого друга.</div>
+
+    <div class="synccard ${bonusLeft ? 'on' : ''}">
+      <div class="sync-t">${bonusLeft ? '✓ Бонус активен' : 'Бонусов пока нет'}</div>
+      <div class="sync-d">${bonusLeft
+        ? 'Бесплатного доступа осталось ' + bonusLeft + ' дн.'
+        : 'Пригласи первого друга — и месяц будет твоим.'}</div>
+      <div class="sync-url">${esc(link)}</div>
+    </div>
+
+    <div class="row2">
+      <button class="btn" style="flex:1;margin:0" id="rf-share">➦ Отправить</button>
+      <button class="btn ghost" style="flex:1;margin:0" id="rf-copy">📋 Копировать</button>
+    </div>
+
+    <div class="card" style="margin-top:12px">
+      <div class="row"><span>Друзей оплатило</span><b style="color:#3ddc97">${rewarded}</b></div>
+      <div class="row"><span>Получено месяцев</span><b style="color:#ffb648">${rewarded}</b></div>
+    </div>
+
+    <div class="secline">Друг уже оплатил?</div>
+    <div class="tip">Он получит короткий код — введи его здесь, и месяц зачислится сразу.</div>
+    <input type="text" id="rf-code" placeholder="ABC123-XXXX" style="width:100%;text-transform:uppercase">
+    <button class="btn" id="rf-apply">Зачислить месяц</button>
+
+    ${rewarded ? `<div class="secline">Уже начислено</div>
+      ${(S.ref.rewarded || []).map(r => `<div class="row"><span style="font-family:ui-monospace,monospace">${esc(r.friend)}</span>
+        <b style="color:#3ddc97">+${PAY.periodDays} дн. · ${new Date(r.at).toLocaleDateString('ru-RU')}</b></div>`).join('')}` : ''}
+
+    <div class="tip">Повторные оплаты того же друга бонус не приносят — только первая.
+      Зато друзей можно приглашать сколько угодно.</div>
+  `);
+
+  const G = i => document.getElementById(i);
+  const text = 'Держи ПОЛЬЗУ — трекер, который считает сделанное, а не упущенное: ' + link;
+
+  G('rf-share').onclick = () => {
+    S.ref.invited = (S.ref.invited || 0) + 1; DB.save();
+    try {
+      if (window.Telegram && Telegram.WebApp && Telegram.WebApp.openTelegramLink) {
+        Telegram.WebApp.openTelegramLink('https://t.me/share/url?url=' + encodeURIComponent(link) +
+          '&text=' + encodeURIComponent('Трекер, который считает сделанное, а не упущенное'));
+        return;
+      }
+    } catch (e) {}
+    if (navigator.share) navigator.share({ title: 'ПОЛЬЗА', text, url: link });
+    else { navigator.clipboard.writeText(link); toast('Ссылка скопирована'); }
+  };
+  G('rf-copy').onclick = () => {
+    S.ref.invited = (S.ref.invited || 0) + 1; DB.save();
+    try { navigator.clipboard.writeText(link); toast('Ссылка скопирована'); } catch (e) { toast('Не вышло скопировать'); }
+  };
+  G('rf-apply').onclick = () => {
+    const r = refApplyThanks(G('rf-code').value);
+    if (r.ok) { closeSheet(); render(); toast('🎉 Месяц зачислен. Спасибо, что зовёшь друзей'); }
+    else toast(r.why);
+  };
+}
+
+</script>
+<script>
+/* ==== push.js ==== */
+/* ============================================================
+   ПОЛЬЗА — НАПОМИНАНИЯ
+   Базовые (задача со временем, срок, утренний план, вечерние итоги)
+   живут в ach.js. Здесь — то, чего не хватало:
+     • корректное включение после разрешения
+     • «поставь задачи на день», если день пустой
+     • «подведи итоги», если вечером ничего не отмечено
+     • уведомление о новом достижении
+     • напоминание о завтрашних делах со временем
+     • деликатное напоминание про подписку
+   ============================================================ */
+
+/* ---------- разрешение ---------- */
+async function pushAsk() {
+  if (!notifSupported()) {
+    toast(CAP.ios && !CAP.standalone
+      ? 'Сначала добавь ПОЛЬЗУ на экран — тогда появятся уведомления'
+      : 'Этот браузер не умеет уведомления');
+    return 'unsupported';
+  }
+  let p = Notification.permission;
+  try { if (p === 'default') p = await Notification.requestPermission(); } catch (e) { p = 'denied'; }
+  S.perm.notif = p;
+  if (p === 'granted') {
+    if (!S.notify) S.notify = { on:false, morning:'09:00', evening:'21:00', lead:10, fired:{} };
+    S.notify.on = true;                       /* ← без этого напоминания молчали */
+    DB.save();
+    showNotif('Напоминания включены', 'Утром — план, вечером — итоги, и подсказка перед задачей со временем.', 'welcome');
+    checkNotifications();
+    pushExtra();
+  } else {
+    DB.save();
+  }
+  return p;
+}
+
+/* ---------- дополнительные напоминания ---------- */
+function pushExtra() {
+  if (!S.notify || !S.notify.on) return;
+  if (!notifSupported() || Notification.permission !== 'granted') return;
+
+  const now = new Date();
+  const cur = now.getHours() * 60 + now.getMinutes();
+  const d = logicalDate();
+  const fired = S.notify.fired || (S.notify.fired = {});
+  const mMorn = t2m(S.notify.morning || '09:00');
+  const mEve  = t2m(S.notify.evening || '21:00');
+  let changed = false;
+
+  /* 1. День пустой — предложить поставить задачи */
+  const k1 = 'empty|' + d;
+  if (!fired[k1] && cur >= mMorn + 90 && cur <= mMorn + 260) {
+    const today = tasksOnDate(d).filter(t => !isDoneToday(t));
+    if (!today.length) {
+      showNotif('Что сегодня главное?',
+        'В календаре пусто. Поставь одну задачу — и день уже не зря.', 'empty');
+      fired[k1] = 1; changed = true;
+    }
+  }
+
+  /* 2. Вечер, ничего не отмечено — мягко напомнить про итоги */
+  const k2 = 'sum|' + d;
+  if (!fired[k2] && cur >= mEve && cur <= mEve + 90) {
+    const done = (S.days && S.days[d] && S.days[d].pts) || 0;
+    if (!done) {
+      showNotif('Подведём итоги дня',
+        'Отметь, что успел. Даже мелочи считаются — приложение считает сделанное.', 'summary');
+      fired[k2] = 1; changed = true;
+    }
+  }
+
+  /* 3. Завтрашние дела со временем — напомнить с вечера */
+  const k3 = 'tmrw|' + d;
+  if (!fired[k3] && cur >= mEve && cur <= mEve + 120) {
+    const tm = addDays(d, 1);
+    const list = tasksOnDate(tm).filter(t => t.time && !t.done)
+      .sort((a, b) => t2m(a.time) - t2m(b.time));
+    if (list.length) {
+      const first = list[0];
+      showNotif('Завтра: ' + first.title,
+        'В ' + first.time + (list.length > 1 ? ' и ещё ' + (list.length - 1) + ' дел(а)' : '') + '. Спокойной ночи.',
+        'tomorrow');
+      fired[k3] = 1; changed = true;
+    }
+  }
+
+  /* 4. Подписка: за день до конца знакомства и в день окончания */
+  if (typeof trialActive === 'function' && !premiumActive()) {
+    const left = trialDaysLeft();
+    const k4 = 'trial|' + left + '|' + d;
+    if (!fired[k4] && cur >= mMorn && cur <= mEve) {
+      if (trialActive() && left === 1) {
+        showNotif('Знакомство заканчивается завтра',
+          'Все задачи останутся с тобой. Новые можно будет создавать по подписке.', 'trial');
+        fired[k4] = 1; changed = true;
+      } else if (!trialActive() && (S.plus.nagCount || 0) < 3) {
+        showNotif('ПОЛЬЗА ждёт',
+          'Старые задачи и повторы работают как обычно. Для новых — небольшая подписка.', 'trial');
+        fired[k4] = 1; changed = true;
+      }
+    }
+  }
+
+  if (changed) DB.save();
+}
+
+/* ---------- уведомление о достижении ---------- */
+function pushAchievement(a) {
+  if (!a) return;
+  showNotif('🏆 ' + (a.title || 'Новое достижение'),
+    a.desc || 'Открыто новое достижение в ПОЛЬЗЕ', 'ach' + (a.id || ''));
+}
+
+/* цепляемся к существующей проверке достижений */
+(function hookAch() {
+  if (typeof checkAchievements !== 'function') return;
+  const orig = checkAchievements;
+  window.checkAchievements = function () {
+    const before = (S.achieved || []).slice();
+    const r = orig.apply(this, arguments);
+    try {
+      const fresh = (S.achieved || []).filter(id => before.indexOf(id) === -1);
+      if (fresh.length && typeof ACHIEVEMENTS !== 'undefined') {
+        fresh.slice(0, 2).forEach(id => {
+          const a = ACHIEVEMENTS.find(x => x.id === id);
+          if (a) pushAchievement(a);
+        });
+      }
+    } catch (e) {}
+    return r;
+  };
+  checkAchievements = window.checkAchievements;
+})();
+
+/* ---------- расписание проверок ---------- */
+(function pushBoot() {
+  setTimeout(pushExtra, 4000);
+  setInterval(pushExtra, 15 * 60e3);
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) setTimeout(pushExtra, 800);
+  });
+})();
+
+/* ---------- экран настроек напоминаний ---------- */
+function openPushSettings() {
+  const on = !!(S.notify && S.notify.on) && notifSupported() && Notification.permission === 'granted';
+  sheet(`
+    <div class="sh-h"><b>🔔 Напоминания</b></div>
+    <div class="synccard ${on ? 'on' : 'off'}">
+      <div class="sync-t">${on ? '✓ Включены' : 'Выключены'}</div>
+      <div class="sync-d">${on
+        ? 'Утром — план дня. Перед задачей со временем — подсказка. Вечером — итоги. Плюс достижения и завтрашние дела.'
+        : 'Без них приложение работает, но легко забыть про задачу со временем.'}</div>
+    </div>
+    ${!on ? `<button class="btn" id="pn-on">Разрешить напоминания</button>` : `
+      <div class="card">
+        <div class="row"><span>Утренний план</span><b>${esc(S.notify.morning || '09:00')}</b></div>
+        <div class="row"><span>Вечерние итоги</span><b>${esc(S.notify.evening || '21:00')}</b></div>
+        <div class="row"><span>За сколько предупредить</span><b>${S.notify.lead || 10} мин</b></div>
+      </div>
+      <div class="row2">
+        <input type="time" id="pn-m" value="${esc(S.notify.morning || '09:00')}" style="flex:1">
+        <input type="time" id="pn-e" value="${esc(S.notify.evening || '21:00')}" style="flex:1">
+      </div>
+      <button class="btn ghost" id="pn-save">Сохранить время</button>
+      <button class="btn ghost" id="pn-test">Проверить уведомление</button>
+      <button class="btn ghost" id="pn-off">Выключить</button>`}
+    ${CAP.ios && !CAP.standalone ? `<div class="tip">На iPhone уведомления работают только когда приложение добавлено на домашний экран. Это делается за 15 секунд — кнопка «Добавить на экран» в профиле.</div>` : ''}
+  `);
+  const G = i => document.getElementById(i);
+  if (G('pn-on')) G('pn-on').onclick = async () => { await pushAsk(); closeSheet(); setTimeout(openPushSettings, 200); };
+  if (G('pn-save')) G('pn-save').onclick = () => {
+    S.notify.morning = G('pn-m').value || '09:00';
+    S.notify.evening = G('pn-e').value || '21:00';
+    DB.save(); toast('Время сохранено');
+  };
+  if (G('pn-test')) G('pn-test').onclick = () => showNotif('Проверка', 'Уведомления работают. Так они и будут выглядеть.', 'test');
+  if (G('pn-off')) G('pn-off').onclick = () => { S.notify.on = false; DB.save(); closeSheet(); toast('Напоминания выключены'); };
+}
+
+</script>
+<script>
+/* ==== install.js ==== */
+/* ============================================================
+   ПОЛЬЗА — «ДОБАВИТЬ НА ЭКРАН» И ВЫБОР ПЛАТФОРМЫ
+   Пользователь один раз говорит, какой у него телефон, —
+   и дальше видит инструкции ровно под своё устройство.
+   ============================================================ */
+
+function plzPlatform() {
+  if (S.platform === 'ios' || S.platform === 'android') return S.platform;
+  return CAP.ios ? 'ios' : 'android';
+}
+function setPlatform(p) {
+  S.platform = p; DB.save();
+}
+function inTelegram() {
+  try { return !!(window.Telegram && Telegram.WebApp && Telegram.WebApp.initData !== undefined && PLAT && PLAT.host === 'telegram'); }
+  catch (e) { return !!(window.Telegram && Telegram.WebApp && Telegram.WebApp.platform && Telegram.WebApp.platform !== 'unknown'); }
+}
+
+const WEB_URL = 'https://parshin-production.github.io/POLZA/';
+const BOT_URL = 'https://t.me/polzayou_bot/polza';
+
+/* ============================================================
+   ЭКРАН УСТАНОВКИ
+   ============================================================ */
+function openInstallGuide() {
+  const p = plzPlatform();
+  const tg = inTelegram();
+  const already = CAP.standalone;
+
+  sheet(`
+    <div class="sh-h"><b>📲 ПОЛЬЗА под рукой</b></div>
+
+    ${already ? `
+      <div class="synccard on">
+        <div class="sync-t">✓ Уже на экране</div>
+        <div class="sync-d">Приложение запущено с домашнего экрана — открывается в один тап и работает без интернета.</div>
+      </div>` : `
+      <div class="tip">Чтобы не искать бота каждый раз, вынеси ПОЛЬЗУ на экран телефона. Займёт 15 секунд.</div>`}
+
+    <div class="row2" style="margin-top:10px">
+      <button class="btn ${p === 'ios' ? '' : 'ghost'}" style="flex:1;margin:0" id="ig-ios">🍎 iPhone / iPad</button>
+      <button class="btn ${p === 'android' ? '' : 'ghost'}" style="flex:1;margin:0" id="ig-and">🤖 Android</button>
+    </div>
+
+    <div id="ig-body" style="margin-top:14px">${installSteps(p, tg)}</div>
+
+    ${tg ? `<button class="btn ghost" id="ig-tgadd">📌 Закрепить бота в Telegram</button>` : ''}
+    ${installPrompt ? `<button class="btn" id="ig-now">Установить сейчас</button>` : ''}
+    <button class="btn ghost" id="ig-copy">🔗 Скопировать ссылку на приложение</button>
+  `);
+
+  const G = i => document.getElementById(i);
+  const redraw = pl => { setPlatform(pl); closeSheet(); setTimeout(openInstallGuide, 180); };
+  G('ig-ios').onclick = () => redraw('ios');
+  G('ig-and').onclick = () => redraw('android');
+
+  if (G('ig-now')) G('ig-now').onclick = async () => {
+    try {
+      installPrompt.prompt();
+      const r = await installPrompt.userChoice;
+      if (r && r.outcome === 'accepted') toast('Готово — ПОЛЬЗА на экране');
+      installPrompt = null;
+    } catch (e) { toast('Не получилось, добавь вручную по инструкции'); }
+  };
+  if (G('ig-tgadd')) G('ig-tgadd').onclick = () => {
+    try { Telegram.WebApp.addToHomeScreen ? Telegram.WebApp.addToHomeScreen() : openExternalLink(BOT_URL); }
+    catch (e) { openExternalLink(BOT_URL); }
+  };
+  G('ig-copy').onclick = () => {
+    const url = tg ? BOT_URL : WEB_URL;
+    try { navigator.clipboard.writeText(url); toast('Ссылка скопирована'); } catch (e) { toast(url); }
+  };
+}
+
+function installSteps(p, tg) {
+  if (p === 'ios') {
+    return `
+      <div class="secline">iPhone и iPad</div>
+      <div class="instep"><i>1</i><span>Открой <b>${esc(tg ? BOT_URL : WEB_URL)}</b> в <b>Safari</b> (именно Safari — Chrome на iPhone так не умеет)</span></div>
+      <div class="instep"><i>2</i><span>Нажми кнопку <b>«Поделиться»</b> — квадрат со стрелкой вверх, внизу экрана</span></div>
+      <div class="instep"><i>3</i><span>Пролистай список и выбери <b>«На экран Домой»</b></span></div>
+      <div class="instep"><i>4</i><span>Назови <b>ПОЛЬЗА</b> и нажми <b>«Добавить»</b></span></div>
+      <div class="tip">Заодно включатся уведомления: на iPhone они работают только у приложений с домашнего экрана.
+        А задачи из ПОЛЬЗЫ можно подписать в Apple Календарь — раздел «Календарь телефона».</div>`;
+  }
+  return `
+    <div class="secline">Android</div>
+    <div class="instep"><i>1</i><span>Открой <b>${esc(tg ? BOT_URL : WEB_URL)}</b> в <b>Chrome</b></span></div>
+    <div class="instep"><i>2</i><span>Нажми <b>⋮</b> в правом верхнем углу</span></div>
+    <div class="instep"><i>3</i><span>Выбери <b>«Установить приложение»</b> или <b>«Добавить на главный экран»</b></span></div>
+    <div class="instep"><i>4</i><span>Подтверди — значок появится рядом с остальными приложениями</span></div>
+    <div class="tip">Если пользуешься ПОЛЬЗОЙ прямо в Telegram — можно ничего не устанавливать:
+      закрепи бота вверху списка чатов, и приложение всегда под рукой.
+      Задачи синхронизируются с Google Календарём — раздел «Календарь телефона».</div>`;
+}
+
+/* ============================================================
+   ПОДСКАЗКА ПО КАЛЕНДАРЮ ПОД ПЛАТФОРМУ
+   ============================================================ */
+function openCalendarForPlatform() {
+  const p = plzPlatform();
+  sheet(`
+    <div class="sh-h"><b>📅 Календарь телефона</b></div>
+    <div class="row2">
+      <button class="btn ${p === 'ios' ? '' : 'ghost'}" style="flex:1;margin:0" id="cp-ios">🍎 iPhone</button>
+      <button class="btn ${p === 'android' ? '' : 'ghost'}" style="flex:1;margin:0" id="cp-and">🤖 Android</button>
+    </div>
+    <div style="margin-top:14px">
+      ${p === 'ios' ? `
+        <div class="secline">Apple Календарь · без входа в аккаунт</div>
+        <div class="instep"><i>1</i><span>Открой <b>Настройки → Календарь телефона</b> в ПОЛЬЗЕ и нажми <b>«Синхронизировать с календарём телефона»</b></span></div>
+        <div class="instep"><i>2</i><span>iPhone спросит подтверждение — нажми <b>«Подписаться»</b> (так это называет сама Apple)</span></div>
+        <div class="instep"><i>3</i><span>Готово: задачи появятся в стандартном Календаре и будут обновляться сами</span></div>
+        <div class="tip">Работает на всех устройствах Apple сразу — iPhone, iPad, Mac. Аккаунт и пароль не нужны.</div>` : `
+        <div class="secline">Google Календарь</div>
+        <div class="instep"><i>1</i><span>Открой <b>Настройки → Календарь телефона</b> в ПОЛЬЗЕ</span></div>
+        <div class="instep"><i>2</i><span>Нажми <b>«Подключить Google Календарь»</b> и войди в аккаунт один раз</span></div>
+        <div class="instep"><i>3</i><span>Появится отдельный календарь <b>ПОЛЬЗА</b> — задачи туда попадают сами</span></div>
+        <div class="tip">Изменил задачу в приложении — событие в календаре обновится. Удалил — исчезнет.</div>`}
+    </div>
+    <button class="btn" id="cp-open">Открыть настройки календаря</button>
+  `);
+  const G = i => document.getElementById(i);
+  G('cp-ios').onclick = () => { setPlatform('ios'); closeSheet(); setTimeout(openCalendarForPlatform, 180); };
+  G('cp-and').onclick = () => { setPlatform('android'); closeSheet(); setTimeout(openCalendarForPlatform, 180); };
+  G('cp-open').onclick = () => { closeSheet(); setTimeout(openCalSync, 220); };
+}
+
+</script>
+<script>
+/* ==== calperm.js ==== */
+/* ============================================================
+   ПОЛЬЗА — экран запроса доступа к календарю
+   ------------------------------------------------------------
+   Зачем отдельный экран.
+
+   В вебе нельзя вызвать системное окно «Приложение запрашивает
+   доступ к календарю» — такое окно принадлежит нативным
+   приложениям из App Store (EventKit). Браузеру его не дают.
+
+   Поэтому мы показываем свой экран, оформленный как системный
+   запрос: понятный вопрос, кнопка «Разрешить» и серая
+   «Настроить позже». А после «Разрешить» человек попадает
+   в НАСТОЯЩЕЕ системное окно iPhone «Подписаться на календарь».
+
+   То есть для человека путь выглядит ровно так, как задумано:
+   объяснение → разрешить → системное подтверждение → готово.
+   ============================================================ */
+
+/* сколько задач реально уедет в календарь */
+function calSyncCount() {
+  try { return buildICS().count || 0; } catch (e) { return 0; }
+}
+
+/* сервер подписки настроен разработчиком? */
+function calLiveMode() {
+  try { return !!(S.sync && S.sync.feed && S.sync.feed.base); } catch (e) { return false; }
+}
+
+/* ------------------------------------------------------------
+   ГЛАВНАЯ ТОЧКА ВХОДА.
+   Её дёргают все кнопки «Синхронизировать с календарём».
+   ------------------------------------------------------------ */
+function askCalendarAccess(opts) {
+  opts = opts || {};
+  const n = calSyncCount();
+
+  /* нечего синхронизировать — честно говорим об этом */
+  if (!n) {
+    sheet(`
+      <div class="sh-h"><b>📅 Календарь телефона</b></div>
+      <div class="calask-empty">
+        <div class="ce-ic">📭</div>
+        <div class="ce-t">Пока нечего переносить</div>
+        <div class="ce-d">В календарь попадают только задачи, у которых есть
+          <b>дата</b>, <b>срок</b> или <b>повтор</b>. Сейчас таких нет.</div>
+      </div>
+      <div class="tip">Поставь задаче дату — и она появится в календаре телефона.</div>
+      <button class="btn" onclick="closeSheet()">Понятно</button>
+    `);
+    return;
+  }
+
+  const ios  = (typeof plzPlatform === 'function' ? plzPlatform() : 'ios') === 'ios';
+  const live = calLiveMode();
+  const calName = ios ? 'Календарь' : 'Google Календарь';
+
+  const ov = document.getElementById('calask') || (() => {
+    const d = document.createElement('div');
+    d.id = 'calask';
+    d.className = 'calask';
+    document.body.appendChild(d);
+    return d;
+  })();
+
+  ov.innerHTML = `
+    <div class="calask-back"></div>
+    <div class="calask-card">
+
+      <div class="ca-ic">📅</div>
+
+      <div class="ca-title">Доступ к календарю</div>
+
+      <div class="ca-q">«ПОЛЬЗА» хочет добавить задачи
+        в приложение «${calName}»</div>
+
+      <div class="ca-body">
+        ${n} ${plural(n, 'задача встанет', 'задачи встанут', 'задач встанут')}
+        в календарь телефона обычными событиями — рядом со встречами.
+        ${live
+          ? 'Дальше они будут обновляться сами: изменил задачу в ПОЛЬЗЕ — поменялось в календаре.'
+          : 'Добавишь новые задачи — нажми кнопку ещё раз, они допишутся.'}
+      </div>
+
+      <div class="ca-facts">
+        <div class="ca-f"><i>🔒</i><span>Вход в аккаунт не нужен</span></div>
+        <div class="ca-f"><i>👁</i><span>ПОЛЬЗА не читает твои встречи</span></div>
+        <div class="ca-f"><i>↩︎</i><span>Отключить можно в любой момент</span></div>
+      </div>
+
+      <div class="ca-btns">
+        <button class="ca-allow" id="ca-yes">Разрешить</button>
+        <button class="ca-later" id="ca-no">Настроить позже</button>
+      </div>
+
+      ${ios ? `<div class="ca-note">Следом телефон покажет своё окно —
+        подтверди в нём, и задачи окажутся в Календаре.</div>` : ''}
+    </div>
+  `;
+
+  requestAnimationFrame(() => ov.classList.add('on'));
+  try { buzz('tap'); } catch (e) {}
+
+  const G = i => document.getElementById(i);
+
+  G('ca-no').onclick = () => {
+    closeCalAsk();
+    try { S.perm.cal = 'later'; DB.save(); } catch (e) {}
+    try { toast('Хорошо. Включить можно в Профиль → ⚙️ → Календарь телефона'); } catch (e) {}
+    if (opts.then) setTimeout(opts.then, 200);
+  };
+
+  G('ca-yes').onclick = async () => {
+    const b = G('ca-yes');
+    b.disabled = true;
+    b.textContent = 'Готовлю задачи…';
+    try { buzz('tap'); } catch (e) {}
+
+    const okLive = live ? await calTryLive() : false;
+
+    closeCalAsk();
+
+    if (okLive) {
+      /* сервер принял — отправляем в системное окно подписки */
+      try { S.perm.cal = 'on'; DB.save(); } catch (e) {}
+      setTimeout(() => { try { feedSubscribe(); } catch (e) {} }, 220);
+      setTimeout(() => {
+        try { toast('✓ Подтверди в окне телефона — и календарь заработает'); } catch (e) {}
+      }, 900);
+    } else {
+      /* сервера нет или он не ответил — отдаём файл, телефон примет его сам */
+      try { S.perm.cal = 'on'; DB.save(); } catch (e) {}
+      try { await shareICS(); } catch (e) {
+        try { exportICS(); } catch (e2) {}
+      }
+    }
+
+    try {
+      S.sync.feed.last = Date.now();
+      S.stats.icsExports = (S.stats.icsExports || 0) + 1;
+      DB.save();
+      checkAchievements();
+    } catch (e) {}
+
+    if (opts.then) setTimeout(opts.then, 700);
+  };
+
+  /* закрытие тапом по фону */
+  ov.querySelector('.calask-back').onclick = () => G('ca-no').click();
+}
+
+/* попытка залить на сервер подписки; false — если не вышло */
+async function calTryLive() {
+  try {
+    const ok = await feedPush(true);
+    return !!ok;
+  } catch (e) { return false; }
+}
+
+function closeCalAsk() {
+  const ov = document.getElementById('calask');
+  if (!ov) return;
+  ov.classList.remove('on');
+  setTimeout(() => { if (ov.parentNode) ov.innerHTML = ''; }, 260);
+}
+
+</script>
+<script>
+/* ==== perms.js ==== */
+/* ============================================================
+   ПОЛЬЗА — ДОСТУПЫ
+   Один экран, где видно состояние всех трёх разрешений
+   и можно выдать каждое в одно нажатие.
+
+   Честно о возможностях телефона:
+   • Уведомления — настоящее системное разрешение.
+   • Микрофон — настоящее системное разрешение.
+   • Календарь — системного разрешения не существует ни в одном
+     браузере. Задачи попадают в календарь двумя способами:
+     подпиской на ссылку (обновляется само) либо файлом .ics.
+     Поэтому здесь не «разрешение», а подключение.
+   ============================================================ */
+
+/* ---------- состояние каждого доступа ---------- */
+function permNotifState() {
+  if (!notifSupported()) return 'unsupported';
+  const p = Notification.permission;
+  if (p === 'granted') return (S.notify && S.notify.on) ? 'on' : 'granted';
+  return p;                       /* denied | default */
+}
+function permMicState() {
+  if (!CAP.mic) return 'unsupported';
+  return (S.perm && S.perm.mic) || 'default';
+}
+function permCalState() {
+  try {
+    if (S.sync && S.sync.gcal && S.sync.gcal.on) return 'on';
+    if (S.sync && S.sync.feed && S.sync.feed.on) return 'on';
+  } catch (e) {}
+  const v = S.perm && S.perm.cal;
+  if (v === 'on') return 'on';
+  if (v === 'seen') return 'seen';
+  if (v === 'later') return 'later';
+  return 'default';
+}
+
+/* все ли спрошены хотя бы раз */
+function permsAllAsked() {
+  const n = permNotifState(), m = permMicState(), c = permCalState();
+  const asked = v => v !== 'default';
+  return asked(n) && asked(m) && asked(c);
+}
+
+/* ---------- запросы ---------- */
+async function permAskNotif() {
+  const r = await pushAsk();
+  DB.save();
+  return r;
+}
+
+async function permAskMic() {
+  if (!CAP.mic) { toast('Голосовой ввод недоступен в этом браузере'); return 'unsupported'; }
+  try {
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+      const st = await navigator.mediaDevices.getUserMedia({ audio: true });
+      st.getTracks().forEach(t => t.stop());
+      S.perm.mic = 'granted';
+    } else {
+      /* Safari отдаёт микрофон только через распознавание речи */
+      S.perm.mic = 'granted';
+    }
+  } catch (e) {
+    S.perm.mic = (e && e.name === 'NotAllowedError') ? 'denied' : 'unsupported';
+  }
+  DB.save();
+  return S.perm.mic;
+}
+
+function permOpenCalendar() {
+  closeSheet();
+  /* сразу спрашиваем доступ — как это делают обычные приложения */
+  setTimeout(() => {
+    try { askCalendarAccess(); }
+    catch (e) {
+      try { openCalSync(); } catch (e2) {
+        try { openCalendarForPlatform(); } catch (e3) {}
+      }
+    }
+  }, 240);
+}
+
+/* ---------- строка доступа ---------- */
+function permRow(icon, title, desc, state, btnId, btnText) {
+  const map = {
+    on:          { t: '✓ включено',  c: '#3ddc97' },
+    granted:     { t: '✓ разрешено', c: '#3ddc97' },
+    seen:        { t: 'настроено',   c: '#8b90a0' },
+    later:       { t: 'позже',       c: '#ffb648' },
+    denied:      { t: 'запрещено',   c: '#ff6b6b' },
+    unsupported: { t: 'недоступно',  c: '#8b90a0' },
+    default:     { t: 'не спрошено', c: '#ffb648' }
+  };
+  const m = map[state] || map.default;
+  const done = state === 'on' || state === 'granted';
+  return `
+    <div class="permcard ${done ? 'ok' : ''}">
+      <div class="permtop">
+        <span class="permic">${icon}</span>
+        <div class="permtx">
+          <b>${title}</b>
+          <span style="color:${m.c}">${m.t}</span>
+        </div>
+      </div>
+      <div class="permdesc">${desc}</div>
+      ${done ? '' : `<button class="btn ${state === 'denied' ? 'ghost' : ''} permbtn" id="${btnId}">${btnText}</button>`}
+      ${state === 'denied' ? `<div class="tip" style="margin:8px 0 0">Доступ закрыт в системе. Открой настройки телефона → Telegram (или браузер) → разреши, и вернись сюда.</div>` : ''}
+    </div>`;
+}
+
+/* ---------- экран ---------- */
+function openPermsSheet(fromBoot) {
+  const n = permNotifState(), m = permMicState(), c = permCalState();
+
+  sheet(`
+    <div class="sh-h"><b>🔐 Доступы</b></div>
+    <div class="tip">Приложение работает и без них. Но с ними — само напоминает, понимает голос и показывает задачи в календаре телефона.</div>
+
+    ${permRow('🔔', 'Напоминания',
+      'Утром — план дня. За 10 минут — до задачи со временем. Вечером — итоги. Никакой рекламы.',
+      n, 'pm-notif', 'Разрешить напоминания')}
+
+    ${permRow('🎤', 'Микрофон',
+      'Скажи «съёмка в пятницу в пять» — приложение само разберёт дату, время и категорию.',
+      m, 'pm-mic', 'Разрешить микрофон')}
+
+    ${permRow('📅', 'Календарь телефона',
+      plzPlatform() === 'ios'
+        ? 'Задачи с датой появятся в стандартном Календаре iPhone рядом с обычными встречами. Аккаунт не нужен.'
+        : 'Задачи с датой появятся в Google Календаре отдельным календарём «ПОЛЬЗА».',
+      c, 'pm-cal', 'Синхронизировать с календарём')}
+
+    <button class="btn ${permsAllAsked() ? '' : 'ghost'}" id="pm-done">${fromBoot ? 'Готово' : 'Закрыть'}</button>
+    ${!permsAllAsked() ? `<div class="tip">Можно пропустить и вернуться сюда позже: Профиль → ⚙️ → Доступы.</div>` : ''}
+  `);
+
+  const G = i => document.getElementById(i);
+  const again = () => { closeSheet(); setTimeout(() => openPermsSheet(fromBoot), 200); };
+
+  if (G('pm-notif')) G('pm-notif').onclick = async () => { await permAskNotif(); again(); };
+  if (G('pm-mic'))   G('pm-mic').onclick   = async () => { await permAskMic();   again(); };
+  if (G('pm-cal'))   G('pm-cal').onclick   = permOpenCalendar;
+  G('pm-done').onclick = () => {
+    if (S.perm.cal === 'default') { S.perm.cal = 'seen'; DB.save(); }
+    closeSheet();
+    if (fromBoot) setTimeout(() => { try { plusMaybeNag(); } catch (e) {} }, 600);
+  };
+}
+
+</script>
+<script>
+/* ==== about.js ==== */
+/* ============================================================
+   ПОЛЬЗА — ВЕРСИЯ СБОРКИ И ПОЛНЫЙ СБРОС
+   Нужно, чтобы понимать: обновилось приложение на телефоне или нет,
+   и чтобы можно было начать тест с чистого листа.
+   ============================================================ */
+
+const BUILD = 'v11 · 17.08.2026';
+
+/* ---------- проверка, что приложение обновилось ---------- */
+function openAbout() {
+  const cloud = (typeof cloudAvailable === 'function') && cloudAvailable();
+  const host = (function () {
+    try { if (window.Telegram && Telegram.WebApp && Telegram.WebApp.platform &&
+                Telegram.WebApp.platform !== 'unknown') return 'Telegram · ' + Telegram.WebApp.platform; } catch (e) {}
+    return CAP.standalone ? 'с домашнего экрана' : 'браузер';
+  })();
+
+  sheet(`
+    <div class="sh-h"><b>ℹ️ О приложении</b></div>
+    <div class="synccard on">
+      <div class="sync-t">Сборка ${esc(BUILD)}</div>
+      <div class="sync-d">Если здесь стоит именно эта версия — обновление дошло до телефона.
+        Если версия старая, приложение открылось из кэша: закрой его полностью и открой заново.</div>
+    </div>
+    <div class="card">
+      <div class="row"><span>Где запущено</span><b>${esc(host)}</b></div>
+      <div class="row"><span>Облако Telegram</span><b style="color:${cloud ? '#3ddc97' : '#8b90a0'}">${cloud ? 'подключено' : 'недоступно'}</b></div>
+      <div class="row"><span>Задач</span><b>${(S.tasks || []).length}</b></div>
+      <div class="row"><span>Знакомство пройдено</span><b>${S.onboarded ? 'да' : 'нет'}</b></div>
+      <div class="row"><span>Доступ</span><b>${premiumActive() ? 'подписка' : trialActive() ? 'знакомство, ' + trialDaysLeft() + ' дн.' : 'ограничен'}</b></div>
+      <div class="row"><span>Уведомления</span><b>${permNotifState() === 'on' ? '✓ вкл' : permNotifState() === 'granted' ? 'разрешены' : permNotifState() === 'denied' ? 'запрещены' : '—'}</b></div>
+      <div class="row"><span>Микрофон</span><b>${permMicState() === 'granted' ? '✓ вкл' : permMicState() === 'denied' ? 'запрещён' : '—'}</b></div>
+      <div class="row"><span>Календарь</span><b>${permCalState() === 'on' ? '✓ подключён' : '—'}</b></div>
+    </div>
+    <button class="btn ghost" id="ab-onb">🎓 Пройти знакомство заново</button>
+    <button class="btn ghost" id="ab-perms">🔐 Проверить доступы</button>
+    <button class="btn ghost" id="ab-reload">🔄 Перезагрузить приложение</button>
+    <div class="secline">Тестирование</div>
+    <div class="tip">Полный сброс удалит задачи, цели, достижения и оплату — и на телефоне, и в облаке.
+      Приложение станет таким, каким его видит новый человек.</div>
+    <button class="btn ghost" style="color:var(--bad)" id="ab-wipe">🧹 Начать с чистого листа</button>
+  `);
+
+  const G = i => document.getElementById(i);
+  G('ab-onb').onclick = () => {
+    S.onboarded = false; S.welVer = 0; S.tourDone = false; DB.save();
+    closeSheet(); setTimeout(openWelcome, 250);
+  };
+  G('ab-perms').onclick = () => { closeSheet(); setTimeout(() => openPermsSheet(false), 250); };
+  G('ab-reload').onclick = () => hardReload();
+  G('ab-wipe').onclick = () => wipeEverything();
+}
+
+/* ---------- перезагрузка в обход кэша ---------- */
+function hardReload() {
+  try {
+    const u = new URL(location.href);
+    u.searchParams.set('v', Date.now().toString(36));
+    location.replace(u.toString());
+  } catch (e) { location.reload(); }
+}
+
+/* ---------- полный сброс: телефон + облако ---------- */
+async function wipeEverything() {
+  const step1 = confirm('Удалить все задачи, цели, достижения и подписку?\n\nЭто нельзя отменить.');
+  if (!step1) return;
+  const step2 = confirm('Точно? Данные удалятся и на других устройствах — они стёрутся из облака Telegram.');
+  if (!step2) return;
+
+  toast('Чищу…');
+
+  /* 1. облако Telegram */
+  try {
+    if (typeof cloudAvailable === 'function' && cloudAvailable()) {
+      const keys = [CLOUD_META];
+      for (let i = 0; i < 300; i++) keys.push(CLOUD_PREFIX + '_' + i);
+      /* удаляем частями — на длинный список API отвечает ошибкой */
+      for (let i = 0; i < keys.length; i += 40) await cDel(keys.slice(i, i + 40));
+    }
+  } catch (e) {}
+
+  /* 2. память устройства */
+  try { localStorage.removeItem(KEY); } catch (e) {}
+  try { localStorage.removeItem(BACKUP_KEY); } catch (e) {}
+  try { localStorage.removeItem('polza_data'); } catch (e) {}
+
+  /* 3. кэш браузера и service worker */
+  try {
+    if (window.caches && caches.keys) {
+      const names = await caches.keys();
+      await Promise.all(names.map(n => caches.delete(n)));
+    }
+  } catch (e) {}
+  try {
+    if (navigator.serviceWorker && navigator.serviceWorker.getRegistrations) {
+      const rs = await navigator.serviceWorker.getRegistrations();
+      await Promise.all(rs.map(r => r.unregister()));
+    }
+  } catch (e) {}
+
+  setTimeout(hardReload, 600);
+}
+
+/* ---------- подсказка, если версия старая ---------- */
+(function buildNotice() {
+  /* когда приложение только что обновилось — тихо сообщаем */
+  try {
+    if (S._build !== BUILD) {
+      const first = !S._build;
+      S._build = BUILD; DB.save();
+      if (!first) setTimeout(() => toast('Приложение обновлено · ' + BUILD), 2200);
+    }
+  } catch (e) {}
+})();
+
+</script>
+<script>
 /* ==== app4.js ==== */
 /* ========== ПОЛЬЗА — профиль, настройки, синхронизация, рендер ========== */
 
 function viewProf() {
   let h = `<div class="tophead"><div><h1>Профиль</h1><div class="sub">Прогресс и настройки</div></div>
     <button class="iconround" onclick="openSettings()">⚙️</button></div>`;
+  h += plusRibbon();
+  h += `<div class="profquick">
+    <button class="pq" onclick="openPremium()"><i>⭐</i><span>Подписка</span></button>
+    <button class="pq" onclick="openReferral()"><i>🎁</i><span>Друзья</span></button>
+    <button class="pq" onclick="openInstallGuide()"><i>📲</i><span>На экран</span></button>
+    <button class="pq" onclick="openAbout()"><i>ℹ️</i><span>Версия</span></button>
+  </div>`;
   h += segbar('prof', [['prog','Прогресс'],['ach','Достижения'],['hall','🏛 Зал славы']]);
   const cr = `<div class="credit">ПОЛЬЗА · придумал и собрал<br><b>Parshin Production</b></div>`;
   if (seg.prof==='ach') return h + achBlock() + cr;
@@ -10756,19 +13035,27 @@ function openSettings() {
       <select id="st-to" style="flex:1">${Array.from({length:17},(_,i)=>i+8).map(h=>`<option value="${h}" ${S.hours.to===h?'selected':''}>${h}:00</option>`).join('')}</select>
     </div>
 
-    <div class="secline">Напоминания</div>
+    <div class="secline">Подписка и друзья</div>
+    <button class="btn ghost" onclick="closeSheet();setTimeout(openPremium,150)">⭐ Подписка ${premiumActive()?'· активна':trialActive()?'· знакомство, '+trialDaysLeft()+' дн.':'· не активна'}</button>
+    <button class="btn ghost" onclick="closeSheet();setTimeout(openReferral,150)">🎁 Пригласить друга — месяц бесплатно</button>
+
+    <div class="secline">Доступы и напоминания</div>
+    <button class="btn ghost" onclick="closeSheet();setTimeout(function(){openPermsSheet(false)},150)">🔐 Доступы — уведомления, микрофон, календарь</button>
+    <button class="btn ghost" onclick="closeSheet();setTimeout(openPushSettings,150)">🔔 Настроить напоминания</button>
     <button class="btn ghost" onclick="openNotifySetup()">${S.notify.on?'🔔 Напоминания включены':'🔔 Включить напоминания'}</button>
     <button class="btn ghost" onclick="openCalSync()">📆 Календарь на телефоне</button>
-    ${canInstall?`<button class="btn ghost" onclick="openInstall()">📲 Установить как приложение</button>`:''}
+    ${canInstall?`<button class="btn ghost" onclick="closeSheet();setTimeout(openInstallGuide,150)">📲 Добавить на экран телефона</button>`:''}
 
     <button class="btn ghost" id="set-buzz">${(S.perm&&S.perm.buzz===false)?'📴 Вибрация выключена':'📳 Вибрация включена'}</button>
-    <button class="btn ghost" onclick="closeSheet();setTimeout(openWelcome,180)">🎓 Показать обучение заново</button>
+    <button class="btn ghost" onclick="closeSheet();S.tourDone=false;DB.save();setTimeout(openWelcome,180)">🎓 Пройти знакомство заново</button>
 
     <div class="secline">Данные</div>
+    <button class="btn ghost" onclick="closeSheet();setTimeout(openStorageInfo,150)">💾 Память и облако</button>
     <button class="btn ghost" onclick="shareDay()">📤 Поделиться результатом дня</button>
     <button class="btn ghost" onclick="exportData()">💾 Сохранить копию</button>
     <button class="btn ghost" onclick="document.getElementById('imp').click()">📂 Загрузить из файла</button>
     <input type="file" id="imp" accept=".json" style="display:none" onchange="importData(this)">
+    <button class="btn ghost" onclick="closeSheet();setTimeout(openAbout,150)">ℹ️ О приложении и версия</button>
     <button class="btn ghost" style="color:var(--bad)" onclick="resetAll()">Сбросить всё</button>
     <button class="btn ghost" onclick="closeSheet()">Закрыть</button>
   `);
@@ -11057,21 +13344,85 @@ function openStatInfo(kind) {
     <button class="btn ghost" onclick="closeSheet();setTimeout(()=>go('prof'),120)">🏆 Открыть профиль</button>`);
 }
 
-/* старт */
+/* ============================================================
+   СТАРТ ПРИЛОЖЕНИЯ
+   Порядок важен: сначала дожидаемся облака, потом решаем,
+   показывать ли знакомство. Иначе старое состояние из облака
+   приезжает уже после решения и «отменяет» обучение.
+   ============================================================ */
+try { refCapture(); } catch(e) {}
+try { ensureShape(); } catch(e) {}
 checkAchievements();
 render();
-(function bootIntro(){
-  var needWel  = !S.onboarded || (S.welVer||0) < WELCOME_VER;
-  var needTour = !S.tourDone;
-  setTimeout(function(){
-    try {
-      if (needWel) { openWelcome(); return; }
-      if (needTour) startTour();
-    } catch(e) {
-      console.error('intro failed:', e);
-      try { toast('Обучение в настройках'); } catch(e2){}
-    }
-  }, 450);
+
+function needWelcome() {
+  return !S.onboarded || (S.welVer || 0) < WELCOME_VER;
+}
+
+function hideBootload() {
+  try {
+    var b = document.getElementById('bootload');
+    if (b) { b.classList.add('gone'); setTimeout(function(){ b.remove(); }, 400); }
+  } catch (e) {}
+}
+
+function bootIntro() {
+  hideBootload();
+  try {
+    if (needWelcome()) { openWelcome(); return; }
+    if (!S.tourDone)   { startTour();   return; }
+    if (typeof permsAllAsked === 'function' && !permsAllAsked()) { openPermsSheet(true); return; }
+    plusMaybeNag();
+  } catch (e) {
+    console.error('intro failed:', e);
+    /* даже если что-то сломалось — знакомство должно быть доступно.
+       Плюс на главном экране всегда есть заметная карточка (см. app3.js) */
+    try { toast('Знакомство: Профиль → ⚙️ → Показать обучение', 'Открыть', openWelcome); } catch (e2) {}
+  }
+}
+
+(function boot() {
+  var started = false;
+  var go = function () {
+    if (started) return;
+    started = true;
+    try { ensureShape(); } catch (e) {}
+    try { if (typeof purgeDemo === 'function') purgeDemo(); } catch (e) {}
+    setTimeout(bootIntro, 120);
+  };
+
+  /* --------------------------------------------------------
+     НОВИЧОК — показываем знакомство немедленно.
+     Раньше приложение ждало ответа облака до 2.5 секунды,
+     и человек успевал увидеть пустой экран до старта обучения.
+     Ждать незачем: у нового человека в облаке всё равно пусто.
+     -------------------------------------------------------- */
+  var fresh = false;
+  try {
+    fresh = needWelcome() &&
+            (S.tasks || []).length === 0 &&
+            (S.goals || []).length === 0;
+  } catch (e) {}
+
+  var hasCloud = false;
+  try { hasCloud = cloudAvailable(); } catch (e) {}
+
+  if (fresh) {
+    setTimeout(go, 60);
+    /* облако всё равно опрашиваем — но уже фоном, не задерживая экран */
+    if (hasCloud) { try { cloudBoot(); } catch (e) {} }
+    return;
+  }
+
+  /* нет облака — идём сразу */
+  if (!hasCloud) { setTimeout(go, 160); return; }
+
+  /* облако есть и данные уже были: ждём ответа, но не дольше 1.6 секунды */
+  var guard = setTimeout(go, 1600);
+  try {
+    cloudBoot().then(function () { clearTimeout(guard); go(); })
+               .catch(function () { clearTimeout(guard); go(); });
+  } catch (e) { clearTimeout(guard); go(); }
 })();
 try { initPlatform(); } catch(e) {}
 initSwipeNav();
