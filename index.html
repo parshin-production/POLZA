@@ -1749,6 +1749,8 @@ html.in-tg body,html.in-vk body{padding-top:var(--tgtop,0)}
 html.in-tg nav,html.in-vk nav{padding-bottom:calc(env(safe-area-inset-bottom) + 10px)}
 html.in-tg #app,html.in-vk #app{padding-bottom:120px}
 html.in-tg,html.in-vk{overscroll-behavior:none}
+.pb-aura{animation:auraPulse 3.2s ease-in-out infinite;transform-origin:54px 82px}
+
 /* V3-END */
 
 /* V4-START */
@@ -2514,6 +2516,55 @@ h1{font-size:22px !important}
   font-size:13px;font-weight:800;color:#0a0f04;
   background:linear-gradient(180deg,#e2ff6b,#a4dd15)}
 
+/* ---------------- ОБУЧЕНИЕ БЛОКИРУЕТ ЭКРАН ---------------- */
+html.onb-lock body > *:not(#wel):not(#tour):not(#toast){
+  pointer-events:none !important;
+  user-select:none !important;
+  -webkit-user-select:none !important;
+  -webkit-touch-callout:none !important}
+html.onb-lock #wel,html.onb-lock #tour{pointer-events:auto !important}
+html.onb-lock{touch-action:none;overscroll-behavior:none}
+html.onb-lock body{touch-action:none;overscroll-behavior:none}
+/* приветствие — экран замораживаем полностью */
+html.onb-lock.onb-hard{overflow:hidden}
+html.onb-lock.onb-hard body{overflow:hidden}
+/* фон под обучением не принимает фокус и не открывает клавиатуру */
+html.onb-lock #app,html.onb-lock nav,html.onb-lock .fab,
+html.onb-lock .sheet,html.onb-lock .ov{
+  pointer-events:none !important;
+  filter:saturate(.85)}
+html.onb-lock #app input,html.onb-lock #app textarea,
+html.onb-lock #app select,html.onb-lock #app button,
+html.onb-lock nav button{
+  pointer-events:none !important}
+/* внутри обучения ввод работает как обычно */
+html.onb-lock #wel input,html.onb-lock #wel textarea,
+html.onb-lock #wel button,html.onb-lock #tour button{
+  pointer-events:auto !important;
+  user-select:auto !important;
+  -webkit-user-select:auto !important}
+/* шторку, открытую из обучения, поднимаем над ним и оживляем */
+html.onb-lock .sheet.on{z-index:962 !important;pointer-events:auto !important}
+html.onb-lock .sheet.on *{pointer-events:auto !important}
+html.onb-lock .ov.on{z-index:958 !important;pointer-events:auto !important}
+
+/* ---------------- СИНХРОНИЗАЦИЯ ---------------- */
+.synccard{padding:14px 15px;border-radius:16px;margin:10px 0 12px;
+  background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));
+  border:1px solid rgba(255,255,255,.1)}
+.synccard.on{border-color:rgba(197,248,42,.5);
+  background:linear-gradient(180deg,rgba(197,248,42,.13),rgba(197,248,42,.04))}
+.synccard.off{border-style:dashed}
+.sync-t{font-size:14.5px;font-weight:700;margin-bottom:5px}
+.synccard.on .sync-t{color:#c5f82a}
+.sync-d{font-size:12.5px;color:var(--tx2);line-height:1.5}
+.sync-url{margin-top:9px;padding:9px 11px;border-radius:10px;
+  background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.08);
+  font-family:ui-monospace,Menlo,monospace;font-size:11px;color:#9fb4c7;
+  word-break:break-all;line-height:1.45}
+.sync-err{margin-top:8px;font-size:12px;color:#ff7a7a;line-height:1.45}
+.row2{display:flex;gap:8px;margin-bottom:10px}
+
 /* V5-END */
 
 /* V6-START */
@@ -2906,7 +2957,6 @@ var ICON_URL = document.getElementById('ticon').href;
 <script src="https://telegram.org/js/telegram-web-app.js" defer onerror="window.__TG_FAIL__=1"></script>
 <script src="https://unpkg.com/@vkontakte/vk-bridge/dist/browser.min.js" defer onerror="window.__VK_FAIL__=1"></script>
 <script>
-
 /* ==== platform.js ==== */
 /* ============================================================
    ПОЛЬЗА — интеграция с Telegram Mini Apps и VK Mini Apps
@@ -3054,6 +3104,8 @@ async function cloudBackup() {
   } catch(e) { toast('Не удалось сохранить'); }
 }
 
+</script>
+<script>
 /* ==== ui.js ==== */
 /* ============================================================
    ПОЛЬЗА — вспомогательные функции интерфейса
@@ -3112,6 +3164,8 @@ function catBtnStyle(hex, active) {
        + `box-shadow:0 1px 0 rgba(255,255,255,.12) inset,0 0 14px ${rgba(hex,.14)};`;
 }
 
+</script>
+<script>
 /* ==== logo.js ==== */
 /* ============================================================
    ПОЛЬЗА — логотип: молния-ударение над буквой О
@@ -3186,7 +3240,82 @@ function logoLockup(size) {
   `</span>`;
 }
 
+</script>
+<script>
 /* ==== onboard.js ==== */
+/* ---------- блокировка экрана на время обучения ---------- */
+function onbLock(on, hard) {
+  document.documentElement.classList.toggle('onb-lock', !!on);
+  /* hard — приветствие: экран заморожен целиком.
+     мягкий режим — тур: подсветка сама подкручивает страницу к элементу */
+  document.documentElement.classList.toggle('onb-hard', !!on && hard !== false);
+  document.body.style.overflow = (on && hard !== false) ? 'hidden' : '';
+  if (on) onbGuardOn(); else onbGuardOff();
+}
+function onbLocked() {
+  return document.documentElement.classList.contains('onb-lock');
+}
+
+/* ---------- жёсткий перехват: пока идёт обучение, живут только #wel и #tour ----------
+   CSS уже гасит pointer-events, но этого мало: остаются клавиатура, фокус,
+   аппаратная «назад» и инерционный скролл. Перехватываем на фазе capture. */
+const ONB_ALLOW = '#wel, #tour, .toast, .sheet, #sheet, .ov';
+
+function onbAllowed(node) {
+  if (!node || !node.closest) return false;
+  return !!node.closest(ONB_ALLOW);
+}
+
+function onbSwallow(e) {
+  if (!onbLocked()) return;
+  if (onbAllowed(e.target)) return;
+  e.preventDefault();
+  e.stopPropagation();
+  if (e.stopImmediatePropagation) e.stopImmediatePropagation();
+}
+
+function onbSwallowKey(e) {
+  if (!onbLocked()) return;
+  /* внутри обучения работают только ввод текста и Enter/Tab по его кнопкам */
+  if (onbAllowed(e.target)) return;
+  e.preventDefault();
+  e.stopPropagation();
+  if (e.stopImmediatePropagation) e.stopImmediatePropagation();
+}
+
+let onbGuardArmed = false;
+const ONB_EVENTS = ['pointerdown','pointerup','mousedown','mouseup','click','dblclick',
+                    'touchstart','touchend','contextmenu','focusin','wheel'];
+
+function onbGuardOn() {
+  if (onbGuardArmed) return;
+  onbGuardArmed = true;
+  ONB_EVENTS.forEach(t => document.addEventListener(t, onbSwallow, { capture:true, passive:false }));
+  document.addEventListener('touchmove', onbSwallow, { capture:true, passive:false });
+  document.addEventListener('keydown', onbSwallowKey, { capture:true, passive:false });
+  /* аппаратная «назад» не выкидывает из обучения */
+  try { history.pushState({ onb:1 }, ''); } catch(e) {}
+  window.addEventListener('popstate', onbPop);
+  try {
+    if (window.PLAT && PLAT.tg && PLAT.tg.BackButton) PLAT.tg.BackButton.hide();
+  } catch(e) {}
+}
+
+function onbGuardOff() {
+  if (!onbGuardArmed) return;
+  onbGuardArmed = false;
+  ONB_EVENTS.forEach(t => document.removeEventListener(t, onbSwallow, { capture:true }));
+  document.removeEventListener('touchmove', onbSwallow, { capture:true });
+  document.removeEventListener('keydown', onbSwallowKey, { capture:true });
+  window.removeEventListener('popstate', onbPop);
+}
+
+function onbPop() {
+  if (!onbLocked()) return;
+  try { history.pushState({ onb:1 }, ''); } catch(e) {}
+  try { toast('Пройди знакомство до конца или нажми «Пропустить»'); } catch(e) {}
+}
+
 /* ============================================================
    ПОЛЬЗА — приветствие и интерактивное обучение
    ============================================================ */
@@ -3284,6 +3413,7 @@ function openWelcome() {
     document.body.appendChild(ov);
   }
   ov.classList.add('on');
+  onbLock(true);
   document.body.style.overflow = 'hidden';
   renderWel();
 }
@@ -3378,9 +3508,7 @@ function renderWel() {
   if (G('wel-skip')) G('wel-skip').onclick = () => finishWelcome(false);
   if (G('wel-x')) G('wel-x').onclick = () => {
     buzz('soft');
-    const ov=document.getElementById('wel');
-    if (ov) { ov.classList.remove('on'); ov.innerHTML=''; }
-    document.body.style.overflow='';
+    finishWelcome(false);
     toast('Обучение всегда есть в настройках');
   };
 
@@ -3411,13 +3539,14 @@ function renderWel() {
 function finishWelcome(withTour) {
   S.onboarded = true;
   S.welVer = WELCOME_VER;
+  if (!withTour) S.tourDone = true;
   DB.save();
   const ov = document.getElementById('wel');
   if (ov) {
     ov.classList.add('out');
     setTimeout(() => { ov.classList.remove('on', 'out'); ov.innerHTML = ''; }, 320);
   }
-  document.body.style.overflow = '';
+  if (!withTour) onbLock(false);
   render();
   if (withTour) setTimeout(startTour, 420);
   else toast('Готово. Напиши первую задачу — или продиктуй.');
@@ -3471,6 +3600,7 @@ function startTour() {
     document.body.appendChild(el);
   }
   el.classList.add('on');
+  onbLock(true, false);
   const xb=document.getElementById('tour-x');
   if (xb) xb.onclick = () => { buzz('soft'); endTour(); };
   setTimeout(renderTour, 60);
@@ -3574,15 +3704,22 @@ function renderTour() {
 }
 
 function endTour() {
+  onbLock(false);
   const el = document.getElementById('tour');
-  if (el) { el.classList.remove('on'); }
-  S.tourDone = true; DB.save();
+  if (el) { el.classList.remove('on'); el.innerHTML = ''; }
+  S.tourDone = true;
+  S.onboarded = true;
+  DB.save();
+  try { if (PLAT.tg && PLAT.tg.BackButton) PLAT.tg.BackButton.show(); } catch(e) {}
+  render();
   toast('💚 Готово. Приложение в твоём распоряжении.');
 }
 
 /* перезапуск из настроек */
 function openOnboarding() { openWelcome(); }
 
+</script>
+<script>
 /* ==== taskedit.js ==== */
 /* ============================================================
    ПОЛЬЗА — быстрая правка задачи
@@ -3724,6 +3861,8 @@ function bumpTaskMins(id, delta) {
 /* открыть задачу: полная карточка со всеми настройками */
 function openTask(id) { try { openDetail(id); } catch(e) { openTaskEdit(id); } }
 
+</script>
+<script>
 /* ==== statinfo.js ==== */
 /* ============================================================
    ПОЛЬЗА — карточки статистики: серия, сделано, уровень
@@ -3858,6 +3997,8 @@ function openStatInfo(kind) {
     <button class="btn ghost" onclick="closeSheet();go('prof')">Профиль и достижения</button>`);
 }
 
+</script>
+<script>
 /* ==== year.js ==== */
 /* ============================================================
    ПОЛЬЗА — календарь на год
@@ -4089,6 +4230,8 @@ function openDayCard(iso) {
   });
 }
 
+</script>
+<script>
 /* ==== music.js ==== */
 /* ============================================================
    ПОЛЬЗА — эмбиент и мелодии
@@ -4537,6 +4680,8 @@ document.addEventListener('visibilitychange', () => {
   if (document.hidden && MUS.on) musicStop();
 });
 
+</script>
+<script>
 /* ==== wave.js ==== */
 /* ============================================================
    ПОЛЬЗА — волна голоса: заливка градиентом, лайм
@@ -4737,6 +4882,8 @@ function waveLoop() {
 
 window.addEventListener('resize', () => { if (WV.canvas) waveResize(); });
 
+</script>
+<script>
 /* ==== support_data.js ==== */
 /* ========== ПОЛЬЗА — библиотека поддержки ==========
    108 упражнений × 10 состояний.
@@ -6109,6 +6256,8 @@ function pickExercise(stateId) {
   return ex;
 }
 
+</script>
+<script>
 /* ==== support_ui.js ==== */
 /* ========== ПОЛЬЗА — UI поддержки ========== */
 
@@ -6350,6 +6499,8 @@ function supShowEx(ex) {
 // 'support5': 5 раз использовал
 // Это добавится через checkAchievements
 
+</script>
+<script>
 /* ==== app.js ==== */
 /* ========== ПОЛЬЗА — ядро ========== */
 
@@ -6472,34 +6623,31 @@ function mkTask(o) {
   }, o);
 }
 
+/* первый запуск — приложение пустое, никаких чужих задач и достижений */
 if (!S.seeded) {
-  const t = logicalDate();
-  S.goals = [
-    { id:'g1', type:'project', title:'Вылечить зубы', icon:'🦷', color:'#3ddc97',
-      steps:[{title:'Записаться на осмотр',done:true,doneOn:addDays(t,-20)},
-             {title:'Сделать снимок',done:true,doneOn:addDays(t,-14)},
-             {title:'Вылечить два зуба',done:false,doneOn:null},
-             {title:'Профчистка',done:false,doneOn:null}],
-      created:addDays(t,-25), archived:false },
-    { id:'g2', type:'save', title:'Машина', icon:'🚗', color:'#5b8cff', target:900000, unit:'₽',
-      log:[{date:addDays(t,-60),amount:60000},{date:addDays(t,-30),amount:55000},{date:addDays(t,-3),amount:70000}],
-      created:addDays(t,-70), archived:false },
-    { id:'g3', type:'direction', title:'Здоровье в приоритете', icon:'🧭', color:'#ffb648',
-      cat:'zdo', share:20, created:addDays(t,-40), archived:false },
-  ];
-  S.tasks = [
-    mkTask({ id:1, title:'Помыть ванну', cat:'dom', mins:30, pts:15, repeat:'w1', created:addDays(t,-30) }),
-    mkTask({ id:2, title:'Зарядка', cat:'zdo', mins:15, pts:10, repeat:'wd', wdays:[1,2,3,4,5], goalId:'g3', created:addDays(t,-5) }),
-    mkTask({ id:3, title:'Позвонить клиенту', cat:'rab', mins:30, pts:100, val:'b', due:addDays(t,2), created:addDays(t,-2) }),
-    mkTask({ id:4, title:'Съёмка для клиента', cat:'rab', mins:300, pts:40, date:addDays(t,1), time:'11:00', created:t }),
-    mkTask({ id:5, title:'Записаться к стоматологу', cat:'zdo', mins:15, pts:10, val:'i', due:addDays(t,5), goalId:'g1', created:addDays(t,-40) }),
-    mkTask({ id:6, title:'Смонтировать ролик про ремонт', cat:null, mins:120, pts:20, created:t }),
-    mkTask({ id:7, title:'Разобрать почту', cat:null, mins:30, pts:10, created:t }),
-  ];
-  const hist=[70,125,45,100,85,60];
-  for (let i=6;i>=1;i--) S.days[addDays(t,-i)] = { pts:hist[6-i]||0 };
-  S.energy[addDays(t,-1)]=2; S.energy[addDays(t,-2)]=3; S.energy[addDays(t,-3)]=1;
+  S.tasks = []; S.goals = []; S.hall = [];
+  S.days = {}; S.notes = {}; S.energy = {};
+  S.achieved = []; S.achDates = {};
+  S.restDays = [];
   S.seeded = true; DB.save();
+}
+
+/* одноразовая чистка: у кого остались демо-данные от ранней сборки */
+if (!S.demoClean) {
+  const DEMO_T = ['Помыть ванну','Зарядка','Позвонить клиенту','Съёмка для клиента',
+                  'Записаться к стоматологу','Смонтировать ролик про ремонт','Разобрать почту'];
+  const DEMO_G = ['Вылечить зубы','Машина','Здоровье в приоритете'];
+  const hadDemo = (S.tasks||[]).some(t => DEMO_T.includes(t.title)) ||
+                  (S.goals||[]).some(g => DEMO_G.includes(g.title));
+  if (hadDemo) {
+    S.tasks = (S.tasks||[]).filter(t => !DEMO_T.includes(t.title));
+    S.goals = (S.goals||[]).filter(g => !DEMO_G.includes(g.title));
+    S.tasks.forEach(t => { if (t.goalId && !S.goals.some(g => g.id === t.goalId)) t.goalId = null; });
+    S.days = {}; S.notes = {}; S.energy = {}; S.restDays = [];
+    S.hall = []; S.achieved = []; S.achDates = {};
+    S.stats = { voice:0, timerRuns:0, quick:0, earlyBird:0, nightOwl:0, aiHelp:0, planRuns:0 };
+  }
+  S.demoClean = true; DB.save();
 }
 
 /* миграция */
@@ -6877,6 +7025,8 @@ function go(v) {
 }
 function setSeg(k,v){ seg[k]=v; render(); }
 
+</script>
+<script>
 /* ==== ach.js ==== */
 /* ========== ПОЛЬЗА — достижения и уведомления ========== */
 
@@ -6977,7 +7127,18 @@ const ACHIEVEMENTS = [
 ];
 
 function achProgress(){ const got=S.achieved.length, all=ACHIEVEMENTS.length; return { got, all, pct:Math.round(got/all*100) }; }
+function achEmptyStart() {
+  /* пустой аккаунт — ни одного достижения не выдаём */
+  try {
+    if ((S.tasks||[]).length) return false;
+    if (Object.keys(S.days||{}).length) return false;
+    if ((S.goals||[]).length || (S.hall||[]).length) return false;
+    if (totalDone() > 0 || lifetimePts() > 0) return false;
+    return true;
+  } catch(e) { return false; }
+}
 function checkAchievements() {
+  if (achEmptyStart()) return;
   if (!S.stats.icsExports) S.stats.icsExports = S.stats.icsExports||0;
   const fresh=[];
   ACHIEVEMENTS.forEach(a=>{
@@ -7100,6 +7261,8 @@ function checkNotifications() {
 }
 function testNotif(){ showNotif('Проверка связи ✅','Так будут выглядеть напоминания от «Пользы».','test'); }
 
+</script>
+<script>
 /* ==== reply.js ==== */
 /* ========== ПОЛЬЗА — банк ответов ========== */
 /* Плейсхолдеры: {pts} {weekSum} {avg} {activeDays} {goal} {streak} {done} */
@@ -7268,6 +7431,8 @@ function detectTopic(text) {
   return 'other';
 }
 
+</script>
+<script>
 /* ==== cal.js ==== */
 /* ========== ПОЛЬЗА — календарь, планировщик, ICS ========== */
 
@@ -7574,6 +7739,486 @@ function currentTask() {
   return { t:pool.sort((a,b)=>b.pts-a.pts)[0], why:'самая ценная из свободных' };
 }
 
+</script>
+<script>
+/* ==== sync.js ==== */
+/* ============================================================
+   СИНХРОНИЗАЦИЯ С КАЛЕНДАРЁМ
+   1. Подписка по ссылке  — Apple Calendar, Google, Outlook. Без входа.
+   2. Google Calendar API — вход один раз, мгновенное обновление.
+   ============================================================ */
+
+/* ---------- состояние ---------- */
+if (!S.sync) S.sync = {};
+if (!S.sync.feed) S.sync.feed = { base:'', token:'', on:false, last:0, err:'' };
+if (!S.sync.gcal) S.sync.gcal = { clientId:'', calId:'', email:'', on:false, last:0, pushed:{}, err:'' };
+
+const GTOK_KEY = 'polza.gtok';
+let GTOK = null;
+try { GTOK = JSON.parse(localStorage.getItem(GTOK_KEY) || 'null'); } catch(e) {}
+
+function gtokSave(t) {
+  GTOK = t;
+  try { t ? localStorage.setItem(GTOK_KEY, JSON.stringify(t)) : localStorage.removeItem(GTOK_KEY); } catch(e) {}
+}
+function gtokAlive() { return !!(GTOK && GTOK.token && GTOK.exp > Date.now() + 30000); }
+
+/* ============================================================
+   1. ПОДПИСКА ПО ССЫЛКЕ
+   ============================================================ */
+
+function feedToken() {
+  if (!S.sync.feed.token) {
+    const a = new Uint8Array(16);
+    (crypto.getRandomValues ? crypto.getRandomValues(a) : a.fill(7));
+    S.sync.feed.token = Array.from(a, b => b.toString(16).padStart(2,'0')).join('');
+    DB.save();
+  }
+  return S.sync.feed.token;
+}
+
+function feedBase() {
+  return (S.sync.feed.base || '').replace(/\/+$/, '');
+}
+
+function feedUrl(scheme) {
+  const b = feedBase();
+  if (!b) return '';
+  const u = b + '/c/' + feedToken() + '.ics';
+  if (scheme === 'webcal') return u.replace(/^https?:\/\//, 'webcal://');
+  return u;
+}
+
+async function feedPush(silent) {
+  const b = feedBase();
+  if (!b) { if (!silent) toast('Сначала укажи адрес сервера подписки'); return false; }
+  const { text, count } = buildICS();
+  try {
+    const r = await fetch(b + '/c/' + feedToken() + '.ics', {
+      method:'PUT',
+      headers:{ 'Content-Type':'text/calendar; charset=utf-8' },
+      body: text
+    });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    S.sync.feed.on = true;
+    S.sync.feed.last = Date.now();
+    S.sync.feed.err = '';
+    DB.save();
+    if (!silent) toast('Календарь обновлён · событий: ' + count);
+    return true;
+  } catch (e) {
+    S.sync.feed.err = String(e.message || e);
+    DB.save();
+    if (!silent) toast('Не получилось: ' + S.sync.feed.err);
+    return false;
+  }
+}
+
+function feedOff() {
+  S.sync.feed.on = false;
+  S.sync.feed.last = 0;
+  DB.save();
+  toast('Подписка отключена. Удали календарь в приложении календаря.');
+  openCalSync();
+}
+
+async function feedCopy() {
+  const u = feedUrl();
+  if (!u) return;
+  try {
+    await navigator.clipboard.writeText(u);
+    toast('Ссылка скопирована');
+  } catch (e) {
+    prompt('Скопируй ссылку вручную:', u);
+  }
+  buzz('tap');
+}
+
+function feedSubscribe() {
+  const u = feedUrl('webcal');
+  if (!u) return;
+  buzz('tap');
+  try { openExternal(u); } catch (e) { location.href = u; }
+}
+
+/* ============================================================
+   2. GOOGLE CALENDAR
+   ============================================================ */
+
+const GCAL_SCOPE = 'https://www.googleapis.com/auth/calendar';
+let gisReady = false;
+let gisClient = null;
+
+function gcalLoadGIS() {
+  return new Promise((res, rej) => {
+    if (gisReady && window.google && google.accounts) return res();
+    if (document.getElementById('gis-script')) {
+      const w = setInterval(() => {
+        if (window.google && google.accounts) { clearInterval(w); gisReady = true; res(); }
+      }, 120);
+      setTimeout(() => { clearInterval(w); rej(new Error('Google не загрузился')); }, 9000);
+      return;
+    }
+    const s = document.createElement('script');
+    s.id = 'gis-script';
+    s.src = 'https://accounts.google.com/gsi/client';
+    s.async = true; s.defer = true;
+    s.onload = () => { gisReady = true; res(); };
+    s.onerror = () => rej(new Error('Нет интернета или Google заблокирован'));
+    document.head.appendChild(s);
+  });
+}
+
+function gcalToken(interactive) {
+  return new Promise(async (res, rej) => {
+    if (gtokAlive()) return res(GTOK.token);
+    const cid = (S.sync.gcal.clientId || '').trim();
+    if (!cid) return rej(new Error('Не указан Client ID'));
+    try { await gcalLoadGIS(); } catch (e) { return rej(e); }
+
+    gisClient = google.accounts.oauth2.initTokenClient({
+      client_id: cid,
+      scope: GCAL_SCOPE,
+      callback: (r) => {
+        if (r && r.access_token) {
+          gtokSave({ token: r.access_token, exp: Date.now() + (r.expires_in || 3600) * 1000 });
+          res(r.access_token);
+        } else {
+          rej(new Error('Google не выдал доступ'));
+        }
+      },
+      error_callback: (e) => rej(new Error((e && e.type) === 'popup_closed' ? 'Окно Google закрыто' : 'Google отказал в доступе'))
+    });
+    gisClient.requestAccessToken({ prompt: interactive ? 'consent' : '' });
+  });
+}
+
+async function gapi(path, opts) {
+  const tk = await gcalToken(false);
+  opts = opts || {};
+  const r = await fetch('https://www.googleapis.com/calendar/v3' + path, {
+    method: opts.method || 'GET',
+    headers: Object.assign({ Authorization: 'Bearer ' + tk, 'Content-Type': 'application/json' }, opts.headers || {}),
+    body: opts.body ? JSON.stringify(opts.body) : undefined
+  });
+  if (r.status === 401) { gtokSave(null); throw new Error('Доступ истёк, нужно войти заново'); }
+  if (r.status === 404) return null;
+  if (!r.ok) {
+    let m = 'HTTP ' + r.status;
+    try { const j = await r.json(); if (j.error && j.error.message) m = j.error.message; } catch (e) {}
+    throw new Error(m);
+  }
+  if (r.status === 204) return {};
+  return r.json();
+}
+
+async function gcalEnsureCalendar() {
+  if (S.sync.gcal.calId) {
+    const ok = await gapi('/calendars/' + encodeURIComponent(S.sync.gcal.calId));
+    if (ok) return S.sync.gcal.calId;
+    S.sync.gcal.calId = '';
+  }
+  const list = await gapi('/users/me/calendarList');
+  const found = list && list.items && list.items.find(c => c.summary === 'ПОЛЬЗА');
+  if (found) { S.sync.gcal.calId = found.id; DB.save(); return found.id; }
+
+  const made = await gapi('/calendars', {
+    method: 'POST',
+    body: { summary: 'ПОЛЬЗА', description: 'Задачи из приложения ПОЛЬЗА',
+            timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC' }
+  });
+  S.sync.gcal.calId = made.id; DB.save();
+  try {
+    await gapi('/users/me/calendarList/' + encodeURIComponent(made.id), {
+      method: 'PATCH', body: { backgroundColor: '#c5f82a', foregroundColor: '#0a0f04', selected: true }
+    });
+  } catch (e) {}
+  return made.id;
+}
+
+function gEventId(id) { return 'polza' + Number(id).toString(32).replace(/[^a-v0-9]/g, ''); }
+
+function gDateTime(iso, time) {
+  const [h, m] = (time || '09:00').split(':').map(Number);
+  return iso + 'T' + String(h).padStart(2,'0') + ':' + String(m || 0).padStart(2,'0') + ':00';
+}
+
+function gAddMin(iso, time, mins) {
+  const [h, m] = (time || '09:00').split(':').map(Number);
+  const d = new Date(iso + 'T00:00:00');
+  d.setHours(h, (m || 0) + mins, 0, 0);
+  const p = n => String(n).padStart(2, '0');
+  return d.getFullYear() + '-' + p(d.getMonth()+1) + '-' + p(d.getDate()) +
+         'T' + p(d.getHours()) + ':' + p(d.getMinutes()) + ':00';
+}
+
+function gcalTasks() {
+  return S.tasks.filter(t => {
+    const rep = t.repeat !== 'none';
+    if (!t.date && !t.due && !rep) return false;
+    if (t.done && !rep) return false;
+    return true;
+  });
+}
+
+async function gcalPush(silent) {
+  if (!(S.sync.gcal.clientId || '').trim()) { if (!silent) toast('Сначала укажи Client ID'); return false; }
+  const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
+  try {
+    const cal = await gcalEnsureCalendar();
+    const list = gcalTasks();
+    const seen = {};
+
+    for (const t of list) {
+      const eid = gEventId(t.id);
+      seen[eid] = 1;
+      const start = t.date || t.due || logicalDate();
+      const time = t.time || t.planned || '09:00';
+      const g = t.goalId ? goalById(t.goalId) : null;
+      const desc = [];
+      if (t.desc) desc.push(t.desc);
+      desc.push('Категория: ' + catOf(t.cat).name + ' · ' + t.pts + ' баллов · ' + t.mins + ' мин');
+      if (g) desc.push('Цель: ' + g.title);
+      if (t.subs && t.subs.length) desc.push('Этапы:\n' + t.subs.map(s => '• ' + s.title).join('\n'));
+
+      const body = {
+        id: eid,
+        summary: (valueOf(t.val).icon ? valueOf(t.val).icon + ' ' : '') + t.title,
+        description: desc.join('\n\n'),
+        start: { dateTime: gDateTime(start, time), timeZone: tz },
+        end:   { dateTime: gAddMin(start, time, Math.max(15, t.mins)), timeZone: tz },
+        reminders: { useDefault: false, overrides: [{ method: 'popup', minutes: S.notify.lead || 10 }] },
+        source: { title: 'ПОЛЬЗА', url: location.origin + location.pathname }
+      };
+      const rr = icsRRule(t);
+      if (rr) body.recurrence = [rr];
+
+      const upd = await gapi('/calendars/' + encodeURIComponent(cal) + '/events/' + eid,
+                             { method: 'PUT', body });
+      if (upd === null) {
+        await gapi('/calendars/' + encodeURIComponent(cal) + '/events', { method: 'POST', body });
+      }
+    }
+
+    const old = S.sync.gcal.pushed || {};
+    for (const eid in old) {
+      if (!seen[eid]) {
+        try { await gapi('/calendars/' + encodeURIComponent(cal) + '/events/' + eid, { method: 'DELETE' }); } catch (e) {}
+      }
+    }
+
+    S.sync.gcal.pushed = seen;
+    S.sync.gcal.on = true;
+    S.sync.gcal.last = Date.now();
+    S.sync.gcal.err = '';
+    DB.save();
+    if (!silent) toast('Google Calendar обновлён · событий: ' + list.length);
+    return true;
+  } catch (e) {
+    S.sync.gcal.err = String(e.message || e);
+    DB.save();
+    if (!silent) toast('Не получилось: ' + S.sync.gcal.err);
+    return false;
+  }
+}
+
+async function gcalConnect() {
+  const cid = (S.sync.gcal.clientId || '').trim();
+  if (!cid) { toast('Сначала укажи Client ID'); return; }
+  toast('Открываю вход в Google…');
+  try {
+    await gcalToken(true);
+    const me = await gapi('/users/me/calendarList?maxResults=1');
+    S.sync.gcal.email = (me && me.summary) || '';
+    await gcalPush(false);
+    openCalSync();
+  } catch (e) {
+    S.sync.gcal.err = String(e.message || e);
+    DB.save();
+    toast('Вход не удался: ' + S.sync.gcal.err);
+    openCalSync();
+  }
+}
+
+function gcalDisconnect() {
+  try { if (gtokAlive() && window.google && google.accounts) google.accounts.oauth2.revoke(GTOK.token); } catch (e) {}
+  gtokSave(null);
+  S.sync.gcal.on = false;
+  S.sync.gcal.pushed = {};
+  DB.save();
+  toast('Google отключён');
+  openCalSync();
+}
+
+/* ============================================================
+   АВТОСИНХРОНИЗАЦИЯ
+   ============================================================ */
+
+let syncTimer = null;
+
+function syncSoon() {
+  if (!S.sync) return;
+  if (!S.sync.feed.on && !S.sync.gcal.on) return;
+  clearTimeout(syncTimer);
+  syncTimer = setTimeout(async () => {
+    if (S.sync.feed.on && feedBase()) await feedPush(true);
+    if (S.sync.gcal.on && gtokAlive()) await gcalPush(true);
+  }, 4000);
+}
+
+(function hookSave() {
+  const orig = DB.save.bind(DB);
+  DB.save = function () { orig(); try { syncSoon(); } catch (e) {} };
+})();
+
+/* обновление при возврате в приложение и раз в 15 минут, пока оно открыто */
+async function syncNow(silent) {
+  if (!S.sync) return;
+  let ok = false;
+  if (S.sync.feed.on && feedBase()) ok = await feedPush(silent !== false) || ok;
+  if (S.sync.gcal.on && gtokAlive()) ok = await gcalPush(silent !== false) || ok;
+  return ok;
+}
+
+function syncStale(ms) {
+  const f = S.sync.feed, g = S.sync.gcal;
+  const last = Math.max(f.on ? (f.last || 0) : 0, g.on ? (g.last || 0) : 0);
+  if (!last) return (f.on || g.on);
+  return Date.now() - last > ms;
+}
+
+(function autoSync() {
+  const EVERY = 15 * 60 * 1000;
+  /* при старте — если данные в календаре устарели */
+  setTimeout(() => { if (syncStale(EVERY)) syncNow(true); }, 3000);
+  /* пока приложение открыто */
+  setInterval(() => { if (!document.hidden && syncStale(EVERY)) syncNow(true); }, 5 * 60 * 1000);
+  /* вернулись в приложение */
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden && syncStale(EVERY)) syncNow(true);
+  });
+})();
+
+function syncAgo(ts) {
+  if (!ts) return 'ещё не отправлялось';
+  const m = Math.round((Date.now() - ts) / 60000);
+  if (m < 1) return 'только что';
+  if (m < 60) return m + ' ' + plural(m, 'минуту', 'минуты', 'минут') + ' назад';
+  const h = Math.round(m / 60);
+  if (h < 24) return h + ' ' + plural(h, 'час', 'часа', 'часов') + ' назад';
+  return Math.round(h / 24) + ' дн. назад';
+}
+
+/* ============================================================
+   ЭКРАН НАСТРОЙКИ
+   ============================================================ */
+
+function openCalSync() {
+  const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+  const n = gcalTasks().length;
+  const f = S.sync.feed, g = S.sync.gcal;
+  const hasFeed = !!feedBase();
+
+  sheet(`
+    <div class="sh-h"><b>📆 Календарь телефона</b></div>
+    <div class="tip">Задач с датой, сроком или повтором: <b>${n}</b>.
+      Только они попадают в календарь.</div>
+
+    <div class="secline">Способ 1 · Подписка по ссылке</div>
+    <div class="tip">Работает в Apple Calendar, Google, Outlook. <b>Вход не нужен.</b>
+      Календарь сам обновляется в фоне.</div>
+
+    ${!hasFeed ? `
+      <div class="synccard off">
+        <div class="sync-t">Нужен адрес сервера подписки</div>
+        <div class="sync-d">Один раз разверни бесплатный Cloudflare Worker
+          (файл <b>worker.js</b> и инструкция лежат в архиве) и вставь его адрес сюда.</div>
+      </div>` : `
+      <div class="synccard ${f.on ? 'on' : ''}">
+        <div class="sync-t">${f.on ? '✓ Подписка активна' : 'Подписка готова к запуску'}</div>
+        <div class="sync-d">${f.on ? 'Отправлено ' + syncAgo(f.last) : 'Нажми «Обновить», потом добавь ссылку в календарь.'}</div>
+        <div class="sync-url">${esc(feedUrl())}</div>
+        ${f.err ? `<div class="sync-err">${esc(f.err)}</div>` : ''}
+      </div>
+      <div class="row2">
+        <button class="btn" style="flex:1;margin:0" onclick="feedPush(false)">↻ Обновить</button>
+        <button class="btn ghost" style="flex:1;margin:0" onclick="feedCopy()">📋 Копировать</button>
+      </div>
+      <button class="btn ghost" onclick="feedSubscribe()">
+        ${isIOS ? '📲 Подписаться в Apple Calendar' : '📲 Открыть ссылку подписки'}</button>
+      ${f.on ? `<button class="btn ghost" onclick="feedOff()">Отключить подписку</button>` : ''}
+      <div class="tip">
+        <b>iPhone:</b> Настройки → Календарь → Учётные записи → Другое →
+        Подписной календарь → вставь ссылку.<br>
+        <b>Google:</b> Другие календари → «+» → «Добавить по URL» → вставь ссылку.
+      </div>`}
+
+    <label>Адрес сервера подписки</label>
+    <input type="text" id="sy-base" value="${esc(f.base || '')}"
+      placeholder="https://polza-cal.твой-логин.workers.dev" autocomplete="off" spellcheck="false">
+    <button class="btn ghost" onclick="saveFeedBase()">Сохранить адрес</button>
+
+    <div class="secline">Способ 2 · Google Calendar напрямую</div>
+    <div class="tip">Вход в Google <b>один раз</b>. Дальше события появляются сразу
+      в отдельном календаре «ПОЛЬЗА», не мешая твоим.</div>
+
+    <div class="synccard ${g.on && gtokAlive() ? 'on' : 'off'}">
+      <div class="sync-t">${g.on && gtokAlive() ? '✓ Google подключён' : g.on ? 'Нужен повторный вход' : 'Google не подключён'}</div>
+      <div class="sync-d">${g.on ? (g.email ? esc(g.email) + ' · ' : '') + 'отправлено ' + syncAgo(g.last)
+        : 'Подключи, чтобы задачи улетали в календарь автоматически.'}</div>
+      ${g.err ? `<div class="sync-err">${esc(g.err)}</div>` : ''}
+    </div>
+
+    <label>Google Client ID</label>
+    <input type="text" id="sy-cid" value="${esc(g.clientId || '')}"
+      placeholder="xxxxx.apps.googleusercontent.com" autocomplete="off" spellcheck="false">
+    <button class="btn ghost" onclick="saveGcalId()">Сохранить Client ID</button>
+
+    ${g.on && gtokAlive() ? `
+      <div class="row2">
+        <button class="btn" style="flex:1;margin:0" onclick="gcalPush(false)">↻ Обновить сейчас</button>
+        <button class="btn ghost" style="flex:1;margin:0" onclick="gcalDisconnect()">Отключить</button>
+      </div>`
+    : `<button class="btn" onclick="gcalConnect()">🔗 Подключить Google Calendar</button>`}
+
+    <div class="secline">Способ 3 · Разовый файл</div>
+    <div class="tip">Скачать .ics и открыть в любом календаре. Без интернета и настроек.</div>
+    <button class="btn ghost" onclick="shareICS()">📤 Отправить файл в календарь</button>
+    <button class="btn ghost" onclick="exportICS()">💾 Скачать .ics</button>
+    <button class="btn ghost" onclick="document.getElementById('icsimp').click()">📂 Загрузить .ics в приложение</button>
+    <input type="file" id="icsimp" accept=".ics,text/calendar" style="display:none" onchange="importICS(this)">
+  `);
+}
+
+function saveFeedBase() {
+  const v = (document.getElementById('sy-base').value || '').trim();
+  if (v && !/^https?:\/\//i.test(v)) { toast('Адрес должен начинаться с https://'); return; }
+  S.sync.feed.base = v.replace(/\/+$/, '');
+  if (!v) S.sync.feed.on = false;
+  DB.save(); buzz('tap');
+  toast(v ? 'Адрес сохранён' : 'Адрес очищен');
+  openCalSync();
+}
+
+function saveGcalId() {
+  const v = (document.getElementById('sy-cid').value || '').trim();
+  S.sync.gcal.clientId = v;
+  if (!v) { S.sync.gcal.on = false; gtokSave(null); }
+  DB.save(); buzz('tap');
+  toast(v ? 'Client ID сохранён' : 'Client ID очищен');
+  openCalSync();
+}
+
+function openExternal(url) {
+  if (typeof PLAT !== 'undefined' && PLAT.host === 'telegram' && window.Telegram && Telegram.WebApp.openLink) {
+    Telegram.WebApp.openLink(url.replace(/^webcal:\/\//, 'https://'));
+    return;
+  }
+  window.open(url, '_blank');
+}
+
+</script>
+<script>
 /* ==== app2.js ==== */
 /* ========== ПОЛЬЗА — ввод, голос, карточки, свайпы ========== */
 
@@ -8138,6 +8783,8 @@ function closeSheet() {
   document.body.classList.remove('sheet-open');
 }
 
+</script>
+<script>
 /* ==== ai.js ==== */
 /* ========== ПОЛЬЗА — нейросеть без ключей ========== */
 
@@ -8654,6 +9301,8 @@ function openAISetup() {
   };
 }
 
+</script>
+<script>
 /* ==== detail.js ==== */
 /* ========== ПОЛЬЗА — детали задачи, формы, цели, категории ========== */
 
@@ -9158,6 +9807,8 @@ function renderGoalForm(isEdit) {
   };
 }
 
+</script>
+<script>
 /* ==== app3.js ==== */
 /* ========== ПОЛЬЗА — экраны ========== */
 
@@ -9570,6 +10221,8 @@ function openDayReport(iso) {
   });
 }
 
+</script>
+<script>
 /* ==== device.js ==== */
 /* ========== ПОЛЬЗА — доступы, календарь, уведомления, онбординг ========== */
 
@@ -9874,6 +10527,8 @@ function bootDevice() {
   document.addEventListener('visibilitychange', () => { if (!document.hidden) { checkNotifications(); } });
 }
 
+</script>
+<script>
 /* ==== app4.js ==== */
 /* ========== ПОЛЬЗА — профиль, настройки, синхронизация, рендер ========== */
 
@@ -10164,47 +10819,6 @@ function openNotifySetup() {
   };
 }
 
-function openCalSync() {
-  const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
-  const withDates = S.tasks.filter(t=>t.date||t.due||t.repeat!=='none').length;
-  sheet(`
-    <div class="sh-h"><b>📆 Календарь телефона</b></div>
-    <div class="card" style="margin:0 0 12px"><div class="rows">
-      <div class="row"><span>Задач с датой или сроком</span><b>${withDates}</b></div>
-      <div class="row"><span>Напоминание в календаре</span><b>за ${S.notify.lead||10} мин</b></div>
-    </div></div>
-
-    <div class="ai" style="margin-top:0"><div class="who">КАК ЭТО РАБОТАЕТ</div>
-      Приложение делает файл <b>.ics</b> — стандартный формат календаря. Он открывается и в iPhone, и в Android, и в Google Календаре.
-      Внутри: время, длительность, категория, описание, этапы, ссылки, повторы и будильник за ${S.notify.lead||10} минут.
-      <br><br>Дальше телефон напоминает сам — даже если «Польза» закрыта.</div>
-
-    <button class="btn" id="cs-share">${isIOS?'📤 Открыть в Календаре':'📤 Отправить в календарь'}</button>
-    <button class="btn ghost" id="cs-dl">💾 Скачать файл .ics</button>
-
-    <div class="secline">Инструкция</div>
-    <div class="howto">
-      <b>iPhone</b>
-      <div>1. Нажми «Открыть в Календаре»<br>2. Выбери «Календарь» в списке приложений<br>3. Подтверди «Добавить все»<br>4. События появятся с будильниками</div>
-      <b>Android</b>
-      <div>1. Нажми «Отправить в календарь»<br>2. Выбери Google Календарь или «Файлы»<br>3. Если сохранил файл — открой Google Календарь → Настройки → Импорт<br>4. Укажи скачанный файл</div>
-      <b>Компьютер</b>
-      <div>Скачай .ics и открой двойным кликом либо импортируй в календаре Google через «Настройки → Импорт и экспорт».</div>
-    </div>
-
-    <div class="secline">Обратно из календаря</div>
-    <div class="tip" style="margin:0 0 8px">Если у тебя есть встречи в календаре — выгрузи их в .ics и загрузи сюда, они станут задачами.</div>
-    <button class="btn ghost" onclick="document.getElementById('icsin').click()">📥 Загрузить .ics в «Пользу»</button>
-    <input type="file" id="icsin" accept=".ics,text/calendar" style="display:none" onchange="importICS(this)">
-
-    <div class="warnbox" style="margin-top:14px">Выгрузка — односторонняя и разовая: сделал изменения в «Пользе» — выгрузи заново, старые события с теми же задачами обновятся сами (у них одинаковый идентификатор).
-      Живая двусторонняя синхронизация требует сервера и аккаунта — этого в офлайн-версии нет.</div>
-    <button class="btn ghost" onclick="closeSheet()">Закрыть</button>
-  `);
-  document.getElementById('cs-share').onclick = shareICS;
-  document.getElementById('cs-dl').onclick = exportICS;
-}
-
 function openInstall() {
   const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
   sheet(`
@@ -10324,6 +10938,7 @@ function initSwipeNav() {
   };
 
   app.addEventListener('touchstart', e => {
+    if (document.documentElement.classList.contains('onb-lock')) return;
     if (e.touches.length!==1 || blocked(e)) { active=false; return; }
     W = window.innerWidth;
     x0=e.touches[0].clientX; y0=e.touches[0].clientY;
@@ -10332,6 +10947,7 @@ function initSwipeNav() {
   }, {passive:true});
 
   app.addEventListener('touchmove', e => {
+    if (document.documentElement.classList.contains('onb-lock')) return;
     if (!active) return;
     const dx=e.touches[0].clientX-x0, dy=e.touches[0].clientY-y0;
 
@@ -10465,6 +11081,5 @@ setInterval(checkNotifications, 60000);
 document.addEventListener('visibilitychange', ()=>{ if(!document.hidden){ checkNotifications(); render(); } });
 
 </script>
-
 </body>
 </html>
