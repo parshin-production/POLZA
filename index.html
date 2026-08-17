@@ -7,7 +7,7 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
-<meta name="build" content="v9">
+<meta name="build" content="v14">
 <meta name="theme-color" content="#0a0b0d">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -36,6 +36,7 @@ body{margin:0;background:var(--bg);color:var(--tx);
 h1{font-size:25px;margin:4px 0 2px;letter-spacing:-.5px}
 .sub{color:var(--tx2);font-size:12.5px}
 .tophead{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:14px}
+.headbtns{display:flex;gap:8px;flex:none}
 .iconround{width:40px;height:40px;border-radius:13px;background:var(--card);border:1px solid var(--line);
   color:var(--tx);font-size:17px;flex:none}
 .card{background:var(--card);border-radius:18px;padding:16px;margin-bottom:12px;border:1px solid var(--line)}
@@ -2733,7 +2734,8 @@ body.sheet-open{overflow:hidden}
 
 /* ---------------- ТЕКСТ ВЛЕЗАЕТ НА ЭКРАН ---------------- */
 .tip,.wel-text,.tour-card p,.sup-why,.dc-meta,.loose-hint,.timefix-note{
-  overflow-wrap:break-word;word-break:normal;hyphens:auto}
+  overflow-wrap:break-word;word-break:normal;
+  -webkit-hyphens:auto;hyphens:auto}
 .sec h3{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:64vw}
 .tt{overflow-wrap:break-word}
 .mus-txt i{overflow-wrap:break-word}
@@ -2842,12 +2844,18 @@ nav button .ic svg{width:25px !important;height:25px !important;stroke-width:1.8
 .si-hint{font-size:13px;color:var(--tx2);margin-bottom:16px;line-height:1.55}
 .si-hint b{color:var(--acc);font-weight:700}
 
-/* ---------------- ТЕКСТЫ ПОМЕЩАЮТСЯ НА ЭКРАН ---------------- */
+/* ---------------- ТЕКСТЫ ПОМЕЩАЮТСЯ НА ЭКРАН ----------------
+   overflow-wrap:anywhere рвёт слово по любой букве («Смонтиро-вать»
+   вместо переноса по границе слова). Меняем на break-word + hyphens:
+   сначала пытаемся перенести по пробелу, и только если слово одно
+   и не помещается целиком — переносим по слогам с дефисом. */
 .tt,.nowtitle,.hall-title,.dc-t,.mus-txt b,.sh-h b,.si-row span{
-  overflow-wrap:anywhere;
+  overflow-wrap:break-word; word-break:normal;
+  -webkit-hyphens:auto; hyphens:auto;
 }
 .sh-h b{font-size:20px;line-height:1.25;display:block;
-  max-width:100%;overflow-wrap:anywhere}
+  max-width:100%;overflow-wrap:break-word;word-break:normal;
+  -webkit-hyphens:auto;hyphens:auto}
 .sh-h .sup-exsrc{display:block;margin-top:4px;font-size:12.5px}
 .tt{font-size:15.5px;line-height:1.35}
 .nowtitle{font-size:18px;line-height:1.3}
@@ -7858,7 +7866,13 @@ function buildICS(opts) {
   opts = opts || {};
   const now = new Date();
   const L = ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Polza//RU','CALSCALE:GREGORIAN','METHOD:PUBLISH',
-             'X-WR-CALNAME:Польза','X-WR-TIMEZONE:'+(Intl.DateTimeFormat().resolvedOptions().timeZone||'UTC')];
+             'X-WR-CALNAME:Польза','X-WR-TIMEZONE:'+(Intl.DateTimeFormat().resolvedOptions().timeZone||'UTC'),
+             /* как часто телефону перечитывать подписку. Без этих строк iPhone
+                опрашивает подписной календарь редко (иногда раз в сутки) — и человеку
+                кажется, что синхронизация работает только по кнопке. */
+             'REFRESH-INTERVAL;VALUE=DURATION:PT15M',
+             'X-PUBLISHED-TTL:PT15M',
+             'X-WR-CALDESC:Задачи из приложения ПОЛЬЗА'];
   let n = 0;
 
   S.tasks.forEach(t => {
@@ -7881,6 +7895,7 @@ function buildICS(opts) {
     L.push('BEGIN:VEVENT');
     L.push('UID:polza-'+t.id+'@polza.app');
     L.push('DTSTAMP:'+icsStamp(now));
+    L.push('LAST-MODIFIED:'+icsStamp(now));
     L.push('DTSTART:'+icsLocal(startDate, time));
     L.push('DTEND:'+icsLocal(startDate, time, Math.max(15, t.mins)));
     L.push('SUMMARY:'+icsEsc((valueOf(t.val).icon?valueOf(t.val).icon+' ':'')+t.title));
@@ -7900,6 +7915,7 @@ function buildICS(opts) {
       L.push('BEGIN:VEVENT');
       L.push('UID:polza-due-'+t.id+'@polza.app');
       L.push('DTSTAMP:'+icsStamp(now));
+      L.push('LAST-MODIFIED:'+icsStamp(now));
       L.push('DTSTART;VALUE=DATE:'+t.due.replace(/-/g,''));
       L.push('DTEND;VALUE=DATE:'+addDays(t.due,1).replace(/-/g,''));
       L.push('SUMMARY:'+icsEsc('⏳ Срок: '+t.title));
@@ -8163,7 +8179,8 @@ const CAL_CFG = {
 
 /* ---------- состояние ---------- */
 if (!S.sync) S.sync = {};
-if (!S.sync.feed) S.sync.feed = { base:'', token:'', on:false, auto:true, last:0, err:'' };
+if (!S.sync.feed) S.sync.feed = { base:'', token:'', on:false, auto:true, last:0, err:'', subOpened:0 };
+if (S.sync.feed.subOpened === undefined) S.sync.feed.subOpened = S.sync.feed.on ? Date.now() : 0;
 if (S.sync.feed.auto === undefined) S.sync.feed.auto = true;
 if (!S.sync.gcal) S.sync.gcal = { clientId:'', calId:'', email:'', on:false, last:0, pushed:{}, err:'' };
 
@@ -8233,6 +8250,30 @@ async function feedPush(silent) {
   }
 }
 
+/* кнопка-иконка рядом с шестерёнкой: ручное обновление календаря
+   без повторного показа системного окна подписки телефона —
+   подписка уже оформлена, нужно только обновить данные на сервере. */
+/* показывать ли иконку 📅 рядом с шестерёнкой:
+   да — если сервер подписки настроен и человек уже подключал календарь.
+   Важно: НЕ завязано на автообновление — кнопка нужна именно тогда,
+   когда авто выключено или не сработало. */
+function calBtnVisible() {
+  try {
+    if (typeof feedBase !== 'function' || !feedBase()) return false;
+    if (S.sync && S.sync.feed && (S.sync.feed.on || S.sync.feed.subOpened)) return true;
+    if (S.perm && S.perm.cal === 'on') return true;
+  } catch (e) {}
+  return false;
+}
+
+async function calQuickSyncBtn() {
+  try { buzz('tap'); } catch (e) {}
+  if (!feedBase()) { toast('Календарь ещё не подключён · Профиль → ⚙️ → Календарь телефона'); return; }
+  toast('Обновляю календарь…');
+  const ok = await feedPush(true);
+  toast(ok ? '✓ Календарь обновлён' : 'Не получилось · ' + (S.sync.feed.err || 'проверь соединение'));
+}
+
 function feedAutoToggle() {
   if (!S.sync || !S.sync.feed) return;
   S.sync.feed.auto = (S.sync.feed.auto === false);
@@ -8248,6 +8289,7 @@ function feedAutoToggle() {
 function feedOff() {
   S.sync.feed.on = false;
   S.sync.feed.last = 0;
+  S.sync.feed.subOpened = 0;   /* отключились — при новом подключении окно подписки нужно показать снова */
   DB.save();
   toast('Отключено. Удали календарь ПОЛЬЗА в приложении Календарь.');
   openCalSync();
@@ -8269,7 +8311,28 @@ function feedSubscribe() {
   const u = feedUrl('webcal');
   if (!u) return;
   buzz('tap');
+  /* помечаем, что системное окно подписки телефона уже открывалось.
+     Именно по этому флагу (а не по feed.on) решаем, показывать ли его снова:
+     feed.on ставится при любой удачной отправке на сервер, даже если человек
+     закрыл окно подписки — тогда он остался бы без календаря навсегда. */
+  try { S.sync.feed.subOpened = Date.now(); DB.save(); } catch (e) {}
   try { openExternal(u); } catch (e) { location.href = u; }
+}
+
+/* Повторное открытие подписки — только осознанно.
+   iPhone на каждое подтверждение webcal-ссылки заводит ОТДЕЛЬНЫЙ календарь,
+   поэтому вторая и последующие подписки дают дубли задач разного цвета.
+   Если подписка уже оформлена — сначала спрашиваем. */
+function feedSubscribeAgain() {
+  const already = !!(S.sync && S.sync.feed && S.sync.feed.subOpened);
+  if (!already) { feedSubscribe(); return; }
+  const ok = confirm(
+    'Календарь ПОЛЬЗЫ уже подключён к телефону — он обновляется сам.\n\n' +
+    'Если подписаться ещё раз, телефон заведёт ВТОРОЙ календарь, и задачи будут ' +
+    'показываться дважды.\n\nПодписаться повторно всё равно?'
+  );
+  if (ok) feedSubscribe();
+  else toast('Календарь уже подключён · задачи обновляются сами');
 }
 
 /* ============================================================
@@ -8311,7 +8374,7 @@ async function calQuickSync() {
    человек не понимал, зачем два шага.
    ============================================================ */
 async function feedSyncNow() {
-  const first = !S.sync.feed.on;
+  const first = !S.sync.feed.subOpened;
   toast(first ? 'Готовлю задачи…' : 'Обновляю календарь…');
 
   const ok = await feedPush(true);
@@ -8681,7 +8744,7 @@ function openCalSync() {
         <button class="btn ghost" onclick="feedAutoToggle()">
           ${f.auto !== false ? 'Выключить автообновление' : 'Включить автообновление'}</button>
         <div class="row2">
-          <button class="btn ghost" style="flex:1;margin:0" onclick="feedSubscribe()">📲 Открыть в календаре</button>
+          <button class="btn ghost" style="flex:1;margin:0" onclick="feedSubscribeAgain()">📲 Открыть в календаре</button>
           <button class="btn ghost" style="flex:1;margin:0" onclick="feedOff()">Отключить</button>
         </div>` : ''}
 
@@ -10377,7 +10440,10 @@ function viewToday() {
       <h1>${relDay(d)} ${g.emoji}</h1>
       <div class="sub">${fmtRu(d)}, ${dowFull(d)}${st>1?` · серия ${st} 🔥`:''}</div>
     </div>
-    <button class="iconround" onclick="openSettings()">⚙️</button>
+    <div class="headbtns">
+      ${calBtnVisible() ? `<button class="iconround" onclick="calQuickSyncBtn()" title="Синхронизировать календарь">📅</button>` : ''}
+      <button class="iconround" onclick="openSettings()">⚙️</button>
+    </div>
   </div>
 
   <div class="card" style="--gl:${rgba(g.color,.15)}">
@@ -12518,17 +12584,31 @@ function askCalendarAccess(opts) {
     b.textContent = 'Готовлю задачи…';
     try { buzz('tap'); } catch (e) {}
 
+    /* важно: запоминаем ДО пуша — была ли подписка уже оформлена раньше.
+       Системное окно подписки телефона открываем только один раз в жизни:
+       повторное открытие создаёт в телефоне ВТОРОЙ, третий и т.д. отдельный
+       календарь с теми же задачами (телефон не считает ссылку прежней). */
+    const alreadySubscribed = !!(S.sync && S.sync.feed && S.sync.feed.subOpened);
+
     const okLive = live ? await calTryLive() : false;
 
     closeCalAsk();
 
     if (okLive) {
-      /* сервер принял — отправляем в системное окно подписки */
       try { S.perm.cal = 'on'; DB.save(); } catch (e) {}
-      setTimeout(() => { try { feedSubscribe(); } catch (e) {} }, 220);
-      setTimeout(() => {
-        try { toast('✓ Подтверди в окне телефона — и календарь заработает'); } catch (e) {}
-      }, 900);
+      if (!alreadySubscribed) {
+        /* первое подключение — открываем системное окно подписки один раз */
+        setTimeout(() => { try { feedSubscribe(); } catch (e) {} }, 220);
+        setTimeout(() => {
+          try { toast('✓ Подтверди в окне телефона — и календарь заработает'); } catch (e) {}
+        }, 900);
+      } else {
+        /* подписка уже есть — просто обновили данные на сервере,
+           телефон подтянет их сам, окно подписки заново НЕ открываем */
+        setTimeout(() => {
+          try { toast('✓ Обновлено · календарь подтянет новые задачи сам'); } catch (e) {}
+        }, 300);
+      }
     } else {
       /* сервера нет или он не ответил — отдаём файл, телефон примет его сам */
       try { S.perm.cal = 'on'; DB.save(); } catch (e) {}
@@ -12555,7 +12635,23 @@ function askCalendarAccess(opts) {
 async function calTryLive() {
   try {
     const ok = await feedPush(true);
-    return !!ok;
+    if (!ok) return false;
+    /* Проверяем, что сервер ДЕЙСТВИТЕЛЬНО отдаёт календарь по ссылке подписки.
+       Бывает, что запись проходит (PUT 200), а чтение возвращает не тот ответ —
+       тогда телефон подпишется на пустышку и задачи не появятся никогда.
+       В этом случае честнее сразу отдать файл календаря. */
+    const u = feedUrl();
+    if (!u) return false;
+    const r = await fetch(u + '?probe=' + Date.now(), { cache: 'no-store' });
+    if (!r.ok) return false;
+    const head = (await r.text()).slice(0, 400);
+    if (head.indexOf('BEGIN:VCALENDAR') === -1) {
+      S.sync.feed.err = 'сервер подписки отвечает неверно';
+      S.sync.feed.on = false;
+      DB.save();
+      return false;
+    }
+    return true;
   } catch (e) { return false; }
 }
 
@@ -12727,7 +12823,7 @@ function openPermsSheet(fromBoot) {
    и чтобы можно было начать тест с чистого листа.
    ============================================================ */
 
-const BUILD = 'v12 · 17.08.2026';
+const BUILD = 'v14 · 17.08.2026';
 
 /* ---------- проверка, что приложение обновилось ---------- */
 function openAbout() {
@@ -12843,7 +12939,10 @@ async function wipeEverything() {
 
 function viewProf() {
   let h = `<div class="tophead"><div><h1>Профиль</h1><div class="sub">Прогресс и настройки</div></div>
-    <button class="iconround" onclick="openSettings()">⚙️</button></div>`;
+    <div style="display:flex;gap:8px">
+      ${calBtnVisible() ? `<button class="iconround" onclick="calQuickSyncBtn()" title="Синхронизировать календарь">📅</button>` : ''}
+      <button class="iconround" onclick="openSettings()">⚙️</button>
+    </div></div>`;
   h += plusRibbon();
   h += `<div class="profquick">
     <button class="pq" onclick="openPremium()"><i>⭐</i><span>Подписка</span></button>
