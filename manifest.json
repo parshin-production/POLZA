@@ -1,0 +1,36 @@
+{
+  "name": "ПОЛЬЗА",
+  "short_name": "ПОЛЬЗА",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#07080a",
+  "theme_color": "#07080a",
+  "orientation": "portrait",
+  "lang": "ru",
+  "description": "Трекер, который считает сделанное, а не упущенное",
+  "icons": [
+    {
+      "src": "icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Добавить задачу",
+      "short_name": "Добавить",
+      "url": "./#add"
+    },
+    {
+      "name": "Календарь",
+      "short_name": "Календарь",
+      "url": "./#year"
+    },
+    {
+      "name": "Поддержать",
+      "short_name": "Поддержать",
+      "url": "./#support"
+    }
+  ]
+}
