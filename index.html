@@ -7,7 +7,7 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
-<meta name="build" content="v16">
+<meta name="build" content="v9">
 <meta name="theme-color" content="#0a0b0d">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -36,7 +36,6 @@ body{margin:0;background:var(--bg);color:var(--tx);
 h1{font-size:25px;margin:4px 0 2px;letter-spacing:-.5px}
 .sub{color:var(--tx2);font-size:12.5px}
 .tophead{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:14px}
-.headbtns{display:flex;gap:8px;flex:none}
 .iconround{width:40px;height:40px;border-radius:13px;background:var(--card);border:1px solid var(--line);
   color:var(--tx);font-size:17px;flex:none}
 .card{background:var(--card);border-radius:18px;padding:16px;margin-bottom:12px;border:1px solid var(--line)}
@@ -2555,16 +2554,6 @@ html.onb-lock .sheet.on *{pointer-events:auto !important}
 html.onb-lock .ov.on{z-index:958 !important;pointer-events:auto !important}
 
 /* ---------------- СИНХРОНИЗАЦИЯ ---------------- */
-.iphonebox{
-  margin:10px 0 12px;padding:14px 15px;border-radius:16px;
-  background:linear-gradient(180deg,rgba(255,196,60,.13),rgba(255,196,60,.04));
-  border:1px solid rgba(255,196,60,.32)}
-.ipb-t{font-size:14.5px;font-weight:700;color:#ffc43c;margin-bottom:6px;
-  overflow-wrap:break-word;word-break:normal;-webkit-hyphens:auto;hyphens:auto}
-.ipb-d{font-size:12.5px;color:var(--tx2);line-height:1.55;
-  overflow-wrap:break-word;word-break:normal;-webkit-hyphens:auto;hyphens:auto}
-.ipb-d b{color:var(--tx)}
-
 .synccard{padding:14px 15px;border-radius:16px;margin:10px 0 12px;
   background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));
   border:1px solid rgba(255,255,255,.1)}
@@ -2744,8 +2733,7 @@ body.sheet-open{overflow:hidden}
 
 /* ---------------- ТЕКСТ ВЛЕЗАЕТ НА ЭКРАН ---------------- */
 .tip,.wel-text,.tour-card p,.sup-why,.dc-meta,.loose-hint,.timefix-note{
-  overflow-wrap:break-word;word-break:normal;
-  -webkit-hyphens:auto;hyphens:auto}
+  overflow-wrap:break-word;word-break:normal;hyphens:auto}
 .sec h3{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:64vw}
 .tt{overflow-wrap:break-word}
 .mus-txt i{overflow-wrap:break-word}
@@ -2854,18 +2842,12 @@ nav button .ic svg{width:25px !important;height:25px !important;stroke-width:1.8
 .si-hint{font-size:13px;color:var(--tx2);margin-bottom:16px;line-height:1.55}
 .si-hint b{color:var(--acc);font-weight:700}
 
-/* ---------------- ТЕКСТЫ ПОМЕЩАЮТСЯ НА ЭКРАН ----------------
-   overflow-wrap:anywhere рвёт слово по любой букве («Смонтиро-вать»
-   вместо переноса по границе слова). Меняем на break-word + hyphens:
-   сначала пытаемся перенести по пробелу, и только если слово одно
-   и не помещается целиком — переносим по слогам с дефисом. */
+/* ---------------- ТЕКСТЫ ПОМЕЩАЮТСЯ НА ЭКРАН ---------------- */
 .tt,.nowtitle,.hall-title,.dc-t,.mus-txt b,.sh-h b,.si-row span{
-  overflow-wrap:break-word; word-break:normal;
-  -webkit-hyphens:auto; hyphens:auto;
+  overflow-wrap:anywhere;
 }
 .sh-h b{font-size:20px;line-height:1.25;display:block;
-  max-width:100%;overflow-wrap:break-word;word-break:normal;
-  -webkit-hyphens:auto;hyphens:auto}
+  max-width:100%;overflow-wrap:anywhere}
 .sh-h .sup-exsrc{display:block;margin-top:4px;font-size:12.5px}
 .tt{font-size:15.5px;line-height:1.35}
 .nowtitle{font-size:18px;line-height:1.3}
@@ -2876,41 +2858,6 @@ nav button .ic svg{width:25px !important;height:25px !important;stroke-width:1.8
 .wel-title{font-size:29px;line-height:1.15}
 .wel-text{font-size:15.5px}
 .tour-card b{font-size:17px;line-height:1.3}
-
-/* ---------------- ПЛАВНОСТЬ ШТОРОК ----------------
-   backdrop-filter: blur(40px) — самая дорогая операция для iPhone.
-   На большой шторке он пересчитывает размытие на каждый кадр прокрутки,
-   отсюда рывки и «залипание» при пролистывании вниз.
-   Внутри Telegram и на слабых устройствах отключаем размытие
-   и заменяем плотным фоном — визуально почти то же, но плавно. */
-.sheet, .sheet.on{
-  will-change:transform;
-  transform:translateZ(0);
-  -webkit-transform:translateZ(0);
-}
-.sh-body{
-  -webkit-overflow-scrolling:touch;
-  overscroll-behavior:contain;
-  transform:translateZ(0);
-  will-change:scroll-position;
-}
-html.in-tg .sheet, html.lowfx .sheet{
-  backdrop-filter:none !important;
-  -webkit-backdrop-filter:none !important;
-  background:linear-gradient(180deg,#1b1e23 0%,#0d0f12 100%) !important;
-}
-html.in-tg .sheet .btn.ghost, html.lowfx .sheet .btn.ghost,
-html.in-tg .menuitem, html.lowfx .menuitem{
-  backdrop-filter:none !important;
-  -webkit-backdrop-filter:none !important;
-}
-html.in-tg #ov, html.lowfx #ov{
-  backdrop-filter:none !important;
-  -webkit-backdrop-filter:none !important;
-  background:rgba(0,0,0,.62) !important;
-}
-/* пока шторка открыта — фон не перерисовываем вовсе */
-body.sheet-open #app{ pointer-events:none }
 
 /* ---------------- СКРОЛЛ БЕЗ БОКОВОГО СДВИГА ---------------- */
 html,body{overflow-x:hidden;width:100%;max-width:100%}
@@ -3213,7 +3160,6 @@ function initPlatform() {
         if (tg.requestFullscreen) tg.requestFullscreen();
       } catch(e) {}
       document.documentElement.classList.add('in-tg');
-      try { document.documentElement.classList.add('lowfx'); } catch (e) {}
       if (tg.safeAreaInset) {
         const s = tg.safeAreaInset;
         document.documentElement.style.setProperty('--tgtop', (s.top||0)+'px');
@@ -3292,112 +3238,6 @@ function haptic(kind) {
     navigator.vibrate && navigator.vibrate(v);
   } catch(e) {}
 }
-
-/* ============================================================
-   ЗВУК И ТАКТИЛЬНОСТЬ
-   Короткие мягкие щелчки генерируются на лету (файлы не нужны).
-   Звук включается только после первого касания экрана — так требует
-   и iPhone, и Android. Отключается в Профиль → ⚙️ → Звук.
-   ============================================================ */
-let SFX_CTX = null;
-let SFX_READY = false;
-
-function sfxOn() {
-  try { return !(S && S.perm && S.perm.sound === false); } catch (e) { return true; }
-}
-
-function sfxInit() {
-  if (SFX_READY) return;
-  try {
-    const AC = window.AudioContext || window.webkitAudioContext;
-    if (!AC) return;
-    SFX_CTX = new AC();
-    SFX_READY = true;
-  } catch (e) {}
-}
-
-/* мягкий короткий тон без щелчка на срезе */
-function sfx(kind) {
-  if (!sfxOn()) return;
-  sfxInit();
-  if (!SFX_CTX) return;
-  try {
-    if (SFX_CTX.state === 'suspended') SFX_CTX.resume();
-
-    const P = {
-      tap:    { f: 660,  to: 620,  d: 0.045, g: 0.055, type: 'sine' },
-      soft:   { f: 480,  to: 460,  d: 0.05,  g: 0.035, type: 'sine' },
-      pick:   { f: 880,  to: 990,  d: 0.05,  g: 0.05,  type: 'triangle' },
-      done:   { f: 700,  to: 1180, d: 0.13,  g: 0.07,  type: 'sine' },
-      undone: { f: 700,  to: 420,  d: 0.11,  g: 0.05,  type: 'sine' },
-      del:    { f: 340,  to: 190,  d: 0.13,  g: 0.06,  type: 'sine' },
-      open:   { f: 520,  to: 720,  d: 0.09,  g: 0.04,  type: 'sine' },
-      close:  { f: 640,  to: 430,  d: 0.09,  g: 0.04,  type: 'sine' },
-      big:    { f: 620,  to: 1320, d: 0.2,   g: 0.08,  type: 'triangle' },
-      err:    { f: 300,  to: 240,  d: 0.16,  g: 0.06,  type: 'sawtooth' },
-    };
-    const p = P[kind] || P.tap;
-    const t = SFX_CTX.currentTime;
-
-    const osc = SFX_CTX.createOscillator();
-    const amp = SFX_CTX.createGain();
-    osc.type = p.type;
-    osc.frequency.setValueAtTime(p.f, t);
-    osc.frequency.exponentialRampToValueAtTime(Math.max(60, p.to), t + p.d);
-
-    amp.gain.setValueAtTime(0.0001, t);
-    amp.gain.exponentialRampToValueAtTime(p.g, t + 0.012);
-    amp.gain.exponentialRampToValueAtTime(0.0001, t + p.d);
-
-    osc.connect(amp); amp.connect(SFX_CTX.destination);
-    osc.start(t); osc.stop(t + p.d + 0.02);
-  } catch (e) {}
-}
-
-/* Единый отклик: вибрация + звук одной командой.
-   Везде дальше по коду используем именно его. */
-function tapFx(kind) {
-  try { buzz(kind === 'pick' ? 'tap' : kind); } catch (e) {}
-  sfx(kind);
-}
-
-/* разрешаем звук при самом первом касании */
-(function sfxUnlock() {
-  const go = () => { sfxInit(); if (SFX_CTX && SFX_CTX.state === 'suspended') SFX_CTX.resume(); };
-  ['touchstart', 'pointerdown', 'click'].forEach(ev =>
-    window.addEventListener(ev, go, { once: true, passive: true }));
-})();
-
-/* ============================================================
-   ГЛОБАЛЬНЫЙ ОТКЛИК НА ВСЕ КНОПКИ
-   Ничего не нужно прописывать каждой кнопке отдельно: слушаем
-   нажатие на уровне документа и подбираем отклик по типу элемента.
-   ============================================================ */
-(function globalTapFx() {
-  document.addEventListener('pointerdown', e => {
-    const el = e.target && e.target.closest
-      ? e.target.closest('button,.chip,.minibtn,.segbtn,.tag,.pq,.menuitem,.actbtn,.qacat,.te-day,.te-min,.iconround,.sh-x,.wel-perm,label.sw,input[type=checkbox],select,summary,.dayrow > *,.catpick,.valpick')
-      : null;
-    if (!el) return;
-    if (el.disabled) return;
-
-    let kind = 'tap';
-    const cls = el.className || '';
-    const txt = (el.textContent || '').trim();
-
-    if (el.classList.contains('sh-x') || el.classList.contains('wel-x')) kind = 'close';
-    else if (el.classList.contains('iconround')) kind = 'open';
-    else if (el.classList.contains('chip') || el.classList.contains('tag')
-          || el.classList.contains('segbtn') || el.classList.contains('te-day')
-          || el.classList.contains('te-min') || el.classList.contains('qacat')) kind = 'pick';
-    else if (el.classList.contains('minibtn')) kind = 'soft';
-    else if (/удал|стереть|сброс/i.test(txt)) kind = 'del';
-    else if (el.classList.contains('btn') && !el.classList.contains('ghost')) kind = 'tap';
-    else kind = 'soft';
-
-    tapFx(kind);
-  }, { passive: true, capture: true });
-})();
 
 /* ---------- поделиться результатом дня ---------- */
 function shareDay() {
@@ -3588,7 +3428,7 @@ function onbLock(on, hard) {
   /* hard — приветствие: экран заморожен целиком.
      мягкий режим — тур: подсветка сама подкручивает страницу к элементу */
   document.documentElement.classList.toggle('onb-hard', !!on && hard !== false);
-  try { lockBg(!!(on && hard !== false)); } catch (e) { document.body.style.overflow = (on && hard !== false) ? 'hidden' : ''; }
+  document.body.style.overflow = (on && hard !== false) ? 'hidden' : '';
   if (on) onbGuardOn(); else onbGuardOff();
 }
 function onbLocked() {
@@ -7437,7 +7277,7 @@ function goalHitCheck(before) {
   try {
     const now = ptsOn(logicalDate());
     if (before < S.goal && now >= S.goal) {
-      buzz('big'); sfx('big');
+      buzz('big');
       toast('🎉 Цель дня взята — ' + now + ' из ' + S.goal);
     }
   } catch(e) {}
@@ -7461,18 +7301,12 @@ function toggle(id, subIdx=null, onDate=null) {
     }
   }
   S.days[d]={ pts:ptsOn(d) };
-  /* отдельный отклик: «сделал» звучит бодро вверх, «снял галочку» — вниз */
-  try {
-    const nowDone = (subIdx !== null && t.subs[subIdx]) ? t.subs[subIdx].done : t.done;
-    tapFx(nowDone ? 'done' : 'undone');
-  } catch (e) {}
   DB.save(); goalHitCheck(_ptsBefore); checkAchievements();
 }
 function markHour(h){ if(h>=5&&h<8) S.stats.earlyBird++; if(h>=0&&h<4) S.stats.nightOwl++; }
 function snoozeTask(id,days) {
   const t=S.tasks.find(x=>x.id===id);
   t.snooze=addDays(logicalDate(),days);
-  try { tapFx('soft'); } catch (e) {}
   DB.save(); render(); toast('Скрыто до '+fmtRu(t.snooze));
 }
 function moveTask(id,iso,time) {
@@ -7491,11 +7325,10 @@ function deleteTask(id, silent) {
   if (!silent && !confirm('Удалить задачу «'+t.title+'»?')) return;
   TRASH={ task:JSON.parse(JSON.stringify(t)) };
   S.tasks=S.tasks.filter(x=>x.id!==id);
-  try { tapFx('del'); } catch (e) {}
   DB.save(); closeSheet(); render();
   toast('Задача удалена','Вернуть',undoDelete);
 }
-function undoDelete(){ if(!TRASH) return; S.tasks.push(TRASH.task); TRASH=null; try{tapFx('done');}catch(e){} DB.save(); render(); toast('Восстановлено'); }
+function undoDelete(){ if(!TRASH) return; S.tasks.push(TRASH.task); TRASH=null; DB.save(); render(); toast('Восстановлено'); }
 function toggleRest() {
   const d=logicalDate(), i=S.restDays.indexOf(d);
   if (i>=0) S.restDays.splice(i,1); else S.restDays.push(d);
@@ -7748,7 +7581,7 @@ function buzz(ms){
 }
 
 /* ---------- УВЕДОМЛЕНИЯ ---------- */
-function notifSupported(){ try { return (typeof CAP !== 'undefined' && CAP.notif) || (typeof plzNotifReal === 'function' && plzNotifReal()); } catch(e){ return false; } }
+function notifSupported(){ return typeof Notification !== 'undefined'; }
 async function enableNotifications() {
   if (!notifSupported()) { alert('Этот браузер не умеет показывать уведомления.\n\nНа iPhone нужно сначала добавить приложение на домашний экран.'); return false; }
   let p = Notification.permission;
@@ -8025,13 +7858,7 @@ function buildICS(opts) {
   opts = opts || {};
   const now = new Date();
   const L = ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Polza//RU','CALSCALE:GREGORIAN','METHOD:PUBLISH',
-             'X-WR-CALNAME:Польза','X-WR-TIMEZONE:'+(Intl.DateTimeFormat().resolvedOptions().timeZone||'UTC'),
-             /* как часто телефону перечитывать подписку. Без этих строк iPhone
-                опрашивает подписной календарь редко (иногда раз в сутки) — и человеку
-                кажется, что синхронизация работает только по кнопке. */
-             'REFRESH-INTERVAL;VALUE=DURATION:PT15M',
-             'X-PUBLISHED-TTL:PT15M',
-             'X-WR-CALDESC:Задачи из приложения ПОЛЬЗА'];
+             'X-WR-CALNAME:Польза','X-WR-TIMEZONE:'+(Intl.DateTimeFormat().resolvedOptions().timeZone||'UTC')];
   let n = 0;
 
   S.tasks.forEach(t => {
@@ -8054,7 +7881,6 @@ function buildICS(opts) {
     L.push('BEGIN:VEVENT');
     L.push('UID:polza-'+t.id+'@polza.app');
     L.push('DTSTAMP:'+icsStamp(now));
-    L.push('LAST-MODIFIED:'+icsStamp(now));
     L.push('DTSTART:'+icsLocal(startDate, time));
     L.push('DTEND:'+icsLocal(startDate, time, Math.max(15, t.mins)));
     L.push('SUMMARY:'+icsEsc((valueOf(t.val).icon?valueOf(t.val).icon+' ':'')+t.title));
@@ -8074,7 +7900,6 @@ function buildICS(opts) {
       L.push('BEGIN:VEVENT');
       L.push('UID:polza-due-'+t.id+'@polza.app');
       L.push('DTSTAMP:'+icsStamp(now));
-      L.push('LAST-MODIFIED:'+icsStamp(now));
       L.push('DTSTART;VALUE=DATE:'+t.due.replace(/-/g,''));
       L.push('DTEND;VALUE=DATE:'+addDays(t.due,1).replace(/-/g,''));
       L.push('SUMMARY:'+icsEsc('⏳ Срок: '+t.title));
@@ -8329,7 +8154,7 @@ const CAL_CFG = {
   /* Адрес твоего Cloudflare Worker (файл worker.js), например:
      'https://polza-cal.твой-логин.workers.dev'
      Без этого поля способ 1 («Календарь телефона») недоступен. */
-  workerBase: 'https://polza-cal.parshin-prodaction.workers.dev',
+  workerBase: '',
 
   /* Client ID из Google Cloud Console (OAuth 2.0, тип Web application).
      Без этого поля способ 2 («Google Calendar») недоступен. */
@@ -8338,9 +8163,7 @@ const CAL_CFG = {
 
 /* ---------- состояние ---------- */
 if (!S.sync) S.sync = {};
-if (!S.sync.feed) S.sync.feed = { base:'', token:'', on:false, auto:true, last:0, err:'', subOpened:0 };
-if (S.sync.feed.subOpened === undefined) S.sync.feed.subOpened = S.sync.feed.on ? Date.now() : 0;
-if (S.sync.feed.auto === undefined) S.sync.feed.auto = true;
+if (!S.sync.feed) S.sync.feed = { base:'', token:'', on:false, last:0, err:'' };
 if (!S.sync.gcal) S.sync.gcal = { clientId:'', calId:'', email:'', on:false, last:0, pushed:{}, err:'' };
 
 /* адрес сервера и Client ID — берём из настройки владельца,
@@ -8409,150 +8232,9 @@ async function feedPush(silent) {
   }
 }
 
-/* кнопка-иконка рядом с шестерёнкой: ручное обновление календаря
-   без повторного показа системного окна подписки телефона —
-   подписка уже оформлена, нужно только обновить данные на сервере. */
-/* показывать ли иконку 📅 рядом с шестерёнкой:
-   да — если сервер подписки настроен и человек уже подключал календарь.
-   Важно: НЕ завязано на автообновление — кнопка нужна именно тогда,
-   когда авто выключено или не сработало. */
-function calBtnVisible() {
-  try {
-    if (typeof feedBase !== 'function' || !feedBase()) return false;
-    if (S.sync && S.sync.feed && (S.sync.feed.on || S.sync.feed.subOpened)) return true;
-    if (S.perm && S.perm.cal === 'on') return true;
-  } catch (e) {}
-  return false;
-}
-
-/* Самопроверка: что РЕАЛЬНО лежит на сервере подписки прямо сейчас.
-   Нужна, когда «в приложении задача есть, а в календаре телефона нет» —
-   сразу видно, на чьей стороне затык: приложение/сервер или сам телефон. */
-/* Подробная инструкция: как заставить iPhone обновлять подписку чаще.
-   Показываем и по кнопке, и один раз сразу после подключения календаря. */
-function openIphoneDelayHelp() {
-  const ios = /iPhone|iPad|iPod/i.test(navigator.userAgent);
-  sheet(`
-    <div class="sh-h"><b>⏳ Задержка календаря — это нормально</b></div>
-
-    <div class="synccard on">
-      <div class="sync-t">Приложение своё дело делает сразу</div>
-      <div class="sync-d">Поставил задачу — она уходит на сервер в ту же секунду.
-        Проверить это можно кнопкой «Проверить, дошли ли задачи».</div>
-    </div>
-
-    <div class="synccard">
-      <div class="sync-t">Телефон забирает их не сразу</div>
-      <div class="sync-d">${ios ? 'iPhone' : 'Телефон'} сам решает, когда сходить за подписным
-        календарём: может через час, может раз в сутки. Так устроена система,
-        и ни одно приложение это не обходит — ни ПОЛЬЗА, ни любое другое.</div>
-    </div>
-
-    <div class="secline">Обновить прямо сейчас · 5 секунд</div>
-    <div class="howto">
-      <div>1. Открой приложение <b>Календарь</b><br>
-      2. Потяни экран вниз пальцем, как обновление ленты<br>
-      3. Задачи появятся</div>
-    </div>
-
-    ${ios ? `
-    <div class="secline">Настроить раз и навсегда</div>
-    <div class="howto">
-      <div>Настройки → <b>Приложения</b> → <b>Календарь</b> → <b>Учётные записи</b> →
-      <b>Загрузка данных</b> → пролистай вниз до календаря <b>Польза</b> →
-      выбери <b>Ежечасно</b>.</div>
-    </div>
-    <div class="tip">На старых версиях iOS путь короче:
-      Настройки → Календарь → Учётные записи → Загрузка данных.</div>` : `
-    <div class="secline">Настроить раз и навсегда</div>
-    <div class="howto">
-      <div>Google Календарь обновляет подписки примерно раз в сутки и настройки
-      частоты не даёт. Если нужна мгновенная синхронизация — включи
-      способ 2 (вход в Google), он обновляет сразу.</div>
-    </div>`}
-
-    <button class="btn" onclick="closeSheet()">Понятно</button>
-  `);
-}
-
-async function feedCheck() {
-  const u = feedUrl();
-  if (!u) { toast('Календарь ещё не подключён'); return; }
-  toast('Проверяю сервер…');
-  try {
-    const r = await fetch(u + '?probe=' + Date.now(), { cache: 'no-store' });
-    if (!r.ok) throw new Error('HTTP ' + r.status);
-    const t = await r.text();
-    if (t.indexOf('BEGIN:VCALENDAR') === -1) throw new Error('сервер отвечает не календарём');
-    const onServer = (t.match(/BEGIN:VEVENT/g) || []).length;
-    const inApp = calSyncCount();
-    const names = (t.match(/SUMMARY:(.+)/g) || []).slice(0, 3)
-      .map(x => x.replace('SUMMARY:', '').trim()).join(' · ');
-
-    sheet(`
-      <div class="sh-h"><b>🔍 Проверка календаря</b></div>
-      <div class="synccard ${onServer >= inApp && onServer > 0 ? 'on' : ''}">
-        <div class="sync-t">${onServer >= inApp && onServer > 0
-          ? '✓ Сервер получил все задачи'
-          : (onServer === 0 ? 'На сервере пусто' : 'На сервере меньше задач, чем в приложении')}</div>
-        <div class="sync-d">
-          В приложении задач с датой: <b>${inApp}</b><br>
-          Сейчас лежит на сервере: <b>${onServer}</b><br>
-          ${names ? 'Например: ' + esc(names) : ''}
-        </div>
-      </div>
-      ${onServer >= inApp && onServer > 0 ? `
-        <div class="tip"><b>Приложение и сервер в порядке.</b> Если в Календаре телефона
-        задач не видно — телефон просто ещё не перечитал подписку. iPhone делает это
-        по своему расписанию, иногда раз в сутки. Как заставить обновиться сейчас —
-        в подсказке ниже.</div>
-        <details class="synchelp" open>
-          <summary>Как заставить iPhone обновиться сразу</summary>
-          <div class="tip">
-            <b>Способ 1 (за 5 секунд):</b> открой приложение Календарь → потяни экран
-            вниз пальцем, как обновление ленты → подписка перечитается.<br><br>
-            <b>Способ 2 (настроить раз и навсегда):</b> Настройки → Приложения →
-            Календарь → Учётные записи → Загрузка данных → внизу найди
-            подписной календарь <b>Польза</b> → выбери <b>Ежечасно</b>.<br><br>
-            Без этого iPhone обновляет подписки редко — это его поведение,
-            приложение на него влиять не может.
-          </div>
-        </details>` : `
-        <div class="tip">Задачи не доехали до сервера. Нажми кнопку ниже — отправлю заново.</div>
-        <button class="btn" onclick="calQuickSyncBtn()">📅 Отправить задачи на сервер</button>`}
-      <div class="secline">Ссылка подписки</div>
-      <div class="sync-url">${esc(u)}</div>
-      <button class="btn ghost" onclick="feedCopy()">📋 Скопировать ссылку</button>
-    `);
-  } catch (e) {
-    toast('Проверка не прошла: ' + (e.message || e));
-  }
-}
-
-async function calQuickSyncBtn() {
-  try { buzz('tap'); } catch (e) {}
-  if (!feedBase()) { toast('Календарь ещё не подключён · Профиль → ⚙️ → Календарь телефона'); return; }
-  toast('Обновляю календарь…');
-  const ok = await feedPush(true);
-  toast(ok ? '✓ Календарь обновлён' : 'Не получилось · ' + (S.sync.feed.err || 'проверь соединение'));
-}
-
-function feedAutoToggle() {
-  if (!S.sync || !S.sync.feed) return;
-  S.sync.feed.auto = (S.sync.feed.auto === false);
-  DB.save();
-  try { buzz('tap'); } catch (e) {}
-  toast(S.sync.feed.auto
-    ? 'Автообновление включено · календарь будет обновляться сам'
-    : 'Автообновление выключено · обновляй кнопкой');
-  if (S.sync.feed.auto) { try { feedPush(true); } catch (e) {} }
-  openCalSync();
-}
-
 function feedOff() {
   S.sync.feed.on = false;
   S.sync.feed.last = 0;
-  S.sync.feed.subOpened = 0;   /* отключились — при новом подключении окно подписки нужно показать снова */
   DB.save();
   toast('Отключено. Удали календарь ПОЛЬЗА в приложении Календарь.');
   openCalSync();
@@ -8574,28 +8256,7 @@ function feedSubscribe() {
   const u = feedUrl('webcal');
   if (!u) return;
   buzz('tap');
-  /* помечаем, что системное окно подписки телефона уже открывалось.
-     Именно по этому флагу (а не по feed.on) решаем, показывать ли его снова:
-     feed.on ставится при любой удачной отправке на сервер, даже если человек
-     закрыл окно подписки — тогда он остался бы без календаря навсегда. */
-  try { S.sync.feed.subOpened = Date.now(); DB.save(); } catch (e) {}
   try { openExternal(u); } catch (e) { location.href = u; }
-}
-
-/* Повторное открытие подписки — только осознанно.
-   iPhone на каждое подтверждение webcal-ссылки заводит ОТДЕЛЬНЫЙ календарь,
-   поэтому вторая и последующие подписки дают дубли задач разного цвета.
-   Если подписка уже оформлена — сначала спрашиваем. */
-function feedSubscribeAgain() {
-  const already = !!(S.sync && S.sync.feed && S.sync.feed.subOpened);
-  if (!already) { feedSubscribe(); return; }
-  const ok = confirm(
-    'Календарь ПОЛЬЗЫ уже подключён к телефону — он обновляется сам.\n\n' +
-    'Если подписаться ещё раз, телефон заведёт ВТОРОЙ календарь, и задачи будут ' +
-    'показываться дважды.\n\nПодписаться повторно всё равно?'
-  );
-  if (ok) feedSubscribe();
-  else toast('Календарь уже подключён · задачи обновляются сами');
 }
 
 /* ============================================================
@@ -8637,7 +8298,7 @@ async function calQuickSync() {
    человек не понимал, зачем два шага.
    ============================================================ */
 async function feedSyncNow() {
-  const first = !S.sync.feed.subOpened;
+  const first = !S.sync.feed.on;
   toast(first ? 'Готовлю задачи…' : 'Обновляю календарь…');
 
   const ok = await feedPush(true);
@@ -8879,28 +8540,14 @@ function gcalDisconnect() {
 
 let syncTimer = null;
 
-/* автосинхронизация включена, если человек хоть раз подключил календарь
-   и у приложения есть адрес сервера подписки */
-function feedAutoOn() {
-  try {
-    if (S.sync && S.sync.feed && S.sync.feed.auto === false) return false;
-    if (!feedBase()) return false;
-    if (S.sync && S.sync.feed && S.sync.feed.on) return true;
-    if (S.perm && S.perm.cal === 'on') return true;
-  } catch (e) {}
-  return false;
-}
-
-/* дёргается после каждого сохранения: добавил задачу, отметил сделанной,
-   поменял дату — календарь обновится сам через полторы секунды */
 function syncSoon() {
   if (!S.sync) return;
-  if (!feedAutoOn() && !S.sync.gcal.on) return;
+  if (!S.sync.feed.on && !S.sync.gcal.on) return;
   clearTimeout(syncTimer);
   syncTimer = setTimeout(async () => {
-    if (feedAutoOn()) await feedPush(true);
+    if (S.sync.feed.on && feedBase()) await feedPush(true);
     if (S.sync.gcal.on && gtokAlive()) await gcalPush(true);
-  }, 1500);
+  }, 4000);
 }
 
 (function hookSave() {
@@ -8912,21 +8559,20 @@ function syncSoon() {
 async function syncNow(silent) {
   if (!S.sync) return;
   let ok = false;
-  if (feedAutoOn()) ok = await feedPush(silent !== false) || ok;
+  if (S.sync.feed.on && feedBase()) ok = await feedPush(silent !== false) || ok;
   if (S.sync.gcal.on && gtokAlive()) ok = await gcalPush(silent !== false) || ok;
   return ok;
 }
 
 function syncStale(ms) {
   const f = S.sync.feed, g = S.sync.gcal;
-  const fOn = feedAutoOn();
-  const last = Math.max(fOn ? (f.last || 0) : 0, g.on ? (g.last || 0) : 0);
-  if (!last) return (fOn || g.on);
+  const last = Math.max(f.on ? (f.last || 0) : 0, g.on ? (g.last || 0) : 0);
+  if (!last) return (f.on || g.on);
   return Date.now() - last > ms;
 }
 
 (function autoSync() {
-  const EVERY = 5 * 60 * 1000;
+  const EVERY = 15 * 60 * 1000;
   /* при старте — если данные в календаре устарели */
   setTimeout(() => { if (syncStale(EVERY)) syncNow(true); }, 3000);
   /* пока приложение открыто */
@@ -8998,31 +8644,8 @@ function openCalSync() {
         ${f.on ? '📅 Обновить календарь сейчас' : '📅 Синхронизировать с календарём телефона'}</button>
 
       ${f.on ? `
-        <div class="synccard ${f.auto !== false ? 'on' : ''}">
-          <div class="sync-t">${f.auto !== false ? '⚡ Автообновление включено' : '⏸ Автообновление выключено'}</div>
-          <div class="sync-d">${f.auto !== false
-            ? 'Поставил задачу или отметил сделанной — календарь обновится сам, ничего нажимать не нужно.'
-            : 'Сейчас календарь обновляется только по кнопке.'}</div>
-        </div>
-        <button class="btn ghost" onclick="feedAutoToggle()">
-          ${f.auto !== false ? 'Выключить автообновление' : 'Включить автообновление'}</button>
-        <div class="iphonebox">
-          <div class="ipb-t">⏳ Почему задача не появилась в календаре сразу</div>
-          <div class="ipb-d">
-            <b>Приложение отправляет задачу на сервер сразу</b> — в ту же секунду,
-            как ты её поставил. Дальше дело за телефоном.<br><br>
-            iPhone забирает подписные календари <b>по своему расписанию</b>, а не
-            мгновенно — иногда через час, иногда раз в сутки. Это поведение самой iOS,
-            приложение на него повлиять не может.<br><br>
-            <b>Нужно прямо сейчас?</b> Открой приложение Календарь и потяни экран
-            вниз пальцем — подписка перечитается за секунду.
-          </div>
-          <button class="btn ghost" style="margin:10px 0 0" onclick="openIphoneDelayHelp()">
-            Настроить, чтобы обновлялось чаще</button>
-        </div>
-        <button class="btn ghost" onclick="feedCheck()">🔍 Проверить, дошли ли задачи</button>
         <div class="row2">
-          <button class="btn ghost" style="flex:1;margin:0" onclick="feedSubscribeAgain()">📲 Открыть в календаре</button>
+          <button class="btn ghost" style="flex:1;margin:0" onclick="feedSubscribe()">📲 Открыть в календаре</button>
           <button class="btn ghost" style="flex:1;margin:0" onclick="feedOff()">Отключить</button>
         </div>` : ''}
 
@@ -9646,19 +9269,6 @@ function openInboxTriage(id) {
   };
 }
 
-/* Слабое устройство или экономия энергии — отключаем тяжёлые эффекты,
-   чтобы шторки листались плавно. */
-(function detectLowFx() {
-  try {
-    const cores = navigator.hardwareConcurrency || 4;
-    const mem = navigator.deviceMemory || 4;
-    const slow = cores <= 4 || mem <= 4;
-    const reduce = window.matchMedia
-      && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (slow || reduce) document.documentElement.classList.add('lowfx');
-  } catch (e) {}
-})();
-
 /* ---------- sheet ---------- */
 function sheet(html) {
   const s=document.getElementById('sheet');
@@ -9672,8 +9282,8 @@ function sheet(html) {
     + '<div class="sh-body">' + html + '</div>';
   document.getElementById('ov').classList.add('on');
   s.classList.add('on');
-  lockBg(true);
-  const bd=s.querySelector('.sh-body'); if (bd) { bd.scrollTop=0; bindSheetScroll(bd); }
+  document.body.classList.add('sheet-open');
+  const bd=s.querySelector('.sh-body'); if (bd) bd.scrollTop=0;
   const x=document.getElementById('sh-x');
   if (x) x.onclick=()=>{ try{buzz('soft');}catch(e){} closeSheet(); };
 }
@@ -9682,68 +9292,7 @@ function closeSheet() {
   try{ waveStop(); }catch(e){}
   document.getElementById('sheet').classList.remove('on');
   document.getElementById('ov').classList.remove('on');
-  lockBg(false);
-}
-
-/* ============================================================
-   ПРОКРУТКА ШТОРОК
-   Проблема: на iPhone (и особенно внутри Telegram) обычного
-   overflow:hidden у body НЕ ХВАТАЕТ — палец продолжает тянуть
-   страницу под шторкой, и кажется, что окно «не листается».
-   Решение: на время шторки фиксируем фон и запоминаем его позицию.
-   ============================================================ */
-let BG_LOCK_Y = 0;
-let BG_LOCKED = false;
-
-function lockBg(on) {
-  const b = document.body;
-  if (on) {
-    if (BG_LOCKED) return;
-    BG_LOCKED = true;
-    BG_LOCK_Y = window.pageYOffset || document.documentElement.scrollTop || 0;
-    b.classList.add('sheet-open');
-    b.style.position = 'fixed';
-    b.style.top = (-BG_LOCK_Y) + 'px';
-    b.style.left = '0';
-    b.style.right = '0';
-    b.style.width = '100%';
-  } else {
-    if (!BG_LOCKED) return;
-    BG_LOCKED = false;
-    b.classList.remove('sheet-open');
-    b.style.position = '';
-    b.style.top = '';
-    b.style.left = '';
-    b.style.right = '';
-    b.style.width = '';
-    window.scrollTo(0, BG_LOCK_Y);
-  }
-}
-
-/* Не даём прокрутке «перескакивать» на фон, когда список внутри
-   шторки уже домотан до края — из-за этого палец залипал. */
-function bindSheetScroll(el) {
-  if (!el || el._scrollBound) return;
-  el._scrollBound = true;
-  let startY = 0;
-
-  el.addEventListener('touchstart', e => {
-    startY = e.touches[0].clientY;
-    /* приём iOS: не позволяем залипнуть ровно на границе */
-    const max = el.scrollHeight - el.clientHeight;
-    if (el.scrollTop <= 0) el.scrollTop = 1;
-    else if (el.scrollTop >= max) el.scrollTop = max - 1;
-  }, { passive: true });
-
-  el.addEventListener('touchmove', e => {
-    const dy = e.touches[0].clientY - startY;
-    const up = dy > 0;
-    const max = el.scrollHeight - el.clientHeight;
-    const fits = max <= 0;
-    if (fits) { e.preventDefault(); return; }
-    if (up && el.scrollTop <= 0) e.preventDefault();
-    if (!up && el.scrollTop >= max) e.preventDefault();
-  }, { passive: false });
+  document.body.classList.remove('sheet-open');
 }
 
 </script>
@@ -9783,6 +9332,19 @@ const AI_CHAIN = [
     }
   },
   {
+    id:'puter', name:'Puter', keyless:true,
+    async run(messages) {
+      await loadPuter();
+      if (!window.puter || !window.puter.ai) throw new Error('puter недоступен');
+      const sys = messages.filter(m=>m.role==='system').map(m=>m.content).join('\n');
+      const usr = messages.filter(m=>m.role!=='system').map(m=>m.content).join('\n');
+      const res = await window.puter.ai.chat(sys+'\n\n'+usr);
+      const t = typeof res === 'string' ? res : (res && res.message && res.message.content) || '';
+      if (!t) throw new Error('пустой ответ');
+      return t;
+    }
+  },
+  {
     id:'custom', name:'Своя модель', keyless:false,
     async run(messages) {
       if (!S.ai.key) throw new Error('нет ключа');
@@ -9802,20 +9364,33 @@ const AI_CHAIN = [
   },
 ];
 
-/* Puter удалён: он показывал чужое окно согласия и тормозил ответы. */
+let PUTER_LOADING = null;
+function loadPuter() {
+  if (window.puter) return Promise.resolve();
+  if (PUTER_LOADING) return PUTER_LOADING;
+  PUTER_LOADING = new Promise((res, rej) => {
+    const s = document.createElement('script');
+    s.src = 'https://js.puter.com/v2/';
+    s.onload = () => res();
+    s.onerror = () => rej(new Error('не загрузился'));
+    document.head.appendChild(s);
+    setTimeout(()=>rej(new Error('таймаут')), 8000);
+  });
+  return PUTER_LOADING;
+}
 
 /* Главная точка входа: пробует всё по очереди, пишет, кто ответил */
 async function askAI(messages, opts) {
   opts = opts || {};
   if (S.ai.off) throw new Error('ИИ выключен в настройках');
-  const order = S.ai.key ? ['custom','pollinations-post','pollinations-get']
-                         : ['pollinations-post','pollinations-get'];
+  const order = S.ai.key ? ['custom','pollinations-post','pollinations-get','puter']
+                         : ['pollinations-post','pollinations-get','puter'];
   const errs = [];
   for (const id of order) {
     const p = AI_CHAIN.find(x=>x.id===id);
     if (!p) continue;
     try {
-      const raw = await withTimeout(p.run(messages), opts.timeout || 9000);
+      const raw = await withTimeout(p.run(messages), opts.timeout || 22000);
       S.ai.last = p.name; S.ai.fails = 0; DB.save();
       return { text: raw, src: p.name };
     } catch(e) { errs.push(p.name+': '+e.message); }
@@ -10792,10 +10367,7 @@ function viewToday() {
       <h1>${relDay(d)} ${g.emoji}</h1>
       <div class="sub">${fmtRu(d)}, ${dowFull(d)}${st>1?` · серия ${st} 🔥`:''}</div>
     </div>
-    <div class="headbtns">
-      ${calBtnVisible() ? `<button class="iconround" onclick="calQuickSyncBtn()" title="Синхронизировать календарь">📅</button>` : ''}
-      <button class="iconround" onclick="openSettings()">⚙️</button>
-    </div>
+    <button class="iconround" onclick="openSettings()">⚙️</button>
   </div>
 
   <div class="card" style="--gl:${rgba(g.color,.15)}">
@@ -11180,31 +10752,8 @@ function openDayReport(iso) {
 /* ========== ПОЛЬЗА — доступы, календарь, уведомления, онбординг ========== */
 
 /* ---------- что умеет устройство ---------- */
-/* открыты ли мы внутри Telegram (там уведомлений браузера не существует) */
-function plzInTG() {
-  try {
-    if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initData !== undefined) return true;
-  } catch (e) {}
-  return /Telegram/i.test(navigator.userAgent || '');
-}
-
-/* уведомления по-настоящему доступны, только если:
-   есть сам Notification, есть запрос разрешения,
-   и мы не внутри Telegram / не в обычном Safari на iPhone */
-function plzNotifReal() {
-  try {
-    if (typeof Notification === 'undefined') return false;
-    if (typeof Notification.requestPermission !== 'function') return false;
-    if (plzInTG()) return false;
-    const ios = /iPad|iPhone|iPod/.test(navigator.userAgent || '');
-    const standalone = (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || navigator.standalone;
-    if (ios && !standalone) return false;
-    return true;
-  } catch (e) { return false; }
-}
-
 const CAP = {
-  notif:  plzNotifReal(),
+  notif:  typeof Notification !== 'undefined',
   mic:    typeof window!=='undefined' && !!(window.SpeechRecognition||window.webkitSpeechRecognition),
   badge:  typeof navigator!=='undefined' && 'setAppBadge' in navigator,
   share:  typeof navigator!=='undefined' && !!navigator.share,
@@ -11705,8 +11254,7 @@ function ensureShape() {
 
   /* синхронизация с календарём — из-за отсутствия этого блока падал запуск */
   if (!S.sync) S.sync = {};
-  if (!S.sync.feed) S.sync.feed = { base:'', token:'', on:false, auto:true, last:0, err:'' };
-if (S.sync.feed.auto === undefined) S.sync.feed.auto = true;
+  if (!S.sync.feed) S.sync.feed = { base:'', token:'', on:false, last:0, err:'' };
   if (!S.sync.gcal) S.sync.gcal = { on:false, token:'', refresh:'', exp:0, calId:'', last:0, err:'', map:{} };
   if (!S.sync.gcal.map) S.sync.gcal.map = {};
 
@@ -11905,6 +11453,193 @@ function openStorageInfo() {
 
 </script>
 <script>
+/* ==== reminder-sync.js ==== */
+/* ============================================================
+   ПОЛЬЗА — СВЯЗКА ЗАДАЧ С НАПОМИНАНИЯМИ ЧЕРЕЗ БОТА
+   ------------------------------------------------------------
+   Что делает: когда у задачи есть дата и время (например,
+   «позвонить другу» в четверг в 13:00), этот файл сообщает о
+   ней боту. Бот пришлёт уведомление за 10 минут до срока —
+   даже если приложение полностью закрыто.
+
+   Зачем отдельно от push.js: push.js шлёт браузерные
+   уведомления, но только пока приложение открыто. Уведомление
+   при закрытом приложении может прислать только сервер бота.
+
+   КУДА ПОЛОЖИТЬ: рядом с cloud.js, push.js и остальными.
+   В index.html строку подключения ставить ПОСЛЕ cloud.js.
+
+   НАСТРОЙКА: впиши адрес своего воркера в REMINDER_WORKER ниже.
+   ============================================================ */
+
+/* ↓↓↓ ЕДИНСТВЕННОЕ, ЧТО НУЖНО ПОМЕНЯТЬ ↓↓↓ */
+var REMINDER_WORKER = 'https://polza-bot.parshin-prodaction.workers.dev';
+/* ↑↑↑ без слэша на конце ↑↑↑ */
+
+/* За сколько минут до срока присылать напоминание */
+var REMINDER_LEAD_MIN = 10;
+
+(function () {
+  'use strict';
+
+  /* ---------- доступ к состоянию приложения ----------
+     Важно: в app.js состояние объявлено как `let S`, а такие
+     переменные НЕ попадают в window. Поэтому обращаемся к ним
+     по имени через typeof, а не через window.S — иначе файл
+     молча ничего не делал бы.                                   */
+  function getState() {
+    try { return (typeof S !== 'undefined' && S) ? S : null; }
+    catch (e) { return null; }
+  }
+  function getDB() {
+    try { return (typeof DB !== 'undefined' && DB) ? DB : null; }
+    catch (e) { return null; }
+  }
+
+  /* ---------- память об уже отправленном ---------- */
+  var SIG_KEY = 'polza_rem_sig';
+  var lastSig = {};
+  try {
+    var saved = localStorage.getItem(SIG_KEY);
+    if (saved) lastSig = JSON.parse(saved) || {};
+  } catch (e) { lastSig = {}; }
+
+  function saveSig() {
+    try { localStorage.setItem(SIG_KEY, JSON.stringify(lastSig)); } catch (e) {}
+  }
+
+  function initData() {
+    try {
+      return (window.Telegram && Telegram.WebApp && Telegram.WebApp.initData) || '';
+    } catch (e) { return ''; }
+  }
+
+  function post(payload) {
+    try {
+      fetch(REMINDER_WORKER + '/api/task-reminder', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      }).catch(function () {});
+    } catch (e) {}
+  }
+
+  /* ---------- сегодняшняя дата в формате ГГГГ-ММ-ДД ---------- */
+  function todayIso() {
+    try {
+      if (typeof logicalDate === 'function') return logicalDate();
+    } catch (e) {}
+    var d = new Date();
+    return d.getFullYear() + '-' +
+           String(d.getMonth() + 1).padStart(2, '0') + '-' +
+           String(d.getDate()).padStart(2, '0');
+  }
+
+  function isDoneNow(t) {
+    try {
+      if (typeof isDoneToday === 'function') return isDoneToday(t);
+    } catch (e) {}
+    return !!t.done;
+  }
+
+  /* Какую дату использовать для напоминания.
+     Разовая задача — её собственная дата.
+     Повторяющаяся (у неё date пустой) — сегодня, если она
+     сегодня актуальна и время ещё не прошло.                */
+  function reminderDate(t) {
+    if (t.date) return t.date;
+    if (!t.repeat || t.repeat === 'none') return null;
+    try {
+      if (typeof isDue === 'function' && !isDue(t)) return null;
+    } catch (e) {}
+    var iso = todayIso();
+    var now = new Date();
+    var parts = String(t.time).split(':');
+    var mins = (+parts[0]) * 60 + (+parts[1]);
+    if (now.getHours() * 60 + now.getMinutes() > mins - REMINDER_LEAD_MIN) return null;
+    return iso;
+  }
+
+  /* ---------- основная сверка ---------- */
+  function syncTaskReminders() {
+    var id = initData();
+    if (!id) return;                       /* работаем только внутри Telegram */
+    var st = getState();
+    if (!st || !Array.isArray(st.tasks)) return;
+
+    var active = {};
+
+    st.tasks.forEach(function (t) {
+      if (!t || t.id === undefined || t.id === null) return;
+      if (!t.time) return;                 /* без времени напоминать нечего */
+      if (isDoneNow(t)) return;
+
+      var date = reminderDate(t);
+      if (!date) return;
+
+      var key = String(t.id);
+      active[key] = true;
+
+      var sig = date + '|' + t.time + '|' + (t.title || '');
+      if (lastSig[key] === sig) return;    /* ничего не изменилось */
+
+      lastSig[key] = sig;
+      post({
+        initData: id,
+        taskId: key,
+        title: t.title || 'Задача',
+        date: date,
+        time: t.time,
+        lead: REMINDER_LEAD_MIN,
+        tz: new Date().getTimezoneOffset(),   /* часовой пояс телефона */
+      });
+    });
+
+    /* задачи, которые выполнили, удалили или у которых убрали время */
+    Object.keys(lastSig).forEach(function (key) {
+      if (!active[key]) {
+        delete lastSig[key];
+        post({ initData: id, taskId: key, delete: true });
+      }
+    });
+
+    saveSig();
+  }
+
+  /* доступно из консоли для проверки: polzaSyncReminders() */
+  window.polzaSyncReminders = syncTaskReminders;
+
+  /* ---------- цепляемся к сохранению ---------- */
+  var timer = null;
+  function schedule() {
+    clearTimeout(timer);
+    timer = setTimeout(syncTaskReminders, 1500);
+  }
+
+  var tries = 0;
+  (function attach() {
+    var db = getDB();
+    if (!db || typeof db.save !== 'function') {
+      if (++tries > 60) return;            /* сдаёмся через ~20 секунд */
+      setTimeout(attach, 300);
+      return;
+    }
+    var orig = db.save.bind(db);
+    db.save = function () {
+      try { orig(); } catch (e) {}
+      schedule();
+    };
+    setTimeout(syncTaskReminders, 2500);   /* разовая сверка при запуске */
+  })();
+
+  /* вернулись в приложение — пересверим (актуально для повторяющихся) */
+  document.addEventListener('visibilitychange', function () {
+    if (!document.hidden) schedule();
+  });
+})();
+
+</script>
+<script>
 /* ==== billing.js ==== */
 /* ============================================================
    ПОЛЬЗА — ПРОБНЫЙ ПЕРИОД, ПОДПИСКА, ОПЛАТА ЧЕРЕЗ ЮKASSA
@@ -11933,24 +11668,6 @@ const PAY = {
   /* 5. Что писать на кнопке. Точную сумму пользователь увидит на странице ЮKassa. */
   priceLabel: 'подписка на месяц'
 };
-
-/* ------------------------------------------------------------
-   Настройки оплаты можно задать и БЕЗ правки кода —
-   через служебный экран внутри приложения (Профиль → ⭐ Подписка →
-   7 нажатий по нижней подписи → «Настроить ЮKassa»).
-   То, что задано там, имеет приоритет над блоком PAY выше.
-   ------------------------------------------------------------ */
-function payCfg() {
-  const o = (S && S.payCfg) ? S.payCfg : {};
-  return {
-    link:  o.link  || PAY.link  || '',
-    api:   o.api   || PAY.api   || '',
-    salt:  o.salt  || PAY.salt,
-    price: o.price || PAY.priceLabel,
-    periodDays: o.periodDays || PAY.periodDays,
-  };
-}
-function payReady() { const c = payCfg(); return !!(c.link || c.api); }
 
 /* ============================================================
    СОСТОЯНИЕ
@@ -12046,7 +11763,7 @@ function plusHash(str) {
 }
 function codeFor(uid, months) {
   const m = Math.max(1, Math.min(12, months || 1));
-  const raw = plusHash(String(uid) + '|' + payCfg().salt + '|' + m);
+  const raw = plusHash(String(uid) + '|' + PAY.salt + '|' + m);
   return raw.slice(0, 4) + '-' + raw.slice(4, 8) + '-' + m;
 }
 function applyCode(input) {
@@ -12075,12 +11792,11 @@ function openExternalLink(url) {
 }
 
 async function payStart() {
-  const CFG = payCfg();
   /* Режим 1 — бэкенд: платёж создаётся с меткой пользователя, статус проверяем сами */
-  if (CFG.api) {
+  if (PAY.api) {
     try {
       toast('Открываю оплату…');
-      const r = await fetch(CFG.api.replace(/\/+$/, '') + '/api/create-payment', {
+      const r = await fetch(PAY.api.replace(/\/+$/, '') + '/api/create-payment', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ uid: S.plus.uid, ref: (S.ref && S.ref.invitedBy) || '' })
@@ -12097,46 +11813,23 @@ async function payStart() {
     }
   }
   /* Режим 2 — платёжная ссылка ЮKassa: сумма задана в личном кабинете */
-  if (CFG.link) {
-    /* номер покупателя кладём в ссылку, чтобы потом опознать платёж */
-    let url = CFG.link;
-    try {
-      url += (url.indexOf('?') === -1 ? '?' : '&')
-           + 'customerNumber=' + encodeURIComponent(S.plus.uid);
-    } catch (e) {}
-    openExternalLink(url);
+  if (PAY.link) {
+    openExternalLink(PAY.link);
     setTimeout(openAfterPay, 1200);
     return;
   }
-  openPaySetupHint();
-}
-
-/* Понятное объяснение вместо сухого «оплата не подключена» */
-function openPaySetupHint() {
-  sheet(`
-    <div class="sh-h"><b>💳 Оплата ещё не подключена</b></div>
-    <div class="tip">Приём платежей настраивает владелец приложения. Пока этого не сделано,
-      кнопка оплаты работать не может.</div>
-    <div class="synccard">
-      <div class="sync-t">Если ты владелец</div>
-      <div class="sync-d">Нужна платёжная ссылка из личного кабинета ЮKassa.
-        Вставить её можно прямо здесь, без правки кода.</div>
-    </div>
-    <button class="btn" onclick="openPaySetup()">⚙️ Настроить ЮKassa</button>
-    <button class="btn ghost" onclick="closeSheet()">Закрыть</button>
-  `);
+  toast('Оплата ещё не подключена');
 }
 
 /* автопроверка статуса (только с бэкендом) */
 async function payWatch(id) {
-  const CFG = payCfg();
-  if (!id || !CFG.api) return;
+  if (!id || !PAY.api) return;
   let tries = 0;
   const t = setInterval(async () => {
     tries++;
     if (tries > 90) return clearInterval(t);
     try {
-      const r = await fetch(CFG.api.replace(/\/+$/, '') + '/api/check-payment?id=' + encodeURIComponent(id));
+      const r = await fetch(PAY.api.replace(/\/+$/, '') + '/api/check-payment?id=' + encodeURIComponent(id));
       const d = await r.json();
       if (d.status === 'succeeded') {
         clearInterval(t);
@@ -12262,8 +11955,7 @@ function openPremium() {
       <div class="row"><span>Твой номер</span><b style="font-family:ui-monospace,monospace;font-size:12px">${esc(S.plus.uid)}</b></div>
     </div>
 
-    <button class="btn" id="pr-buy">💳 ${active ? 'Продлить' : 'Оформить'} — ${esc(payCfg().price)}</button>
-    ${!payReady() ? `<div class="tip" style="color:#ffc43c">Оплата ещё не подключена владельцем.</div>` : ''}
+    <button class="btn" id="pr-buy">💳 ${active ? 'Продлить' : 'Оформить'} — ${esc(PAY.priceLabel)}</button>
     <button class="btn ghost" id="pr-ref">🎁 Пригласить друга — месяц бесплатно</button>
     <button class="btn ghost" id="pr-code">🔑 У меня есть код активации</button>
     <div class="tip" id="pr-ver">Стоимость установлена в ЮKassa. Приложение не хранит данные карты.</div>
@@ -12276,80 +11968,7 @@ function openPremium() {
 
   /* скрытый генератор кодов для владельца: 7 нажатий по подписи */
   let taps = 0;
-  G('pr-ver').onclick = () => { if (++taps >= 7) { try { tapFx('big'); } catch (e) {} openPaySetup(); } };
-}
-
-/* ============================================================
-   ЭКРАН НАСТРОЙКИ ОПЛАТЫ (для владельца)
-   Ничего не нужно править в коде: вставил ссылку — работает.
-   ============================================================ */
-function openPaySetup() {
-  const c = payCfg();
-  sheet(`
-    <div class="sh-h"><b>💳 Настройка ЮKassa</b></div>
-
-    <div class="synccard ${payReady() ? 'on' : 'off'}">
-      <div class="sync-t">${payReady() ? '✓ Оплата подключена' : 'Оплата пока не подключена'}</div>
-      <div class="sync-d">${payReady()
-        ? 'Кнопка «Оформить» открывает твою платёжную страницу.'
-        : 'Заполни поле ниже — и кнопка оплаты сразу заработает у всех.'}</div>
-    </div>
-
-    <div class="secline">Шаг 1 · Платёжная ссылка</div>
-    <div class="tip">Личный кабинет ЮKassa → <b>Платёжные ссылки</b> →
-      создай ссылку, задай сумму и название → скопируй и вставь сюда.
-      Сумму меняешь в ЮKassa, приложение трогать не нужно.</div>
-    <input type="text" id="ps-link" placeholder="https://yookassa.ru/my/i/..."
-      value="${esc(c.link)}" autocomplete="off" spellcheck="false">
-
-    <div class="secline">Шаг 2 · Что писать на кнопке</div>
-    <input type="text" id="ps-price" placeholder="подписка на месяц"
-      value="${esc(c.price)}" autocomplete="off">
-
-    <div class="secline">Шаг 3 · Сколько дней даёт оплата</div>
-    <input type="number" id="ps-days" min="1" max="400" value="${c.periodDays}">
-
-    <div class="secline">Секретное слово для кодов активации</div>
-    <div class="tip">Из него собираются коды, которыми ты вручную открываешь
-      подписку покупателю. Поставь любой свой набор букв и никому не показывай.</div>
-    <input type="text" id="ps-salt" value="${esc(c.salt)}" autocomplete="off" spellcheck="false">
-
-    <div class="secline">Автопроверка платежа (необязательно)</div>
-    <div class="tip">Если поднимешь бэкенд — подписка будет включаться сама,
-      без кодов. Без него всё работает, просто активируешь вручную.</div>
-    <input type="text" id="ps-api" placeholder="https://твой-проект.vercel.app"
-      value="${esc(c.api)}" autocomplete="off" spellcheck="false">
-
-    <button class="btn" id="ps-save">Сохранить</button>
-    <button class="btn ghost" id="ps-test">🧪 Проверить: открыть страницу оплаты</button>
-    <button class="btn ghost" onclick="openCodeMaker()">🔧 Генератор кодов активации</button>
-    <div class="tip">Настройки хранятся в этом приложении. Чтобы они работали
-      у всех пользователей, впиши ссылку в блок <b>PAY</b> в коде — я подскажу как.</div>
-  `);
-
-  const G = i => document.getElementById(i);
-  G('ps-save').onclick = () => {
-    const link = G('ps-link').value.trim();
-    if (link && !/^https:\/\//.test(link)) {
-      toast('Ссылка должна начинаться с https://'); return;
-    }
-    S.payCfg = {
-      link,
-      price: G('ps-price').value.trim() || 'подписка на месяц',
-      periodDays: Math.max(1, Math.min(400, +G('ps-days').value || 30)),
-      salt: G('ps-salt').value.trim() || PAY.salt,
-      api: G('ps-api').value.trim(),
-    };
-    DB.save();
-    try { tapFx('done'); } catch (e) {}
-    toast('Сохранено · оплата ' + (payReady() ? 'подключена' : 'пока не задана'));
-    openPaySetup();
-  };
-  G('ps-test').onclick = () => {
-    const c2 = payCfg();
-    if (!c2.link) { toast('Сначала вставь платёжную ссылку'); return; }
-    openExternalLink(c2.link);
-  };
+  G('pr-ver').onclick = () => { if (++taps >= 7) openCodeMaker(); };
 }
 
 /* генератор кодов — только для владельца приложения */
@@ -12633,12 +12252,9 @@ function openReferral() {
 /* ---------- разрешение ---------- */
 async function pushAsk() {
   if (!notifSupported()) {
-    S.perm.notif = 'unsupported'; DB.save();
-    toast(plzInTG()
-      ? 'Внутри Telegram уведомления недоступны. Вынеси ПОЛЬЗУ на экран «Домой» — и они заработают'
-      : (CAP.ios && !CAP.standalone
-        ? 'Сначала добавь ПОЛЬЗУ на экран — тогда появятся уведомления'
-        : 'Этот браузер не умеет уведомления'));
+    toast(CAP.ios && !CAP.standalone
+      ? 'Сначала добавь ПОЛЬЗУ на экран — тогда появятся уведомления'
+      : 'Этот браузер не умеет уведомления');
     return 'unsupported';
   }
   let p = Notification.permission;
@@ -13052,34 +12668,17 @@ function askCalendarAccess(opts) {
     b.textContent = 'Готовлю задачи…';
     try { buzz('tap'); } catch (e) {}
 
-    /* важно: запоминаем ДО пуша — была ли подписка уже оформлена раньше.
-       Системное окно подписки телефона открываем только один раз в жизни:
-       повторное открытие создаёт в телефоне ВТОРОЙ, третий и т.д. отдельный
-       календарь с теми же задачами (телефон не считает ссылку прежней). */
-    const alreadySubscribed = !!(S.sync && S.sync.feed && S.sync.feed.subOpened);
-
     const okLive = live ? await calTryLive() : false;
 
     closeCalAsk();
 
     if (okLive) {
+      /* сервер принял — отправляем в системное окно подписки */
       try { S.perm.cal = 'on'; DB.save(); } catch (e) {}
-      if (!alreadySubscribed) {
-        /* первое подключение — открываем системное окно подписки один раз */
-        setTimeout(() => { try { feedSubscribe(); } catch (e) {} }, 220);
-        setTimeout(() => {
-          try { toast('✓ Подтверди в окне телефона — и календарь заработает'); } catch (e) {}
-        }, 900);
-        /* сразу честно объясняем про задержку телефона, чтобы человек
-           не решил, что синхронизация сломана */
-        setTimeout(() => { try { openIphoneDelayHelp(); } catch (e) {} }, 2600);
-      } else {
-        /* подписка уже есть — просто обновили данные на сервере,
-           телефон подтянет их сам, окно подписки заново НЕ открываем */
-        setTimeout(() => {
-          try { toast('✓ Обновлено · календарь подтянет новые задачи сам'); } catch (e) {}
-        }, 300);
-      }
+      setTimeout(() => { try { feedSubscribe(); } catch (e) {} }, 220);
+      setTimeout(() => {
+        try { toast('✓ Подтверди в окне телефона — и календарь заработает'); } catch (e) {}
+      }, 900);
     } else {
       /* сервера нет или он не ответил — отдаём файл, телефон примет его сам */
       try { S.perm.cal = 'on'; DB.save(); } catch (e) {}
@@ -13106,23 +12705,7 @@ function askCalendarAccess(opts) {
 async function calTryLive() {
   try {
     const ok = await feedPush(true);
-    if (!ok) return false;
-    /* Проверяем, что сервер ДЕЙСТВИТЕЛЬНО отдаёт календарь по ссылке подписки.
-       Бывает, что запись проходит (PUT 200), а чтение возвращает не тот ответ —
-       тогда телефон подпишется на пустышку и задачи не появятся никогда.
-       В этом случае честнее сразу отдать файл календаря. */
-    const u = feedUrl();
-    if (!u) return false;
-    const r = await fetch(u + '?probe=' + Date.now(), { cache: 'no-store' });
-    if (!r.ok) return false;
-    const head = (await r.text()).slice(0, 400);
-    if (head.indexOf('BEGIN:VCALENDAR') === -1) {
-      S.sync.feed.err = 'сервер подписки отвечает неверно';
-      S.sync.feed.on = false;
-      DB.save();
-      return false;
-    }
-    return true;
+    return !!ok;
   } catch (e) { return false; }
 }
 
@@ -13294,7 +12877,7 @@ function openPermsSheet(fromBoot) {
    и чтобы можно было начать тест с чистого листа.
    ============================================================ */
 
-const BUILD = 'v16 · 17.08.2026';
+const BUILD = 'v11 · 17.08.2026';
 
 /* ---------- проверка, что приложение обновилось ---------- */
 function openAbout() {
@@ -13410,10 +12993,7 @@ async function wipeEverything() {
 
 function viewProf() {
   let h = `<div class="tophead"><div><h1>Профиль</h1><div class="sub">Прогресс и настройки</div></div>
-    <div style="display:flex;gap:8px">
-      ${calBtnVisible() ? `<button class="iconround" onclick="calQuickSyncBtn()" title="Синхронизировать календарь">📅</button>` : ''}
-      <button class="iconround" onclick="openSettings()">⚙️</button>
-    </div></div>`;
+    <button class="iconround" onclick="openSettings()">⚙️</button></div>`;
   h += plusRibbon();
   h += `<div class="profquick">
     <button class="pq" onclick="openPremium()"><i>⭐</i><span>Подписка</span></button>
@@ -13653,10 +13233,7 @@ function openSettings() {
     <button class="btn ghost" onclick="openCalSync()">📆 Календарь на телефоне</button>
     ${canInstall?`<button class="btn ghost" onclick="closeSheet();setTimeout(openInstallGuide,150)">📲 Добавить на экран телефона</button>`:''}
 
-    <div class="secline">Отклик приложения</div>
     <button class="btn ghost" id="set-buzz">${(S.perm&&S.perm.buzz===false)?'📴 Вибрация выключена':'📳 Вибрация включена'}</button>
-    <button class="btn ghost" id="set-sound">${(S.perm&&S.perm.sound===false)?'🔇 Звук выключен':'🔊 Звук включён'}</button>
-    <div class="tip">Приложение отзывается на нажатия лёгкой вибрацией и коротким щелчком. Можно выключить любое по отдельности.</div>
     <button class="btn ghost" onclick="closeSheet();S.tourDone=false;DB.save();setTimeout(openWelcome,180)">🎓 Пройти знакомство заново</button>
 
     <div class="secline">Данные</div>
@@ -13671,26 +13248,6 @@ function openSettings() {
   `);
   document.getElementById('st-from').onchange=e=>{ S.hours.from=+e.target.value; DB.save(); };
   document.getElementById('st-to').onchange=e=>{ S.hours.to=+e.target.value; DB.save(); };
-
-  const sb = document.getElementById('set-buzz');
-  if (sb) sb.onclick = () => {
-    if (!S.perm) S.perm = {};
-    S.perm.buzz = (S.perm.buzz === false);
-    DB.save();
-    if (S.perm.buzz) { try { buzz('done'); } catch (e) {} }
-    toast(S.perm.buzz ? 'Вибрация включена' : 'Вибрация выключена');
-    openSettings();
-  };
-
-  const ss = document.getElementById('set-sound');
-  if (ss) ss.onclick = () => {
-    if (!S.perm) S.perm = {};
-    S.perm.sound = (S.perm.sound === false);
-    DB.save();
-    if (S.perm.sound) sfx('done');
-    toast(S.perm.sound ? 'Звук включён' : 'Звук выключен');
-    openSettings();
-  };
 }
 
 function openNotifySetup() {
