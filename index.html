@@ -12551,52 +12551,45 @@ function openStorageInfo() {
 <script>
 /* ==== account.js ==== */
 /* ============================================================
-   ПОЛЬЗА — АККАУНТ: ЛОГИН И ПАРОЛЬ
+   ПОЛЬЗА — ОДИН АККАУНТ НА ВСЕХ УСТРОЙСТВАХ
    ------------------------------------------------------------
-   Зачем: чтобы задачи были ОДНИ И ТЕ ЖЕ на телефоне, iPad, ПК
-   и в браузере по обычной ссылке.
+   Ключ к твоим задачам — номер Telegram. Ничего придумывать
+   и запоминать не нужно.
 
-   Как работает:
-   • человек придумывает логин и пароль один раз;
-   • на других устройствах входит теми же данными;
-   • задачи лежат на сервере и подтягиваются сами.
+   В Telegram приложение узнаёт номер само и включает
+   синхронизацию молча — человек вообще ничего не делает.
 
-   Пароль на сервере не хранится — только необратимый хеш.
+   В браузере на компьютере человек один раз вводит этот номер,
+   и дальше задачи ходят между устройствами сами.
 
-   КУДА ПОЛОЖИТЬ: рядом с cloud.js.
-   В index.html подключать ПОСЛЕ cloud.js.
+   Пароля нет намеренно: на сервере не выполняется никаких
+   вычислений, поэтому синхронизация работает мгновенно
+   и не ломается.
    ============================================================ */
 
-/* ↓↓↓ адрес воркера — тот же, что в reminder-sync.js ↓↓↓ */
 var ACC_SERVER = 'https://polza-bot.parshin-prodaction.workers.dev';
-
-var ACC_TOKEN_KEY = 'polza.acc.token';
-var ACC_LOGIN_KEY = 'polza.acc.login';
+var ACC_TGID_KEY = 'polza.acc.tgid';
 
 /* ------------------------------------------------------------
-   ХРАНЕНИЕ ПРОПУСКА
+   НОМЕР TELEGRAM
    ------------------------------------------------------------ */
-function accToken() {
-  try { return localStorage.getItem(ACC_TOKEN_KEY) || ''; } catch (e) { return ''; }
-}
-function accLogin() {
-  try { return localStorage.getItem(ACC_LOGIN_KEY) || ''; } catch (e) { return ''; }
-}
-function accSetToken(token, login) {
-  try {
-    if (token) {
-      localStorage.setItem(ACC_TOKEN_KEY, token);
-      localStorage.setItem(ACC_LOGIN_KEY, login || '');
-    } else {
-      localStorage.removeItem(ACC_TOKEN_KEY);
-      localStorage.removeItem(ACC_LOGIN_KEY);
-    }
-  } catch (e) {}
-}
-function accIn() { return !!accToken(); }
-
-/* Telegram ID — чтобы бот знал, кому присылать напоминания */
 function accTgId() {
+  try { return localStorage.getItem(ACC_TGID_KEY) || ''; } catch (e) { return ''; }
+}
+
+function accSetTgId(id) {
+  try {
+    var v = String(id || '').replace(/\D/g, '');
+    if (v.length >= 5) { localStorage.setItem(ACC_TGID_KEY, v); return true; }
+    localStorage.removeItem(ACC_TGID_KEY);
+    return false;
+  } catch (e) { return false; }
+}
+
+function accIn() { return !!accTgId(); }
+
+/* номер, который Telegram сообщает сам */
+function accTgAuto() {
   try {
     var u = window.Telegram && Telegram.WebApp &&
             Telegram.WebApp.initDataUnsafe && Telegram.WebApp.initDataUnsafe.user;
@@ -12605,98 +12598,189 @@ function accTgId() {
   return '';
 }
 
-function accBase() { return String(ACC_SERVER || '').replace(/\/+$/, ''); }
+function accInTelegram() { return !!accTgAuto(); }
 
-/* ------------------------------------------------------------
-   ЗАПРОСЫ К СЕРВЕРУ
-   ------------------------------------------------------------ */
-function accPost(path, body) {
-  return fetch(accBase() + path, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body || {})
-  }).then(function (r) { return r.json(); });
-}
-function accGet(path) {
-  return fetch(accBase() + path).then(function (r) { return r.json(); });
+/* пропуск, который понимает сервер */
+function accToken() {
+  var id = accTgId();
+  return id ? 'id.' + id : '';
 }
 
 /* ------------------------------------------------------------
-   ВХОД, РЕГИСТРАЦИЯ, ВЫХОД
+   ОТСЛЕЖИВАНИЕ ПРАВОК
+   ------------------------------------------------------------
+   Перед отправкой помечаем, какие задачи изменились и какие
+   исчезли. Благодаря этому при встрече двух устройств ничего
+   не пропадает и удалённое не возвращается.
    ------------------------------------------------------------ */
-async function accRegister(login, pass) {
-  var d = await accPost('/api/register', { login: login, pass: pass, tgId: accTgId() });
-  if (!d.ok) throw new Error(d.error || 'Не получилось создать аккаунт');
-  accSetToken(d.token, d.login);
-  /* новый аккаунт: отправляем то, что уже накопилось на устройстве */
-  await accPushNow(true);
-  return d;
+var ACC_SNAP_KEY = 'polza.acc.snap';
+
+function accSnapRead() {
+  try { return JSON.parse(localStorage.getItem(ACC_SNAP_KEY) || '{}'); } catch (e) { return {}; }
+}
+function accSnapWrite(m) {
+  try { localStorage.setItem(ACC_SNAP_KEY, JSON.stringify(m)); } catch (e) {}
 }
 
-async function accSignIn(login, pass) {
-  var d = await accPost('/api/login', { login: login, pass: pass, tgId: accTgId() });
-  if (!d.ok) throw new Error(d.error || 'Логин или пароль не подошли');
-  accSetToken(d.token, d.login);
-  /* вход: забираем задачи с сервера */
-  await accPullNow();
-  return d;
-}
+function accStampChanges() {
+  if (typeof S === 'undefined' || !Array.isArray(S.tasks)) return 0;
+  var snap = accSnapRead();
+  var next = {};
+  var now = Date.now();
+  var changed = 0;
 
-async function accSignOut() {
-  var t = accToken();
-  accSetToken('', '');
-  if (t) { try { await accPost('/api/logout', { token: t }); } catch (e) {} }
+  S.tasks.forEach(function (t) {
+    if (!t || !t.id) return;
+    var body = '';
+    try { body = JSON.stringify(t, function (k, v) { return k === 'upd' ? undefined : v; }); }
+    catch (e) { body = String(t.title || '') + '|' + String(t.done); }
+    next[t.id] = body;
+    if (snap[t.id] !== body) { t.upd = now; changed++; }
+    else if (!t.upd) t.upd = t.id || now;
+  });
+
+  /* пропавшие задачи — помечаем удалёнными, чтобы не вернулись */
+  if (!S.sync) S.sync = {};
+  if (!S.sync.tomb) S.sync.tomb = {};
+  Object.keys(snap).forEach(function (id) {
+    if (!next[id]) S.sync.tomb[id] = now;
+  });
+
+  /* отметки старше 60 дней больше не нужны */
+  var edge = now - 60 * 24 * 60 * 60 * 1000;
+  Object.keys(S.sync.tomb).forEach(function (id) {
+    if (S.sync.tomb[id] < edge) delete S.sync.tomb[id];
+  });
+
+  accSnapWrite(next);
+  return changed;
 }
 
 /* ------------------------------------------------------------
-   СИНХРОНИЗАЦИЯ ЗАДАЧ
+   СЛИЯНИЕ ДВУХ СОСТОЯНИЙ
+   ------------------------------------------------------------
+   Если человек работал офлайн на двух устройствах, задачи
+   не должны потеряться. Поэтому не заменяем целиком, а сводим:
+   задачи объединяем по номеру, журналы дней складываем.
    ------------------------------------------------------------ */
-function accState() {
-  try { return (typeof S !== 'undefined' && S) ? S : null; } catch (e) { return null; }
-}
+function accMerge(local, remote) {
+  if (!remote) return local;
+  if (!local) return remote;
 
-/* отправить на сервер */
-async function accPushNow(force) {
-  if (!accIn()) return false;
-  var st = accState();
-  if (!st) return false;
-  try {
-    var d = await accPost('/api/state', {
-      token: accToken(),
-      state: st,
-      ts: Number(st._ts) || Date.now(),
-      force: !!force
+  var out = {};
+  var lts = Number(local._ts) || 0, rts = Number(remote._ts) || 0;
+  var base = rts > lts ? remote : local;
+
+  Object.keys(base).forEach(function (k) { out[k] = base[k]; });
+
+  /* удалённые задачи с обеих сторон */
+  var tomb = {};
+  [local, remote].forEach(function (side) {
+    var t = (side.sync && side.sync.tomb) || {};
+    Object.keys(t).forEach(function (id) { tomb[id] = Math.max(tomb[id] || 0, t[id]); });
+  });
+
+  /* задачи: побеждает более свежая правка */
+  var byId = {};
+  (local.tasks || []).forEach(function (t) { if (t && t.id) byId[t.id] = t; });
+  (remote.tasks || []).forEach(function (t) {
+    if (!t || !t.id) return;
+    var cur = byId[t.id];
+    if (!cur) { byId[t.id] = t; return; }
+    byId[t.id] = ((t.upd || 0) > (cur.upd || 0)) ? t : cur;
+  });
+
+  out.tasks = Object.keys(byId).map(function (id) { return byId[id]; })
+    .filter(function (t) {
+      var dead = tomb[t.id];
+      return !(dead && dead >= (t.upd || 0));
+    })
+    .sort(function (a, b) { return (a.id || 0) - (b.id || 0); });
+
+  if (!out.sync) out.sync = {};
+  out.sync.tomb = tomb;
+
+  /* журналы по дням — складываем, ничего не теряя */
+  ['days', 'energy', 'notes', 'achDates'].forEach(function (key) {
+    var a = local[key] || {}, b = remote[key] || {};
+    if (typeof a !== 'object' || typeof b !== 'object') return;
+    var m = {};
+    Object.keys(b).forEach(function (k) { m[k] = b[k]; });
+    Object.keys(a).forEach(function (k) { if (m[k] === undefined) m[k] = a[k]; });
+    out[key] = m;
+  });
+
+  /* списки без повторов */
+  ['restDays', 'achieved'].forEach(function (key) {
+    var a = local[key] || [], b = remote[key] || [];
+    if (!Array.isArray(a) || !Array.isArray(b)) return;
+    out[key] = a.concat(b).filter(function (v, i, arr) { return arr.indexOf(v) === i; });
+  });
+
+  /* цели и зал славы — по номеру */
+  ['goals', 'hall'].forEach(function (key) {
+    if (!Array.isArray(local[key]) && !Array.isArray(remote[key])) return;
+    var m = {};
+    (local[key] || []).concat(remote[key] || []).forEach(function (x) {
+      if (x && x.id != null) m[x.id] = x;
     });
-    if (d && d['серверСвежее'] && !force) {
-      /* на другом устройстве данные новее — забираем их */
-      await accPullNow();
-      return false;
-    }
+    out[key] = Object.keys(m).map(function (k) { return m[k]; });
+  });
+
+  out._ts = Math.max(lts, rts);
+  return out;
+}
+
+/* ------------------------------------------------------------
+   ОБМЕН С СЕРВЕРОМ
+   ------------------------------------------------------------ */
+function accStamp() {
+  try { S._ts = Date.now(); } catch (e) {}
+  return (S && S._ts) || Date.now();
+}
+
+/* отправить свои задачи */
+async function accPushNow(force) {
+  if (!accIn() || typeof S === 'undefined') return false;
+  try {
+    var r = await fetch(ACC_SERVER + '/api/state', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        token: accToken(),
+        state: S,
+        ts: Number(S._ts) || Date.now(),
+        force: !!force
+      })
+    });
+    var d = await r.json();
+    if (d && d.serverNewer && !force) { await accPullNow(); return false; }
     return !!(d && d.ok);
   } catch (e) { return false; }
 }
 
-/* забрать с сервера */
+/* забрать задачи с сервера и свести со своими */
 async function accPullNow() {
-  if (!accIn()) return false;
+  if (!accIn() || typeof S === 'undefined') return false;
   try {
-    var d = await accGet('/api/state?token=' + encodeURIComponent(accToken()));
+    var r = await fetch(ACC_SERVER + '/api/state?token=' + encodeURIComponent(accToken()));
+    var d = await r.json();
     if (!d || !d.ok || !d.state) return false;
 
-    var st = accState();
-    var mine = st ? (Number(st._ts) || 0) : 0;
+    var mine = Number(S._ts) || 0;
     var theirs = Number(d.ts) || 0;
+    if (mine && mine === theirs) return false;   /* уже одинаково */
 
-    /* наше свежее — ничего не трогаем */
-    if (st && mine > theirs) return false;
+    var before = JSON.stringify((S.tasks || []).length) + '|' + mine;
+    var merged = accMerge(S, d.state);
+    var after = JSON.stringify((merged.tasks || []).length) + '|' + (merged._ts || 0);
+    if (before === after && mine >= theirs) return false;
 
-    /* аккуратно заменяем состояние */
-    if (typeof S !== 'undefined') {
-      S = d.state;
-      try { if (typeof ensureShape === 'function') ensureShape(); } catch (e) {}
-      try { DB.save(); } catch (e) {}
-      try { render(); } catch (e) {}
-    }
+    S = merged;
+    try { if (typeof ensureShape === 'function') ensureShape(); } catch (e) {}
+    try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {}
+    try { accSnapWrite({}); accStampChanges(); } catch (e) {}
+    try { render(); } catch (e) {}
     return true;
   } catch (e) { return false; }
 }
@@ -12706,7 +12790,7 @@ var accPushTimer = null;
 function accPushSoon() {
   if (!accIn()) return;
   if (accPushTimer) clearTimeout(accPushTimer);
-  accPushTimer = setTimeout(function () { accPushNow(); }, 1500);
+  accPushTimer = setTimeout(function () { accPushNow(); }, 1200);
 }
 
 /* цепляемся к сохранению, ничего не ломая */
@@ -12715,18 +12799,26 @@ function accPushSoon() {
     if (typeof DB === 'undefined' || !DB.save) return;
     var prev = DB.save.bind(DB);
     DB.save = function () {
+      accStamp();
       var r = prev();
+      try { accStampChanges(); } catch (e) {}
       accPushSoon();
       return r;
     };
   } catch (e) {}
 })();
 
-/* при открытии приложения — подтянуть свежее */
-(function accBootPull() {
+/* ------------------------------------------------------------
+   ВКЛЮЧЕНИЕ ПРИ СТАРТЕ
+   В Telegram — молча и сразу. В браузере — ждём ввода номера.
+   ------------------------------------------------------------ */
+(function accBoot() {
   function go() {
-    if (!accIn()) return;
-    setTimeout(function () { accPullNow(); }, 600);
+    try {
+      var auto = accTgAuto();
+      if (auto && accTgId() !== auto) accSetTgId(auto);
+      if (accIn()) setTimeout(function () { accPullNow(); }, 700);
+    } catch (e) {}
   }
   if (document.readyState === 'loading')
     document.addEventListener('DOMContentLoaded', go);
@@ -12739,136 +12831,213 @@ document.addEventListener('visibilitychange', function () {
 });
 
 /* ------------------------------------------------------------
-   ЭКРАН ВХОДА
+   ЭКРАН «АККАУНТ»
    ------------------------------------------------------------ */
 function openAccount() {
   if (accIn()) { openAccountInfo(); return; }
 
+  /* сюда попадают только из браузера: в Telegram номер берётся сам */
   sheet(
-    '<div class="sh-h"><b>👤 Вход в аккаунт</b></div>' +
-    '<div class="tip">Придумай логин и пароль — и твои задачи будут одинаковыми ' +
-    'на телефоне, планшете и компьютере. Пароль на сервере не хранится.</div>' +
+    '<div class="sh-h"><b>🔗 Одни задачи на всех устройствах</b></div>' +
 
-    '<div class="secline">Логин</div>' +
-    '<input type="text" id="ac-login" placeholder="например, parshin" ' +
-    'autocapitalize="none" autocorrect="off" spellcheck="false" ' +
-    'style="width:100%;margin-bottom:8px">' +
+    '<div class="tip" style="margin-bottom:16px">' +
+    'Задачи, баллы и серия будут одинаковыми на телефоне, планшете и компьютере. ' +
+    'Нужен только твой номер из Telegram — пароль придумывать не надо.' +
+    '</div>' +
 
-    '<div class="secline">Пароль</div>' +
-    '<input type="password" id="ac-pass" placeholder="минимум 6 символов" ' +
-    'autocapitalize="none" autocorrect="off" spellcheck="false" ' +
-    'style="width:100%;margin-bottom:4px">' +
+    '<div class="acc-step">' +
+      '<div class="acc-num">1</div>' +
+      '<div class="acc-txt"><b>Открой ПОЛЬЗУ в Telegram</b>' +
+      '<div>На телефоне зайди в бота и открой приложение.</div></div>' +
+    '</div>' +
 
-    '<div id="ac-msg" class="tip" style="min-height:18px;color:#ff8a8a"></div>' +
+    '<div class="acc-step">' +
+      '<div class="acc-num">2</div>' +
+      '<div class="acc-txt"><b>Профиль → Аккаунт → Скопировать номер</b>' +
+      '<div>Там будет твой номер из десяти цифр и кнопка копирования.</div></div>' +
+    '</div>' +
 
-    '<button class="btn" id="ac-in">Войти</button>' +
-    '<button class="btn ghost" id="ac-up" style="margin-top:8px">Создать новый аккаунт</button>' +
+    '<div class="acc-step">' +
+      '<div class="acc-num">3</div>' +
+      '<div class="acc-txt"><b>Впиши его сюда</b>' +
+      '<div>Один раз — дальше этот браузер запомнит.</div></div>' +
+    '</div>' +
 
-    '<div class="secline">Зачем это</div>' +
-    '<div class="card">' +
-      '<div class="row"><span>Телефон, iPad, компьютер</span><b style="color:#3ddc97">одни задачи</b></div>' +
-      '<div class="row"><span>Открыть по ссылке в браузере</span><b style="color:#3ddc97">работает</b></div>' +
-      '<div class="row"><span>Пароль на сервере</span><b>не хранится</b></div>' +
-    '</div>'
+    '<label style="margin-top:16px">Номер из Telegram</label>' +
+    '<input type="tel" id="acc-id" inputmode="numeric" placeholder="например, 8394906235" ' +
+    'style="font-size:19px;letter-spacing:1.5px;text-align:center">' +
+
+    '<button class="btn" id="acc-go" style="margin-top:12px">Связать устройства</button>' +
+    '<div id="acc-msg" class="tip" style="margin-top:10px"></div>' +
+
+    '<div class="tip" style="margin-top:18px;opacity:.75">' +
+    'Не нашёл номер? Напиши боту команду <b>/id</b> — он пришлёт его в ответ.' +
+    '</div>' +
+
+    '<button class="btn ghost" onclick="closeSheet()">Закрыть</button>'
   );
 
-  var G = function (i) { return document.getElementById(i); };
-  var busy = false;
+  var inp = document.getElementById('acc-id');
+  var msg = document.getElementById('acc-msg');
+  var btn = document.getElementById('acc-go');
+  if (inp) setTimeout(function () { try { inp.focus(); } catch (e) {} }, 250);
 
-  function say(text, good) {
-    var m = G('ac-msg');
-    if (m) { m.textContent = text || ''; m.style.color = good ? '#3ddc97' : '#ff8a8a'; }
+  function say(text, bad) {
+    if (!msg) return;
+    msg.innerHTML = text;
+    msg.style.color = bad ? '#ff6b6b' : 'var(--tx2)';
   }
 
-  async function run(isNew) {
-    if (busy) return;
-    var login = (G('ac-login').value || '').trim();
-    var pass = G('ac-pass').value || '';
+  btn.onclick = async function () {
+    var v = String(inp.value || '').replace(/\D/g, '');
+    if (v.length < 5) { say('Номер состоит только из цифр — обычно их девять или десять.', true); return; }
 
-    if (login.length < 3) { say('Логин: минимум 3 символа'); return; }
-    if (pass.length < 6) { say('Пароль: минимум 6 символов'); return; }
+    btn.disabled = true; btn.textContent = 'Связываю…';
+    say('Проверяю связь с сервером…');
 
-    busy = true;
-    say(isNew ? 'Создаю аккаунт…' : 'Проверяю…', true);
-    try {
-      if (isNew) await accRegister(login, pass);
-      else await accSignIn(login, pass);
-      try { closeSheet(); } catch (e) {}
-      try { render(); } catch (e) {}
-      toast(isNew ? '🎉 Аккаунт создан' : '✅ С возвращением, ' + accLogin());
-    } catch (e) {
-      say(e.message || 'Не получилось');
+    accSetTgId(v);
+    var got = await accPullNow();
+
+    if (got) {
+      try { buzz('big'); } catch (e) {}
+      say('✅ Готово. Задачи с телефона появились здесь.');
+      setTimeout(function () { closeSheet(); try { render(); } catch (e) {} }, 900);
+      return;
     }
-    busy = false;
-  }
 
-  if (G('ac-in')) G('ac-in').onclick = function () { run(false); };
-  if (G('ac-up')) G('ac-up').onclick = function () { run(true); };
-  if (G('ac-pass')) G('ac-pass').onkeydown = function (e) {
-    if (e.key === 'Enter') run(false);
+    /* задач на сервере ещё нет — значит это первое устройство */
+    var sent = await accPushNow(true);
+    btn.disabled = false; btn.textContent = 'Связать устройства';
+
+    if (sent) {
+      try { buzz('done'); } catch (e) {}
+      say('✅ Устройство связано. Теперь открой ПОЛЬЗУ на телефоне — задачи подтянутся туда.');
+      setTimeout(function () { closeSheet(); try { render(); } catch (e) {} }, 1400);
+    } else {
+      accSetTgId('');
+      say('Сервер не ответил. Проверь интернет и попробуй ещё раз.', true);
+    }
   };
+
+  if (inp) inp.onkeydown = function (e) { if (e.key === 'Enter') btn.click(); };
 }
 
 /* ------------------------------------------------------------
-   ЭКРАН «Я УЖЕ ВОШЁЛ»
+   ЭКРАН, КОГДА СИНХРОНИЗАЦИЯ УЖЕ РАБОТАЕТ
    ------------------------------------------------------------ */
 function openAccountInfo() {
-  var tasks = 0;
-  try { tasks = (S.tasks || []).length; } catch (e) {}
+  var id = accTgId();
+  var inTg = accInTelegram();
+  var last = 0;
+  try { last = Number(S._ts) || 0; } catch (e) {}
 
   sheet(
     '<div class="sh-h"><b>👤 Аккаунт</b></div>' +
-    '<div class="synccard on">' +
-      '<div class="sync-t">✓ Вход выполнен</div>' +
-      '<div class="sync-d">Логин: <b>' + esc(accLogin()) + '</b><br>' +
-      'Задачи синхронизируются между всеми твоими устройствами.</div>' +
+
+    '<div class="acc-ok">' +
+      '<div class="acc-ok-i">✅</div>' +
+      '<div><b>Синхронизация включена</b>' +
+      '<div class="tip" style="margin:2px 0 0">' +
+      (inTg ? 'Номер получен из Telegram автоматически.' : 'Этот браузер связан с твоим Telegram.') +
+      '</div></div>' +
     '</div>' +
 
-    '<div class="card" style="margin-top:10px">' +
-      '<div class="row"><span>Задач сейчас</span><b>' + tasks + '</b></div>' +
-      '<div class="row"><span>Синхронизация</span><b style="color:#3ddc97">включена</b></div>' +
+    '<label style="margin-top:16px">Твой номер</label>' +
+    '<div class="acc-id-box" id="acc-idbox">' + esc(id) + '</div>' +
+    '<button class="btn" id="acc-copy">📋 Скопировать номер</button>' +
+
+    '<div class="tip" style="margin-top:6px">' +
+    'Впиши его в ПОЛЬЗУ на компьютере — и задачи будут одни и те же.' +
     '</div>' +
 
-    '<button class="btn" id="ai-sync">🔄 Синхронизировать сейчас</button>' +
+    '<div class="secline">Как добавить компьютер</div>' +
+    '<div class="acc-step"><div class="acc-num">1</div><div class="acc-txt">' +
+      '<b>Открой ПОЛЬЗУ в браузере</b><div>Адрес тот же, что и у бота.</div></div></div>' +
+    '<div class="acc-step"><div class="acc-num">2</div><div class="acc-txt">' +
+      '<b>Профиль → Аккаунт</b><div>Появится поле для номера.</div></div></div>' +
+    '<div class="acc-step"><div class="acc-num">3</div><div class="acc-txt">' +
+      '<b>Впиши номер</b><div>Задачи подтянутся сразу.</div></div></div>' +
 
-    '<div class="secline">Другое устройство</div>' +
-    '<div class="tip">Открой ПОЛЬЗУ на iPad или компьютере и войди этим же логином — ' +
-    'задачи появятся сами.</div>' +
+    '<button class="btn ghost" id="acc-sync" style="margin-top:16px">🔄 Обновить сейчас</button>' +
+    (last ? '<div class="tip">Последняя правка: ' + accAgo(last) + '</div>' : '') +
 
-    '<div class="secline">Выход</div>' +
-    '<div class="tip">Задачи останутся на сервере. Войдёшь снова — всё вернётся.</div>' +
-    '<button class="btn ghost" id="ai-out">Выйти из аккаунта</button>'
+    (inTg ? '' : '<button class="btn ghost" id="acc-out">Отвязать этот браузер</button>') +
+    '<button class="btn ghost" onclick="closeSheet()">Закрыть</button>'
   );
 
-  var G = function (i) { return document.getElementById(i); };
-
-  if (G('ai-sync')) G('ai-sync').onclick = async function () {
-    toast('Синхронизирую…');
-    await accPushNow();
-    await accPullNow();
-    toast('✅ Готово');
-    openAccountInfo();
+  document.getElementById('acc-copy').onclick = async function () {
+    try {
+      await navigator.clipboard.writeText(id);
+      toast('Номер скопирован');
+      try { buzz('done'); } catch (e) {}
+    } catch (e) {
+      try {
+        var el = document.getElementById('acc-idbox');
+        var r = document.createRange(); r.selectNodeContents(el);
+        var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+        toast('Номер выделен — скопируй его');
+      } catch (e2) { prompt('Скопируй номер:', id); }
+    }
   };
 
-  if (G('ai-out')) G('ai-out').onclick = async function () {
-    if (!confirm('Выйти из аккаунта?\n\nЗадачи останутся на сервере.')) return;
-    await accSignOut();
-    try { closeSheet(); } catch (e) {}
-    try { render(); } catch (e) {}
-    toast('Вы вышли');
+  var sy = document.getElementById('acc-sync');
+  sy.onclick = async function () {
+    sy.disabled = true; sy.textContent = 'Обновляю…';
+    var got = await accPullNow();
+    if (!got) await accPushNow();
+    sy.disabled = false; sy.textContent = '🔄 Обновить сейчас';
+    toast(got ? '✅ Задачи обновлены' : '✅ Всё уже одинаково');
+    try { buzz('done'); } catch (e) {}
   };
+
+  var out = document.getElementById('acc-out');
+  if (out) out.onclick = function () {
+    if (!confirm('Отвязать этот браузер?\n\nЗадачи останутся и здесь, и на телефоне.')) return;
+    accSetTgId('');
+    closeSheet();
+    toast('Браузер отвязан');
+  };
+}
+
+function accAgo(ts) {
+  var m = Math.round((Date.now() - ts) / 60000);
+  if (m < 1) return 'только что';
+  if (m < 60) return m + ' ' + plural(m, 'минуту', 'минуты', 'минут') + ' назад';
+  var h = Math.round(m / 60);
+  if (h < 24) return h + ' ' + plural(h, 'час', 'часа', 'часов') + ' назад';
+  return Math.round(h / 24) + ' дн. назад';
+}
+
+/* кнопка в настройках */
+function accSettingsButton() {
+  if (accIn()) {
+    return '<button class="btn ghost" onclick="closeSheet();setTimeout(openAccountInfo,150)">' +
+           '👤 Аккаунт · синхронизация включена</button>';
+  }
+  return '<button class="btn ghost" onclick="closeSheet();setTimeout(openAccount,150)">' +
+         '🔗 Связать устройства</button>';
 }
 
 /* ------------------------------------------------------------
-   СТРОКА ДЛЯ ЭКРАНА НАСТРОЕК
+   ОФОРМЛЕНИЕ
    ------------------------------------------------------------ */
-function accSettingsButton() {
-  if (accIn()) {
-    return '<button class="btn ghost" id="set-account">👤 Аккаунт: ' +
-           esc(accLogin()) + '</button>';
-  }
-  return '<button class="btn" id="set-account">👤 Войти — задачи на всех устройствах</button>';
-}
+(function accStyles() {
+  var css = document.createElement('style');
+  css.textContent =
+    '.acc-step{display:flex;gap:12px;align-items:flex-start;margin:12px 0}' +
+    '.acc-num{flex:0 0 26px;height:26px;border-radius:50%;background:#5b8cff;color:#fff;' +
+      'font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center}' +
+    '.acc-txt{flex:1;font-size:13.5px;line-height:1.5}' +
+    '.acc-txt b{display:block;margin-bottom:2px}' +
+    '.acc-txt div{color:var(--tx2);font-size:12.5px}' +
+    '.acc-ok{display:flex;gap:12px;align-items:center;background:rgba(61,220,151,.12);' +
+      'border-radius:14px;padding:14px;margin-top:4px}' +
+    '.acc-ok-i{font-size:22px}' +
+    '.acc-id-box{font-size:24px;font-weight:800;letter-spacing:2px;text-align:center;' +
+      'padding:16px;background:var(--bg2,rgba(255,255,255,.06));border-radius:14px;' +
+      'margin:6px 0 10px;user-select:all}';
+  (document.head || document.documentElement).appendChild(css);
+})();
 
 </script>
 <script>
@@ -14768,433 +14937,7 @@ async function wipeEverything() {
 })();
 
 </script>
-<script>
-/* ==== account-sync.js ==== */
-/* ============================================================
-   ПОЛЬЗА — ОДИН АККАУНТ НА ВСЕХ УСТРОЙСТВАХ
-   ------------------------------------------------------------
-   Что делает этот файл:
-
-   1. Определяет, чей это аккаунт.
-      • Открыто из Telegram → аккаунт привязан к Telegram ID.
-      • Открыто в браузере на компьютере → свой номер устройства,
-        который можно связать с телефоном шестизначным кодом.
-
-   2. Раз в 20 секунд (и при каждом возврате в приложение) сверяется
-      с сервером: забирает чужие изменения, отдаёт свои.
-
-   3. Сливает данные ПРАВИЛЬНО, а не «кто последний, тот и прав»:
-      • задачи сопоставляются по номеру, побеждает более свежая правка;
-      • удалённые задачи не воскресают — для них хранится отметка;
-      • выполненные дни и баллы объединяются, ничего не теряется.
-
-   4. Каждая правка задачи помечается временем — это же время
-      использует календарь, чтобы обновлять события, а не плодить копии.
-   ============================================================ */
-
-var ACC_SERVER = 'https://polza-bot.parshin-prodaction.workers.dev';
-var ACC_KEY    = 'polza.acc';       /* номер аккаунта в памяти устройства */
-var ACC_SNAP   = 'polza.snap';      /* слепок задач — чтобы видеть, что изменилось */
-var ACC_REV    = 'polza.rev';       /* версия, полученная с сервера */
-
-/* ---------- кто мы ---------- */
-function accId() {
-  /* В Telegram аккаунт всегда один и тот же — по Telegram ID */
-  try {
-    var u = window.Telegram && Telegram.WebApp &&
-            Telegram.WebApp.initDataUnsafe && Telegram.WebApp.initDataUnsafe.user;
-    if (u && u.id) {
-      var tg = 'tg' + u.id;
-      try {
-        /* если раньше сидели под веб-аккаунтом — запоминаем переход */
-        var was = localStorage.getItem(ACC_KEY);
-        if (was && was !== tg) localStorage.setItem('polza.accPrev', was);
-        localStorage.setItem(ACC_KEY, tg);
-      } catch (e) {}
-      return tg;
-    }
-  } catch (e) {}
-
-  /* Обычный браузер: свой номер, пока не связали с телефоном */
-  try {
-    var v = localStorage.getItem(ACC_KEY);
-    if (v) return v;
-    var a = new Uint8Array(9);
-    (crypto.getRandomValues ? crypto.getRandomValues(a) : a.fill(7));
-    var id = 'w' + Array.from(a, function (b) { return b.toString(36); }).join('').slice(0, 14);
-    localStorage.setItem(ACC_KEY, id);
-    return id;
-  } catch (e) { return 'wlocal000001'; }
-}
-
-/* Человеку показываем аккуратно, без технических префиксов */
-function accHuman() {
-  var id = accId();
-  if (id.indexOf('tg') === 0) return 'Telegram · ' + id.slice(2);
-  return 'Браузер · ' + id.slice(1, 7).toUpperCase();
-}
-
-function accInTelegram() { return accId().indexOf('tg') === 0; }
-
-/* ---------- отметки времени на задачах ----------
-   Сравниваем текущие задачи со слепком: что изменилось — помечаем.
-   Так ничего не нужно менять в остальных файлах приложения. */
-function accSnapRead() {
-  try { return JSON.parse(localStorage.getItem(ACC_SNAP) || '{}') || {}; }
-  catch (e) { return {}; }
-}
-function accSnapWrite(m) {
-  try { localStorage.setItem(ACC_SNAP, JSON.stringify(m)); } catch (e) {}
-}
-
-function accStampChanges() {
-  if (!window.S || !Array.isArray(S.tasks)) return;
-  var snap = accSnapRead();
-  var next = {};
-  var now  = Date.now();
-  var changed = 0;
-
-  S.tasks.forEach(function (t) {
-    if (!t || !t.id) return;
-    var body = '';
-    try { body = JSON.stringify(t, function (k, v) { return k === 'upd' ? undefined : v; }); }
-    catch (e) { body = String(t.title || '') + '|' + String(t.done); }
-    next[t.id] = body;
-    if (snap[t.id] !== body) { t.upd = now; changed++; }
-    else if (!t.upd) t.upd = t.id || now;
-  });
-
-  /* Пропавшие задачи — запоминаем как удалённые, чтобы не вернулись с другого устройства */
-  if (!S.sync) S.sync = {};
-  if (!S.sync.tomb) S.sync.tomb = {};
-  Object.keys(snap).forEach(function (id) {
-    if (!next[id]) S.sync.tomb[id] = now;
-  });
-  /* отметки старше 60 дней больше не нужны */
-  var edge = now - 60 * 24 * 60 * 60 * 1000;
-  Object.keys(S.sync.tomb).forEach(function (id) {
-    if (S.sync.tomb[id] < edge) delete S.sync.tomb[id];
-  });
-
-  accSnapWrite(next);
-  return changed;
-}
-
-/* ---------- слияние двух состояний ---------- */
-function accMerge(local, remote) {
-  if (!remote) return local;
-  if (!local)  return remote;
-
-  var out = {};
-  var lts = local.__ts || 0, rts = remote.__ts || 0;
-  var base = rts > lts ? remote : local;
-
-  /* всё простое берём у того, кто свежее */
-  Object.keys(base).forEach(function (k) { out[k] = base[k]; });
-
-  /* --- задачи: объединяем по номеру, побеждает свежая правка --- */
-  var tomb = {};
-  [local, remote].forEach(function (side) {
-    var t = (side.sync && side.sync.tomb) || {};
-    Object.keys(t).forEach(function (id) { tomb[id] = Math.max(tomb[id] || 0, t[id]); });
-  });
-
-  var byId = {};
-  (local.tasks  || []).forEach(function (t) { if (t && t.id) byId[t.id] = t; });
-  (remote.tasks || []).forEach(function (t) {
-    if (!t || !t.id) return;
-    var cur = byId[t.id];
-    if (!cur) { byId[t.id] = t; return; }
-    byId[t.id] = ((t.upd || 0) > (cur.upd || 0)) ? t : cur;
-  });
-
-  out.tasks = Object.keys(byId).map(function (id) { return byId[id]; })
-    .filter(function (t) {
-      var dead = tomb[t.id];
-      return !(dead && dead >= (t.upd || 0));   /* удалили позже правки — не возвращаем */
-    })
-    .sort(function (a, b) { return (a.id || 0) - (b.id || 0); });
-
-  if (!out.sync) out.sync = {};
-  out.sync.tomb = tomb;
-
-  /* --- журналы по дням: объединяем, ничего не теряя --- */
-  ['log', 'energy', 'notes', 'reasons'].forEach(function (key) {
-    var a = local[key] || {}, b = remote[key] || {};
-    if (typeof a !== 'object' || typeof b !== 'object') return;
-    var m = {};
-    Object.keys(a).forEach(function (k) { m[k] = a[k]; });
-    Object.keys(b).forEach(function (k) { if (m[k] === undefined) m[k] = b[k]; });
-    out[key] = m;
-  });
-
-  /* --- списки без повторов --- */
-  ['restDays'].forEach(function (key) {
-    var a = local[key] || [], b = remote[key] || [];
-    if (!Array.isArray(a) || !Array.isArray(b)) return;
-    out[key] = a.concat(b).filter(function (v, i, arr) { return arr.indexOf(v) === i; });
-  });
-
-  /* --- зал славы: по номеру --- */
-  if (Array.isArray(local.hall) || Array.isArray(remote.hall)) {
-    var hm = {};
-    (local.hall || []).concat(remote.hall || []).forEach(function (x) {
-      if (x && x.id != null) hm[x.id] = x;
-    });
-    out.hall = Object.keys(hm).map(function (k) { return hm[k]; });
-  }
-
-  /* --- баллы и серия: берём большее, чтобы прогресс не откатывался --- */
-  ['lifetime', 'best', 'bestStreak'].forEach(function (k) {
-    if (typeof local[k] === 'number' || typeof remote[k] === 'number') {
-      out[k] = Math.max(local[k] || 0, remote[k] || 0);
-    }
-  });
-
-  out.__ts = Math.max(lts, rts);
-  return out;
-}
-
-/* ---------- обмен с сервером ---------- */
-var ACC_BUSY = false;
-var ACC_DIRTY = false;
-
-function accPack() {
-  var box = {};
-  try { box = JSON.parse(JSON.stringify(S)); } catch (e) { return null; }
-  box.__ts = Date.now();
-  return box;
-}
-
-async function accPull() {
-  try {
-    var ctrl = new AbortController();
-    var to = setTimeout(function () { ctrl.abort(); }, 9000);
-    var r = await fetch(ACC_SERVER + '/api/state?acc=' + encodeURIComponent(accId()),
-                        { signal: ctrl.signal, cache: 'no-store' });
-    clearTimeout(to);
-    var j = await r.json();
-    if (!j || !j.ok) return null;
-    try { localStorage.setItem(ACC_REV, String(j.rev || 0)); } catch (e) {}
-    return j.data || null;
-  } catch (e) { return null; }
-}
-
-async function accPush(state) {
-  try {
-    var ctrl = new AbortController();
-    var to = setTimeout(function () { ctrl.abort(); }, 12000);
-    var r = await fetch(ACC_SERVER + '/api/state', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ acc: accId(), data: state }),
-      signal: ctrl.signal
-    });
-    clearTimeout(to);
-    var j = await r.json();
-    if (j && j.ok) {
-      try { localStorage.setItem(ACC_REV, String(j.rev || 0)); } catch (e) {}
-      return true;
-    }
-  } catch (e) {}
-  return false;
-}
-
-/* Главный проход: забрать чужое, слить, отдать своё */
-async function accSync(opts) {
-  opts = opts || {};
-  if (ACC_BUSY) { ACC_DIRTY = true; return false; }
-  ACC_BUSY = true;
-  try {
-    accStampChanges();
-
-    var remote = await accPull();
-    if (remote) {
-      var merged = accMerge(accPack(), remote);
-      var changedCount = (merged.tasks || []).length !== (S.tasks || []).length;
-
-      /* аккуратно переносим слитое в живое состояние приложения */
-      Object.keys(merged).forEach(function (k) {
-        if (k === '__ts') return;
-        S[k] = merged[k];
-      });
-      try { DB.saveQuiet ? DB.saveQuiet() : DB.save(); } catch (e) {}
-
-      if (changedCount && typeof render === 'function') {
-        try { render(); } catch (e) {}
-      }
-    }
-
-    var ok = await accPush(accPack());
-
-    if (!S.sync) S.sync = {};
-    S.sync.accLast = Date.now();
-    S.sync.accOk = !!ok;
-
-    /* обновляем и календарь — чтобы задачи уехали в телефон сразу */
-    if (ok && typeof feedPush === 'function') {
-      try { await feedPush(true); } catch (e) {}
-    }
-
-    if (opts.loud) {
-      try { toast(ok ? '✓ Синхронизировано' : 'Нет связи — сохранил на устройстве'); } catch (e) {}
-    }
-    return ok;
-  } finally {
-    ACC_BUSY = false;
-    if (ACC_DIRTY) { ACC_DIRTY = false; setTimeout(function () { accSync(); }, 1200); }
-  }
-}
-
-/* ---------- связать компьютер и телефон ---------- */
-async function accMakeCode() {
-  try {
-    var r = await fetch(ACC_SERVER + '/api/link', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ make: true, acc: accId() })
-    });
-    var j = await r.json();
-    if (j && j.ok) return j.code;
-  } catch (e) {}
-  return null;
-}
-
-async function accUseCode(code) {
-  try {
-    var r = await fetch(ACC_SERVER + '/api/link', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ code: String(code || '').replace(/\D/g, '') })
-    });
-    var j = await r.json();
-    if (j && j.ok && j.acc) {
-      try {
-        localStorage.setItem(ACC_KEY, j.acc);
-        localStorage.removeItem(ACC_SNAP);
-      } catch (e) {}
-      return true;
-    }
-    return j && j.error ? j.error : false;
-  } catch (e) { return false; }
-}
-
-/* ---------- экран «Мой аккаунт» ---------- */
-function openAccount() {
-  var inTg = accInTelegram();
-  var last = (S.sync && S.sync.accLast) ? new Date(S.sync.accLast).toLocaleTimeString('ru-RU',
-              { hour: '2-digit', minute: '2-digit' }) : '—';
-
-  sheet(
-    '<div class="sh-h"><b>👤 Мой аккаунт</b></div>' +
-    '<div class="tip">Задачи, баллы и серия живут на сервере. Открой ПОЛЬЗУ на другом ' +
-    'устройстве под этим же аккаунтом — увидишь всё то же самое.</div>' +
-
-    '<div class="card" style="margin-top:10px">' +
-      '<div class="row"><span>Аккаунт</span><b>' + esc(accHuman()) + '</b></div>' +
-      '<div class="row"><span>Последняя сверка</span><b>' + last + '</b></div>' +
-      '<div class="row"><span>Задач в аккаунте</span><b>' + ((S.tasks || []).length) + '</b></div>' +
-    '</div>' +
-
-    '<button class="btn" id="ac-now">🔄 Синхронизировать сейчас</button>' +
-
-    '<div class="secline">Другое устройство</div>' +
-    (inTg
-      ? '<div class="tip">Чтобы открыть тот же аккаунт в браузере на компьютере — ' +
-        'возьми код и введи его там.</div>' +
-        '<button class="btn ghost" id="ac-make">🔑 Получить код для компьютера</button>' +
-        '<div id="ac-code" class="sync-url" style="display:none;font-size:26px;' +
-        'text-align:center;letter-spacing:6px;color:#c5f82a"></div>'
-      : '<div class="tip">Открой ПОЛЬЗУ в Telegram, возьми там код и введи его сюда — ' +
-        'этот компьютер подключится к твоему аккаунту.</div>' +
-        '<input type="text" id="ac-inp" inputmode="numeric" maxlength="6" placeholder="000000" ' +
-        'style="width:100%;text-align:center;font-size:24px;letter-spacing:6px">' +
-        '<button class="btn" id="ac-use">Подключить к аккаунту</button>') +
-
-    '<div class="tip" style="margin-top:12px">Данные сохраняются и без интернета — ' +
-    'при следующем выходе в сеть всё уедет на сервер само.</div>'
-  );
-
-  var G = function (i) { return document.getElementById(i); };
-
-  G('ac-now').onclick = async function () {
-    buzz('tap');
-    toast('Сверяюсь с сервером…');
-    await accSync({ loud: true });
-    closeSheet(); setTimeout(openAccount, 300);
-  };
-
-  if (G('ac-make')) G('ac-make').onclick = async function () {
-    buzz('tap');
-    G('ac-make').disabled = true;
-    G('ac-make').textContent = 'Готовлю код…';
-    await accSync();
-    var code = await accMakeCode();
-    G('ac-make').disabled = false;
-    G('ac-make').textContent = '🔑 Получить код для компьютера';
-    if (!code) { toast('Не получилось — проверь связь'); return; }
-    var box = G('ac-code');
-    box.style.display = 'block';
-    box.textContent = code;
-    toast('Код живёт 15 минут');
-    try { navigator.clipboard.writeText(code); } catch (e) {}
-  };
-
-  if (G('ac-use')) G('ac-use').onclick = async function () {
-    var v = (G('ac-inp').value || '').replace(/\D/g, '');
-    if (v.length !== 6) { toast('Нужно 6 цифр'); return; }
-    buzz('tap');
-    G('ac-use').disabled = true;
-    G('ac-use').textContent = 'Подключаю…';
-    var res = await accUseCode(v);
-    if (res === true) {
-      toast('✓ Аккаунт подключён');
-      await accSync();
-      setTimeout(function () { location.reload(); }, 800);
-    } else {
-      toast(typeof res === 'string' ? res : 'Код не подошёл');
-      G('ac-use').disabled = false;
-      G('ac-use').textContent = 'Подключить к аккаунту';
-    }
-  };
-}
-
-/* ---------- когда синхронизируемся ---------- */
-(function accBoot() {
-  function go() { setTimeout(function () { accSync(); }, 1500); }
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', go);
-  } else { go(); }
-
-  /* вернулись в приложение — сразу подтягиваем чужие правки */
-  document.addEventListener('visibilitychange', function () {
-    if (document.visibilityState === 'visible') accSync();
-  });
-  window.addEventListener('online', function () { accSync(); });
-
-  /* уходим — успеваем отдать своё */
-  window.addEventListener('pagehide', function () {
-    try { accStampChanges(); accPush(accPack()); } catch (e) {}
-  });
-
-  /* фоновая сверка */
-  setInterval(function () { accSync(); }, 20000);
-})();
-
-/* Любое сохранение внутри приложения ставит отметки времени
-   и через полторы секунды тихо уезжает на сервер. */
-(function hookAccountSave() {
-  if (!window.DB || typeof DB.save !== 'function') return;
-  var orig = DB.save;
-  var timer = null;
-  DB.saveQuiet = orig;
-  DB.save = function () {
-    orig.apply(this, arguments);
-    try { accStampChanges(); } catch (e) {}
-    clearTimeout(timer);
-    timer = setTimeout(function () { accSync(); }, 1500);
-  };
-})();
-
-</script>
+<!-- account-sync.js убран: его работу делает account.js -->
 <script>
 /* ==== app4.js ==== */
 /* ========== ПОЛЬЗА — профиль, настройки, синхронизация, рендер ========== */
